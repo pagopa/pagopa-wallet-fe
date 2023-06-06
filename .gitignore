@@ -13,6 +13,8 @@ src/env-config.js
 # production
 /build
 /dist
+/.parcel-cache
+/node_modules
 
 # misc
 .DS_Store
