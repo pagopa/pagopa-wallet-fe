@@ -1,0 +1,14 @@
+# Never lint node_modules
+node_modules
+
+# We shouldn't lint assets nor generated files
+assets
+generated
+
+# Don't lint conf files
+.eslintrc.js
+cssnano.config.js
+jest.config.js
+jest.integration.config.js
+jest-puppeteer.config.js
+src/__inegration_tests__/*
