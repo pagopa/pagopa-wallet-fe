@@ -6,16 +6,20 @@
   "license": "MIT",
   "scripts": {
     "type-check": "tsc",
+    "generate": "npm-run-all generate:*",
+    "generate:payment-ecommerce": "rimraf generated/definitions/payment-ecommerce && shx mkdir -p generated/definitions/payment-ecommerce && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/pagopa-infra/main/src/domains/ecommerce-app/api/ecommerce-checkout/v1/_openapi.json.tpl --no-strict --out-dir ./generated/definitions/payment-ecommerce --request-types --response-decoders --client",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
     "clean": "rimraf .cache && rimraf dist && shx rm -rf src/generated/*  && shx rm -rf .parcel-cache && shx rm -rf node_modules",
-    "prebuild": "npm-run-all type-check lint",
+    "prebuild": "npm-run-all generate type-check lint",
     "build": "rimraf .cache && rimraf dist && parcel build src/index.html",
     "start": "parcel src/index.html",
-    "dev": "parcel --log-level verbose src/index.html"
+    "dev:env": "export $(grep -v '^#' .env.development | xargs) && chmod +x env.sh && ./env.sh",
+    "dev:server": "parcel --log-level verbose src/index.html",
+    "dev": "rimraf .cache && rimraf dist && mkdir -p dist && npm-run-all generate type-check dev:env dev:server"
   },
   "devDependencies": {
-    "@parcel/transformer-pug": "^2.6.0",
+    "@types/mixpanel-browser": "^2.38.1",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
@@ -56,13 +60,17 @@
     "@mui/system": "^5.13.2",
     "@pagopa/mui-italia": "0.6.10",
     "@pagopa/openapi-codegen-ts": "12.1.2",
+    "@pagopa/ts-commons": "^12.0.0",
+    "@reduxjs/toolkit": "^1.9.5",
     "dotenv": "^16.0.3",
     "i18next": "^21.8.9",
     "i18next-browser-languagedetector": "^6.1.4",
     "italia-tslint-rules": "^1.1.3",
+    "mixpanel-browser": "^2.47.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^11.17.2",
+    "react-redux": "^8.0.7",
     "react-router-dom": "^6.6.1",
     "ts-node": "^10.9.1"
   }
