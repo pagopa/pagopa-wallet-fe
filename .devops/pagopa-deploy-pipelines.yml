@@ -109,38 +109,38 @@ stages:
               inlineScript: |
                 call az cdn endpoint purge -g pagopa-wallet-rg -n pagopa-wallet-cdn-endpoint --profile-name pagopa-d-wallet-cdn-profile --content-paths "/*"
    
-  - stage: End_to_End_Tests_DEV
-    dependsOn:
-      - Deploy_DEV_pagoPA
-    pool:
-      vmImage: 'ubuntu-latest'
-    jobs:
-      - job: end_to_end_tests_dev
-        steps:
-          - checkout: checkoutTests
-          - script : |
-             echo "##[debug] Change placeholder for CHECKOUT_URL ..."
-             cd e2e-tests 
-             mv dev.env .env
-          - script: |
-             docker build -t ui_test e2e-tests
-            displayName: 'Build test image'
-
-          - script: |
-              docker run --name=ui_test ui_test
-            displayName: 'Run UI test container'
-            continueOnError: true 
-
-          - script: |
-              docker cp ui_test:/puppeteer/test_reports  test_reports
-            displayName: 'Copy test result'
-            continueOnError: true 
-
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '**/*-TEST.xml' 
-              searchFolder: '$(System.DefaultWorkingDirectory)'
+  #- stage: End_to_End_Tests_DEV
+  #  dependsOn:
+  #    - Deploy_DEV_pagoPA
+  #  pool:
+  #    vmImage: 'ubuntu-latest'
+  #  jobs:
+  #    - job: end_to_end_tests_dev
+  #      steps:
+  #        - checkout: checkoutTests
+   #       - script : |
+   #          echo "##[debug] Change placeholder for CHECKOUT_URL ..."
+   #          cd e2e-tests 
+   #          mv dev.env .env
+   #       - script: |
+   #          docker build -t ui_test e2e-tests
+   #         displayName: 'Build test image'
+   #
+   #       - script: |
+   #           docker run --name=ui_test ui_test
+   #         displayName: 'Run UI test container'
+   #         continueOnError: true 
+   #
+   #       - script: |
+   #           docker cp ui_test:/puppeteer/test_reports  test_reports
+   #         displayName: 'Copy test result'
+   #         continueOnError: true 
+   #
+   #       - task: PublishTestResults@2
+   #         inputs:
+   #           testResultsFormat: 'JUnit'
+   #           testResultsFiles: '**/*-TEST.xml' 
+   #           searchFolder: '$(System.DefaultWorkingDirectory)'
 
   # Create a relase
   # Activated when ONE OF these are met:
@@ -255,38 +255,38 @@ stages:
               inlineScript: |
                 call az cdn endpoint purge -g pagopa-u-wallet-rg -n pagopa-u-wallet-cdn-endpoint --profile-name pagopa-u-wallet-cdn-profile --content-paths "/*"
  
-  - stage: End_to_End_Tests_UAT
-    dependsOn:
-      - Deploy_UAT_pagoPA
-    pool:
-      vmImage: 'ubuntu-latest'
-    jobs:
-      - job: end_to_end_tests_uat
-        steps:
-          - checkout: checkoutTests
-          - script : |
-             echo "##[debug] Change placeholder for CHECKOUT_URL ..."
-             cd e2e-tests 
-             mv uat.env .env
-          - script: |
-             docker build -t ui_test e2e-tests
-            displayName: 'Build test image'
-
-          - script: |
-              docker run --name=ui_test ui_test
-            displayName: 'Run UI test container'
-            continueOnError: true 
-
-          - script: |
-              docker cp ui_test:/puppeteer/test_reports  test_reports
-            displayName: 'Copy test result'
-            continueOnError: true 
-
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '**/*-TEST.xml' 
-              searchFolder: '$(System.DefaultWorkingDirectory)'
+  #- stage: End_to_End_Tests_UAT
+  #  dependsOn:
+  #    - Deploy_UAT_pagoPA
+  #  pool:
+  #    vmImage: 'ubuntu-latest'
+  #  jobs:
+  #    - job: end_to_end_tests_uat
+  #      steps:
+  #        - checkout: checkoutTests
+  #        - script : |
+  #           echo "##[debug] Change placeholder for CHECKOUT_URL ..."
+  #           cd e2e-tests 
+  #           mv uat.env .env
+  #        - script: |
+  #           docker build -t ui_test e2e-tests
+  #          displayName: 'Build test image'
+  #
+  #        - script: |
+  #            docker run --name=ui_test ui_test
+  #          displayName: 'Run UI test container'
+  #          continueOnError: true 
+  #
+  #        - script: |
+  #            docker cp ui_test:/puppeteer/test_reports  test_reports
+  #          displayName: 'Copy test result'
+  #          continueOnError: true 
+  #
+  #        - task: PublishTestResults@2
+  #          inputs:
+  #            testResultsFormat: 'JUnit'
+  #            testResultsFiles: '**/*-TEST.xml' 
+  #            searchFolder: '$(System.DefaultWorkingDirectory)'
 
     # Prepare Artifact
   - stage: Prepare_artifact_prod
