@@ -1,0 +1,110 @@
+# Azure DevOps pipeline to build, check source codes and run tests.
+#
+# To make Danger JS run on a pull request you need to add the following pipeline 
+# variable and set it with a GitHub access token (scope public_repo); otherwise 
+# set its value to 'skip' without marking it secret: 
+# - DANGER_GITHUB_API_TOKEN
+# 
+
+variables:
+  NODE_VERSION: '14.16.0'
+  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+
+# Automatically triggered on PR
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#pr-trigger
+trigger:
+  branches:
+    include:
+    - main
+
+# Execute agents (jobs) on latest Ubuntu version.
+# To change OS for a specific, ovverride "pool" attribute inside the job definition
+pool:
+  vmImage: 'ubuntu-latest'
+
+resources:
+  repositories:
+    - repository: pagopaCommons
+      type: github
+      name: pagopa/azure-pipeline-templates
+      ref: refs/tags/v19
+      endpoint: 'io-azure-devops-github-ro'
+
+    - repository: checkout-be-mock
+      type: github
+      name: pagopa/pagopa-checkout-be-mock
+      ref: master
+      endpoint: 'io-azure-devops-github-ro'
+
+stages:
+  - stage: Build
+    dependsOn: []
+    jobs:
+      - job: make_build  
+        pool:
+          vmImage: 'ubuntu-latest'  
+        steps:
+        - template: templates/node-job-setup/template.yaml@pagopaCommons
+
+        - template: azure-templates/setup-env.yml
+          parameters:
+            env: 'DEV'
+            api_payment_methods_basepath: '/payment-methods/checkout/v1'
+            pagopa_wallet_cdn: $WALLET_PAGOPA_ASSETS_CDN
+            pagopa_logos_cdn:  $WALLET_PAGOPA_LOGOS_CDN
+    
+        - script: |
+            yarn build
+          displayName: 'Build'
+  
+  - stage: Static_Analysis
+    dependsOn: []
+    jobs:
+      - job: lint     
+        steps:
+        - template: templates/node-job-setup/template.yaml@pagopaCommons
+        - script: yarn lint
+          displayName: 'Lint'
+      - job: danger
+        condition: 
+          and(
+            succeeded(),
+            ne(variables['DANGER_GITHUB_API_TOKEN'], 'skip')
+          )
+        steps:
+          - template: templates/node-job-setup/template.yaml@pagopaCommons
+
+          - bash: yarn danger ci
+            env:
+              DANGER_GITHUB_API_TOKEN: '$(DANGER_GITHUB_API_TOKEN)'
+            displayName: 'Danger CI'
+
+  # B) Run unit tests if there is a push or pull request on any branch.
+  - stage: Unit_Tests
+    pool:
+      vmImage: 'ubuntu-latest'
+    dependsOn: []
+    jobs:
+      - job: run_unit_tests
+        steps:
+        - template: templates/node-job-setup/template.yaml@pagopaCommons
+        
+        - script: yarn generate
+          displayName: 'Generate definitions'
+
+        - script: yarn test:coverage
+          displayName: 'Unit tests exec'
+        
+        - task: PublishTestResults@2
+          displayName: 'Publish test results from Jest tests'
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: '**/*TEST.xml' 
+            searchFolder: '$(System.DefaultWorkingDirectory)'
+            failTaskOnFailedTests: true
+
+        - task: PublishCodeCoverageResults@1
+          displayName: 'Publish code coverage from Jest tests'
+          inputs:
+            codeCoverageTool: Cobertura
+            summaryFileLocation: 'coverage/cobertura-coverage.xml'      

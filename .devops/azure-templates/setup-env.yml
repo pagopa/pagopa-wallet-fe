@@ -1,0 +1,24 @@
+# Azure DevOps pipeline template used to build bundle.
+parameters:
+  - name: 'api_payment_methods_basepath'
+    type: string
+    default: ''
+    
+  - name: 'pagopa_wallet_cdn'
+    type: string
+    default: ''
+
+  - name: 'pagopa_logos_cdn'
+    type: string
+    default: ''
+
+steps:
+- bash: |
+    chmod +x env.sh
+    env -i \
+      API_PAYMENT_METHODS_BASEPATH=${{ parameters.api_payment_methods_basepath }} \
+      WALLET_PAGOPA_ASSETS_CDN=${{ parameters.pagopa_wallet_cdn }} \
+      WALLET_PAGOPA_LOGOS_CDN=${{ parameters.pagopa_logos_cdn }} \
+      bash env.sh
+
+  displayName: 'Populate environment file'
