@@ -1,16 +1,14 @@
-import * as dotenv from "dotenv";
 import React from "react";
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
 import { App } from "./App";
+import store from "./redux/store";
 
-const container = document.getElementById("root");
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const root = createRoot(container!);
-dotenv.config({ path: __dirname + `/.env.${process.env.NODE_ENV}` });
-root.render(
-  <>
+ReactDOM.render(
+  <Provider store={store}>
     <React.StrictMode>
-      <App></App>
+      <App />
     </React.StrictMode>
-  </>
+  </Provider>,
+  document.getElementById("root")
 );
