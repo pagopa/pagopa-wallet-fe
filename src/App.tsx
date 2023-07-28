@@ -14,7 +14,15 @@ import PaymentMethodSelectionPage from "./routes/PaymentMethodPage";
 import "./translations/i18n";
 
 export function App() {
-  const transactionsTheme = createTheme({ ...theme });
+  const transactionsTheme = createTheme({
+    ...theme,
+    palette: {
+      text: {
+        primary: "#0E0F13",
+        light: "#555C70"
+      }
+    }
+  });
   return (
     <ThemeProvider theme={transactionsTheme}>
       <CssBaseline />

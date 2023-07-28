@@ -24,7 +24,7 @@ export default function InputCardPage() {
 
   return (
     <PageContainer title="inputCardPage.title">
-      <Box sx={{ mt: 6 }}>
+      <Box sx={{ mt: 4 }}>
         <InputCardForm onSubmit={onSubmit} loading={loading} />
       </Box>
     </PageContainer>

@@ -10,7 +10,7 @@ dotenv.config({ path: __dirname + `/.env.${process.env.NODE_ENV}` });
 root.render(
   <>
     <React.StrictMode>
-      <App></App>
+      <App />
     </React.StrictMode>
   </>
 );

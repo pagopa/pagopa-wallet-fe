@@ -21,13 +21,14 @@ export default function FormButtons(props: {
   const { t } = useTranslation();
 
   return (
-    <React.Fragment>
+    <>
       <Grid
         justifyContent="center"
         flexDirection="row-reverse"
         alignItems="center"
         container
         spacing={2}
+        mt={1}
       >
         <Grid xs={props.hideCancel ? 12 : 8} style={{ paddingTop: 0 }} item>
           <LoadingButton
@@ -79,7 +80,7 @@ export default function FormButtons(props: {
           </LoadingButton>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </>
   );
 }
 

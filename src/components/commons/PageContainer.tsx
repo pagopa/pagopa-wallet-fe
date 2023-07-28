@@ -15,12 +15,12 @@ export default function PageContainer(props: {
   return (
     <Box mb={4} aria-live="polite">
       {!!props.title && (
-        <Typography variant="h4" component={"div"}>
+        <Typography variant="h4" component={"div"} mb={2} color="text.primary">
           {t(props.title)}
         </Typography>
       )}
       {!!props.description && (
-        <Typography variant="body2" sx={{ mt: 1, mb: 1 }}>
+        <Typography variant="body2" sx={{ mb: 1 }} color="text.light">
           {t(props.description)}
           {!!props.link && props.link}
         </Typography>

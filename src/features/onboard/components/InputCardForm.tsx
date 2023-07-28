@@ -168,7 +168,7 @@ export function InputCardForm(props: {
                 autoComplete="cc-number"
                 handleChange={handleNumberChange}
                 handleBlur={handleBlur}
-                sx={{ mb: 4 }}
+                sx={{ mb: 1 }}
                 endAdornment={
                   <InputAdornment position="end">
                     {utils.validators.getFormErrorIcon(
@@ -205,7 +205,7 @@ export function InputCardForm(props: {
                   autoComplete="cc-exp"
                   handleChange={handleExpireChange}
                   handleBlur={handleBlur}
-                  sx={{ mb: 4 }}
+                  sx={{ mb: 1 }}
                   endAdornment={
                     <InputAdornment position="end">
                       {utils.validators.getFormErrorIcon(
@@ -231,7 +231,7 @@ export function InputCardForm(props: {
                   autoComplete="cc-csc"
                   handleChange={handleCvvChange}
                   handleBlur={handleBlur}
-                  sx={{ mb: 4 }}
+                  sx={{ mb: 1 }}
                   endAdornment={
                     <InputAdornment position="end">
                       {utils.validators.getFormErrorIcon(
@@ -255,15 +255,7 @@ export function InputCardForm(props: {
                 autoComplete="cc-name"
                 handleChange={handleNameChange}
                 handleBlur={handleBlur}
-                sx={{ mb: 4 }}
-                endAdornment={
-                  <InputAdornment position="end">
-                    {utils.validators.getFormErrorIcon(
-                      !!values.name,
-                      !!errors.name
-                    )}
-                  </InputAdornment>
-                }
+                sx={{ mb: 1 }}
                 startAdornment={<PersonIcon sx={{ mr: 2 }} color="action" />}
               />
               <FormButtons
