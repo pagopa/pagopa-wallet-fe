@@ -6,10 +6,12 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate,
+  Navigate
 } from "react-router-dom";
 import Layout from "./components/commons/Layout";
 import InputCardPage from "./routes/InputCardPage";
+import PaymentMethodSelectionPage from "./routes/PaymentMethodPage";
+import "./translations/i18n";
 
 export function App() {
   const transactionsTheme = createTheme({ ...theme });
@@ -19,10 +21,14 @@ export function App() {
       <Layout>
         <Router>
           <Routes>
+            <Route
+              path="onboard/scegli-metodo"
+              element={<PaymentMethodSelectionPage />}
+            />
             <Route path="onboard/inserisci-carta" element={<InputCardPage />} />
             <Route
               path="*"
-              element={<Navigate replace to="onboard/inserisci-carta" />}
+              element={<Navigate replace to="onboard/scegli-metodo" />}
             />
           </Routes>
         </Router>

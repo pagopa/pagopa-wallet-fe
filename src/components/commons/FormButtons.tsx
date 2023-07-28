@@ -6,16 +6,16 @@ import { useTranslation } from "react-i18next";
 
 export default function FormButtons(props: {
   handleSubmit: () => void;
-  handleCancel: () => void;
+  handleCancel?: () => void;
   type?: "submit" | "button";
-  disabledSubmit: boolean;
+  disabledSubmit?: boolean;
   disabledCancel?: boolean;
   loadingSubmit?: boolean;
   loadingCancel?: boolean;
   idCancel?: string;
   idSubmit?: string;
   submitTitle: string;
-  cancelTitle: string;
+  cancelTitle?: string;
   hideCancel?: boolean;
 }) {
   const { t } = useTranslation();
@@ -23,16 +23,6 @@ export default function FormButtons(props: {
   return (
     <React.Fragment>
       <Grid
-        sx={{
-          position: { xs: "fixed", sm: "relative" },
-          zIndex: { xs: 1000, sm: 0 },
-          bottom: { xs: 0 },
-          left: { xs: 0 },
-          p: { xs: "1rem", sm: 0 },
-          boxShadow: { xs: "0 0.5rem 1rem rgb(0 0 0 / 15%)", sm: "none" },
-          bgcolor: { xs: "background.default" },
-          my: { sm: 6 },
-        }}
         justifyContent="center"
         flexDirection="row-reverse"
         alignItems="center"
@@ -51,7 +41,7 @@ export default function FormButtons(props: {
             style={{
               width: "100%",
               height: "100%",
-              minHeight: 45,
+              minHeight: 45
             }}
             aria-live="polite"
             aria-label={
@@ -74,7 +64,7 @@ export default function FormButtons(props: {
               width: "100%",
               height: "100%",
               minHeight: 45,
-              ...(props.hideCancel ? { display: "none" } : {}),
+              ...(props.hideCancel ? { display: "none" } : {})
             }}
             aria-live="polite"
             aria-label={
@@ -94,5 +84,5 @@ export default function FormButtons(props: {
 }
 
 FormButtons.defaultProps = {
-  type: "button",
+  type: "button"
 };

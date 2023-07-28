@@ -16,7 +16,7 @@ export default function Layout({ sx, children }: LayoutProps) {
         flexDirection: "column",
         justifyContent: "space-between",
         height: "100vh",
-        bgcolor: theme.palette.background.default,
+        bgcolor: theme.palette.background.paper
       }}
     >
       <Header />
@@ -24,9 +24,9 @@ export default function Layout({ sx, children }: LayoutProps) {
         sx={{
           ...sx,
           p: { xs: 0 },
-          pl: { xs: 2, sm: 6, md: 0 },
-          pr: { xs: 2, sm: 6, md: 0 },
-          flexGrow: 1,
+          pl: { xs: 3, sm: 6, md: 0 },
+          pr: { xs: 3, sm: 6, md: 0 },
+          flexGrow: 1
         }}
         maxWidth={"sm"}
       >

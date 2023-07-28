@@ -16,7 +16,7 @@ export default function InputCardPage() {
       expDate: wallet.expirationDate,
       cardHolderName: wallet.name,
       cvv: wallet.cvv,
-      pan: wallet.number,
+      pan: wallet.number
     };
     console.log(cardData);
     setWallet(wallet);

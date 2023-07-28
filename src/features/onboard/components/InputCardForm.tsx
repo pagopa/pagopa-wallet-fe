@@ -21,7 +21,7 @@ import {
   InputCardFormErrors,
   InputCardFormFields,
   SecureCodeDigits,
-  SecureCodeLabels,
+  SecureCodeLabels
 } from "../models";
 
 export function InputCardForm(props: {
@@ -46,14 +46,14 @@ export function InputCardForm(props: {
         ? {
             ...(utils.validators.cardNameValidation(values.name)
               ? {}
-              : { name: "inputCardPage.formErrors.name" }),
+              : { name: "inputCardPage.formErrors.name" })
           }
         : { name: "inputCardPage.formErrors.required" }),
       ...(values.number
         ? {
             ...(cardValidator.number(values.number).isValid
               ? {}
-              : { number: "inputCardPage.formErrors.number" }),
+              : { number: "inputCardPage.formErrors.number" })
           }
         : { number: "inputCardPage.formErrors.required" }),
       ...(values.expirationDate
@@ -61,8 +61,8 @@ export function InputCardForm(props: {
             ...(cardValidator.expirationDate(values.expirationDate).isValid
               ? {}
               : {
-                  expirationDate: "inputCardPage.formErrors.expirationDate",
-                }),
+                  expirationDate: "inputCardPage.formErrors.expirationDate"
+                })
           }
         : { expirationDate: "inputCardPage.formErrors.required" }),
       ...(values.cvv
@@ -70,10 +70,10 @@ export function InputCardForm(props: {
             ...(cardValidator.cvv(values.cvv, cvvLength).isValid
               ? {}
               : {
-                  cvv: SecureCodeLabels[cvvLength].error,
-                }),
+                  cvv: SecureCodeLabels[cvvLength].error
+                })
           }
-        : { cvv: "inputCardPage.formErrors.required" }),
+        : { cvv: "inputCardPage.formErrors.required" })
     };
 
     setDisabled(!!Object.keys(errors).length);
@@ -147,7 +147,7 @@ export function InputCardForm(props: {
           name: "",
           number: "",
           expirationDate: "",
-          cvv: "",
+          cvv: ""
         }}
         validate={validate}
         onSubmit={props.onSubmit}
@@ -266,17 +266,14 @@ export function InputCardForm(props: {
                 }
                 startAdornment={<PersonIcon sx={{ mr: 2 }} color="action" />}
               />
+              <FormButtons
+                loadingSubmit={props.loading}
+                type="submit"
+                submitTitle="inputCardPage.formButtons.submit"
+                handleSubmit={handleSubmit}
+                hideCancel={true}
+              />
             </Box>
-            <FormButtons
-              loadingSubmit={props.loading}
-              type="submit"
-              submitTitle="paymentNoticePage.formButtons.submit"
-              cancelTitle="paymentNoticePage.formButtons.cancel"
-              disabledSubmit={disabled}
-              handleSubmit={() => handleSubmit()}
-              handleCancel={props.onCancel}
-              hideCancel={props.hideCancel}
-            />
           </form>
         )}
       </Formik>
