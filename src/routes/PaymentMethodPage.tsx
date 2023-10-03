@@ -1,9 +1,12 @@
 import { Divider, Typography, Box, Link } from "@mui/material";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Stack from "@mui/material/Stack";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AddCardIcon from "@mui/icons-material/AddCard";
+import * as TE from "fp-ts/TaskEither";
+import { pipe } from "fp-ts/function";
 import PageContainer from "../components/commons/PageContainer";
+import { apiPaymentEcommerceClient } from "../utils/api/client";
 
 interface MethodElement {
   title: string;
@@ -59,6 +62,24 @@ const Method = (props: MethodElement) => (
 );
 
 export default function PaymentMethodPage() {
+  const [paymentMethodPage, setPaymentMethodPage] = useState([]);
+
+  useEffect(() => {
+    void (async () => {
+      const list = await pipe(
+        TE.tryCatch(
+          () =>
+            apiPaymentEcommerceClient.getAllPaymentMethods({
+              bearerAuth:
+                "4c1M9s7d4P5x9m6D8s0f3O5z2h9E9q2q7S7p8k5O1t5h7B6h4a2N8v7i9B9u4f6M1e1f0L3j3y4E5q4p6H9e9i9J5n1h3K1p1o0G8u1h9J8h9c1P5j1c5Y4s9c3T2q5u"
+            }),
+          console.error
+        )
+      )();
+      console.log(list);
+    })();
+  }, []);
+
   return (
     <PageContainer
       title="paymentMethodPage.title"

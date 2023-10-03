@@ -5,6 +5,7 @@
   "author": "PagoPA SpA",
   "license": "MIT",
   "scripts": {
+    "generate": "rimraf generated/definitions/payment-ecommerce && shx mkdir -p generated/definitions/payment-ecommerce && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/pagopa-infra/bbb481ca463b531dc21844ec18f49c4a7a41de4b/src/domains/wallet-app/api/webview-payment-wallet/v1/_openapi.json.tpl --no-strict --out-dir ./generated/definitions/payment-ecommerce --request-types --response-decoders --client",
     "type-check": "tsc",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
