@@ -13,7 +13,11 @@ import InputCardPage from "./routes/InputCardPage";
 import PaymentMethodSelectionPage from "./routes/PaymentMethodPage";
 import { CheckoutRoutes } from "./routes/models/routeModel";
 import "./translations/i18n";
+import Guard from "./components/commons/Guard";
+import { SessionItems } from "./utils/storage";
+import utils from "./utils";
 
+utils.app.init();
 export function App() {
   const transactionsTheme = createTheme({
     ...theme,
@@ -38,7 +42,11 @@ export function App() {
             />
             <Route
               path={CheckoutRoutes.INSERISCI_CARTA}
-              element={<InputCardPage />}
+              element={
+                <Guard item={SessionItems.sessionToken}>
+                  <InputCardPage />
+                </Guard>
+              }
             />
             <Route
               path="*"

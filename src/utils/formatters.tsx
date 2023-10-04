@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-export function expireDateFormatter(old: string, current: string) {
+function expireDateFormatter(old: string, current: string) {
   if (current.charAt(1) === "/") {
     current = "0" + current;
   }
@@ -15,14 +15,14 @@ export function expireDateFormatter(old: string, current: string) {
   return current;
 }
 
-export function cleanSpaces(text: string) {
+function cleanSpaces(text: string) {
   return text.replace(/\s/g, "");
 }
 /**
  * This function format number to EUR currency by it-IT locale
  * by default amount is in CENTS
  */
-export function moneyFormat(
+function moneyFormat(
   amount: number,
   decimalDigits: number = 2,
   fractionDigits: number = 2
@@ -34,3 +34,9 @@ export function moneyFormat(
     maximumFractionDigits: fractionDigits
   }).format(amount ? amount / Math.pow(10, decimalDigits) : 0);
 }
+
+export default {
+  moneyFormat,
+  cleanSpaces,
+  expireDateFormatter
+};

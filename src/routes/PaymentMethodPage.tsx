@@ -1,11 +1,12 @@
-import { Divider, Typography, Box, Link } from "@mui/material";
+import { Divider, Typography, Box } from "@mui/material";
+import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Stack from "@mui/material/Stack";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import PageContainer from "../components/commons/PageContainer";
-import apiClient from "../utils/api/client";
-import { getFragmentParameter } from "../utils/urlUtilities";
+import utils from "../utils";
 import { PaymentMethodsResponse } from "../../generated/definitions/webview-payment-wallet/PaymentMethodsResponse";
+import { SessionItems } from "../utils/storage";
 import {
   PaymentMethodRoutes,
   TransactionMethods
@@ -25,7 +26,7 @@ const Method = (props: MethodElement) => {
     PaymentMethodRoutes[paymentTypeCode as TransactionMethods];
   const Icon = Asset ? <Asset sx={{ fontSize: 24 }} /> : null;
   return (
-    <Link href={route} underline="none">
+    <Link to={route} style={{ textDecoration: "none" }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         {Icon}
         <Box sx={{ width: "70%" }}>
@@ -59,10 +60,28 @@ export default function PaymentMethodPage() {
     PaymentMethodsResponse["paymentMethods"]
   >([]);
 
-  const bearerAuth = getFragmentParameter(window.location.href, "sessionToken");
+  const sessionToken = utils.url.getFragmentParameter(
+    window.location.href,
+    SessionItems.sessionToken
+  );
+
+  const makeError = () => null;
 
   useEffect(() => {
-    void apiClient.getAllPaymentMethods(bearerAuth, () => null, setMethods);
+    try {
+      if (!sessionToken) {
+        makeError();
+      } else {
+        utils.storage.save(SessionItems.sessionToken, sessionToken);
+        void utils.api.getAllPaymentMethods(
+          sessionToken,
+          makeError,
+          setMethods
+        );
+      }
+    } catch {
+      makeError();
+    }
   }, []);
 
   return (
