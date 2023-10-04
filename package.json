@@ -57,6 +57,7 @@
     "@mui/system": "^5.13.2",
     "@pagopa/mui-italia": "0.6.10",
     "@pagopa/openapi-codegen-ts": "12.1.2",
+    "@types/jest": "^29.5.5",
     "card-validator": "^8.1.1",
     "dotenv": "^16.0.3",
     "formik": "^2.4.2",

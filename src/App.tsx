@@ -20,6 +20,8 @@ export function App() {
     palette: {
       text: {
         primary: "#0E0F13",
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         light: "#555C70"
       }
     }

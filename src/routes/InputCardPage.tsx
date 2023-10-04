@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import cardValidator from "card-validator";
+// import cardValidator from "card-validator";
 import React from "react";
 import PageContainer from "../components/commons/PageContainer";
 import { InputCardFormFields } from "../features/onboard/models";
@@ -11,14 +11,13 @@ export default function InputCardPage() {
 
   const onSubmit = async (wallet: InputCardFormFields) => {
     setLoading(true);
-    const cardData = {
-      brand: cardValidator.number(wallet.number).card?.type || "",
-      expDate: wallet.expirationDate,
-      cardHolderName: wallet.name,
-      cvv: wallet.cvv,
-      pan: wallet.number
-    };
-    console.log(cardData);
+    // const cardData = {
+    //   brand: cardValidator.number(wallet.number).card?.type || "",
+    //   expDate: wallet.expirationDate,
+    //   cardHolderName: wallet.name,
+    //   cvv: wallet.cvv,
+    //   pan: wallet.number
+    // };
     setWallet(wallet);
   };
 

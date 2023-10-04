@@ -3,9 +3,9 @@ import * as allFormatters from "./formatters";
 
 export default {
   validators: {
-    ...allValidators,
+    ...allValidators
   },
   formatters: {
-    ...allFormatters,
-  },
+    ...allFormatters
+  }
 };

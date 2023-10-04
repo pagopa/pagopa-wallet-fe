@@ -31,7 +31,7 @@ export function InputCardForm(props: {
   hideCancel?: boolean;
 }) {
   const formRef = React.useRef<FormikProps<InputCardFormFields>>(null);
-  const [disabled, setDisabled] = React.useState(true);
+  const [, setDisabled] = React.useState(true);
   const [cvvLength, setCvvLength] = React.useState(SecureCodeDigits.cvv);
   const [ccIcon, setCcIcon] = React.useState<string | undefined>(undefined);
 

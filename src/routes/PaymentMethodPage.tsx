@@ -62,7 +62,7 @@ export default function PaymentMethodPage() {
   const bearerAuth = getFragmentParameter(window.location.href, "sessionToken");
 
   useEffect(() => {
-    void apiClient.getAllPaymentMethods(bearerAuth, console.error, setMethods);
+    void apiClient.getAllPaymentMethods(bearerAuth, () => null, setMethods);
   }, []);
 
   return (
