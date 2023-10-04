@@ -5,7 +5,7 @@
   "author": "PagoPA SpA",
   "license": "MIT",
   "scripts": {
-    "generate": "rimraf generated/definitions/payment-ecommerce && shx mkdir -p generated/definitions/payment-ecommerce && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/pagopa-infra/bbb481ca463b531dc21844ec18f49c4a7a41de4b/src/domains/wallet-app/api/webview-payment-wallet/v1/_openapi.json.tpl --no-strict --out-dir ./generated/definitions/payment-ecommerce --request-types --response-decoders --client",
+    "generate": "rimraf generated/definitions/webview-payment-wallet && shx mkdir -p generated/definitions/webview-payment-wallet && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/pagopa-infra/bbb481ca463b531dc21844ec18f49c4a7a41de4b/src/domains/wallet-app/api/webview-payment-wallet/v1/_openapi.json.tpl --no-strict --out-dir ./generated/definitions/webview-payment-wallet --request-types --response-decoders --client",
     "type-check": "tsc",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
@@ -67,6 +67,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^11.17.2",
     "react-router-dom": "^6.6.1",
+    "rimraf": "^5.0.5",
     "ts-node": "^10.9.1"
   }
 }

@@ -11,6 +11,7 @@ import {
 import Layout from "./components/commons/Layout";
 import InputCardPage from "./routes/InputCardPage";
 import PaymentMethodSelectionPage from "./routes/PaymentMethodPage";
+import { CheckoutRoutes } from "./routes/models/routeModel";
 import "./translations/i18n";
 
 export function App() {
@@ -30,13 +31,16 @@ export function App() {
         <Router>
           <Routes>
             <Route
-              path="onboard/scegli-metodo"
+              path={CheckoutRoutes.SCEGLI_METODO}
               element={<PaymentMethodSelectionPage />}
             />
-            <Route path="onboard/inserisci-carta" element={<InputCardPage />} />
+            <Route
+              path={CheckoutRoutes.INSERISCI_CARTA}
+              element={<InputCardPage />}
+            />
             <Route
               path="*"
-              element={<Navigate replace to="onboard/scegli-metodo" />}
+              element={<Navigate replace to={CheckoutRoutes.SCEGLI_METODO} />}
             />
           </Routes>
         </Router>
