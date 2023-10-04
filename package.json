@@ -10,7 +10,7 @@
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
     "clean": "rimraf .cache && rimraf dist && shx rm -rf src/generated/*  && shx rm -rf .parcel-cache && shx rm -rf node_modules",
-    "prebuild": "npm-run-all type-check lint",
+    "prebuild": "npm-run-all generate type-check lint",
     "build": "rimraf .cache && rimraf dist && parcel build src/index.html",
     "start": "parcel src/index.html",
     "dev": "parcel --log-level verbose src/index.html"
