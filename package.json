@@ -5,7 +5,9 @@
   "author": "PagoPA SpA",
   "license": "MIT",
   "scripts": {
-    "generate": "rimraf generated/definitions/webview-payment-wallet && shx mkdir -p generated/definitions/webview-payment-wallet && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/pagopa-infra/bbb481ca463b531dc21844ec18f49c4a7a41de4b/src/domains/wallet-app/api/webview-payment-wallet/v1/_openapi.json.tpl --no-strict --out-dir ./generated/definitions/webview-payment-wallet --request-types --response-decoders --client",
+    "generate": "npm-run-all generate:*",
+    "generate:webview-payment-wallet-api": "rimraf generated/definitions/webview-payment-wallet && shx mkdir -p generated/definitions/webview-payment-wallet && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/pagopa-infra/bbb481ca463b531dc21844ec18f49c4a7a41de4b/src/domains/wallet-app/api/webview-payment-wallet/v1/_openapi.json.tpl --no-strict --out-dir ./generated/definitions/webview-payment-wallet --request-types --response-decoders --client",
+    "generate:payment-manager-api-v1": "rimraf generated/definitions/payment-manager-v1 && shx mkdir -p generated/definitions/payment-manager-v1 && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/pagopa-infra/main/src/core/api/payment_manager_api/restapi-cd/v1/_swagger.json.tpl --no-strict --out-dir ./generated/definitions/payment-manager-v1 --request-types --response-decoders --client",
     "type-check": "tsc",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",

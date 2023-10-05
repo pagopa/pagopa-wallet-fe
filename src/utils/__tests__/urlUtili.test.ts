@@ -1,4 +1,6 @@
-import { getFragmentParameter } from "../../utils/urlUtilities";
+import urlUtils from "../../utils/urlUtilities";
+
+const { getFragmentParameter } = urlUtils;
 
 describe("getFragmentParameter function utility", () => {
   it("Should return the param value correctly", () => {
