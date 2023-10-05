@@ -41,7 +41,7 @@ export interface InputCardFormErrors {
 
 export enum SecureCodeDigits {
   cvv = 3,
-  cid = 4,
+  cid = 4
 }
 
 export const SecureCodeLabels: {
@@ -49,10 +49,10 @@ export const SecureCodeLabels: {
 } = {
   3: {
     label: "inputCardPage.formFields.cvv",
-    error: "inputCardPage.formErrors.cvv",
+    error: "inputCardPage.formErrors.cvv"
   },
   4: {
     label: "inputCardPage.formFields.cid",
-    error: "inputCardPage.formErrors.cid",
-  },
+    error: "inputCardPage.formErrors.cid"
+  }
 };

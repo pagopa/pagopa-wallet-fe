@@ -5,11 +5,12 @@
   "author": "PagoPA SpA",
   "license": "MIT",
   "scripts": {
+    "generate": "rimraf generated/definitions/webview-payment-wallet && shx mkdir -p generated/definitions/webview-payment-wallet && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/pagopa-infra/bbb481ca463b531dc21844ec18f49c4a7a41de4b/src/domains/wallet-app/api/webview-payment-wallet/v1/_openapi.json.tpl --no-strict --out-dir ./generated/definitions/webview-payment-wallet --request-types --response-decoders --client",
     "type-check": "tsc",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
     "clean": "rimraf .cache && rimraf dist && shx rm -rf src/generated/*  && shx rm -rf .parcel-cache && shx rm -rf node_modules",
-    "prebuild": "npm-run-all type-check lint",
+    "prebuild": "npm-run-all generate type-check lint",
     "build": "rimraf .cache && rimraf dist && parcel build src/index.html",
     "start": "parcel src/index.html",
     "dev": "parcel --log-level verbose src/index.html"
@@ -56,6 +57,7 @@
     "@mui/system": "^5.13.2",
     "@pagopa/mui-italia": "0.6.10",
     "@pagopa/openapi-codegen-ts": "12.1.2",
+    "@types/jest": "^29.5.5",
     "card-validator": "^8.1.1",
     "dotenv": "^16.0.3",
     "formik": "^2.4.2",
@@ -66,6 +68,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^11.17.2",
     "react-router-dom": "^6.6.1",
+    "rimraf": "^5.0.5",
     "ts-node": "^10.9.1"
   }
 }

@@ -71,12 +71,12 @@ export default function FormButtons(props: {
             aria-label={
               props.loadingCancel
                 ? t("ariaLabels.loading")
-                : t(props.cancelTitle)
+                : t(props.cancelTitle || "")
             }
             id={props.idCancel}
             aria-hidden={props.loadingSubmit}
           >
-            {props.loadingCancel ? "" : t(props.cancelTitle)}
+            {props.loadingCancel ? "" : t(props.cancelTitle || "")}
           </LoadingButton>
         </Grid>
       </Grid>
