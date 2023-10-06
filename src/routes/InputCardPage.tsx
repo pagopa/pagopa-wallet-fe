@@ -11,15 +11,16 @@ import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet"
 
 export default function InputCardPage() {
   const [loading, setLoading] = React.useState(false);
+  const [data, setData] = React.useState<any>();
 
-  const onError = () => null;
+  const onError = (e: Error) => console.error(e.message);
 
   const onSubmit = async (inputCardData: InputCardFormFields) => {
     try {
       setLoading(true);
       const Bearer = utils.storage.load(SessionItems.sessionToken);
       if (!Bearer) {
-        return onError();
+        throw new Error("Bearer token can't be empty");
       }
       const wallet: WalletRequest = {
         data: {
@@ -33,9 +34,12 @@ export default function InputCardPage() {
           type: TypeEnum.CREDIT_CARD
         }
       };
-      return await utils.api.addWallet(Bearer, wallet);
-    } catch {
-      onError();
+      const data = await utils.api.addWallet(Bearer, wallet);
+      if (data && data.status === 200) {
+        setData(data);
+      }
+    } catch (e) {
+      onError(e as Error);
     }
   };
 
@@ -43,6 +47,7 @@ export default function InputCardPage() {
     <PageContainer title="inputCardPage.title">
       <Box sx={{ mt: 4 }}>
         <InputCardForm onSubmit={onSubmit} loading={loading} />
+        {JSON.stringify(data || {})}
       </Box>
     </PageContainer>
   );
