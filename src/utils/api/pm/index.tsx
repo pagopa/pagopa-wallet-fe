@@ -13,9 +13,9 @@ const paymentManagerClient = createPaymentManagerClient({
   fetchApi: fetch
 });
 
-const addWallet = async (Bearer: string, walletRequest: WalletRequest) => {
+const addWallet = async (bearer: string, walletRequest: WalletRequest) => {
   await paymentManagerClient.addWalletCreditCardUsingPOST({
-    Bearer,
+    Bearer: "Bearer " + bearer,
     walletRequest
   });
 };
