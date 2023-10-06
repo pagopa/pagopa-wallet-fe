@@ -14,7 +14,13 @@ export default function InputCardPage() {
   const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState<Omit<VerifyProps, "sessionToken">>();
 
-  const sessionToken = utils.storage.load(SessionItems.sessionToken);
+  // maybe it's not necessary to store the session Token in session storage
+  // because the selection method phase will be in the context of the IO app
+  const sessionToken =
+    utils.url.getFragmentParameter(
+      window.location.href,
+      SessionItems.sessionToken
+    ) || utils.storage.load(SessionItems.sessionToken);
 
   const onError = (e: Error) => console.error(e.message);
 
