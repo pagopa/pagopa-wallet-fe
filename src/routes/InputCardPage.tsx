@@ -8,18 +8,20 @@ import utils from "../utils";
 import { SessionItems } from "../utils/storage";
 import { WalletRequest } from "../../generated/definitions/payment-manager-v1/WalletRequest";
 import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet";
+import Verify, { Props as VerifyProps } from "../components/Verify";
 
 export default function InputCardPage() {
   const [loading, setLoading] = React.useState(false);
-  const [data, setData] = React.useState<any>();
+  const [data, setData] = React.useState<Omit<VerifyProps, "sessionToken">>();
+
+  const sessionToken = utils.storage.load(SessionItems.sessionToken);
 
   const onError = (e: Error) => console.error(e.message);
 
   const onSubmit = async (inputCardData: InputCardFormFields) => {
     try {
       setLoading(true);
-      const Bearer = utils.storage.load(SessionItems.sessionToken);
-      if (!Bearer) {
+      if (!sessionToken) {
         throw new Error("Bearer token can't be empty");
       }
       const wallet: WalletRequest = {
@@ -34,9 +36,20 @@ export default function InputCardPage() {
           type: TypeEnum.CREDIT_CARD
         }
       };
-      const data = await utils.api.addWallet(Bearer, wallet);
-      if (data && data.status === 200) {
-        setData(data);
+
+      const resp = await utils.api.addWallet(sessionToken, wallet);
+
+      if (resp) {
+        const { status } = resp;
+        const idWallet = resp.value?.data?.idWallet;
+        const { cvv } = inputCardData;
+
+        if (status === 200 && idWallet) {
+          setData({
+            idWallet,
+            cvv: Number(cvv)
+          });
+        }
       }
     } catch (e) {
       onError(e as Error);
@@ -47,7 +60,13 @@ export default function InputCardPage() {
     <PageContainer title="inputCardPage.title">
       <Box sx={{ mt: 4 }}>
         <InputCardForm onSubmit={onSubmit} loading={loading} />
-        {JSON.stringify(data || {})}
+        {data && sessionToken && (
+          <Verify
+            cvv={data.cvv}
+            idWallet={data.idWallet}
+            sessionToken={sessionToken}
+          />
+        )}
       </Box>
     </PageContainer>
   );
