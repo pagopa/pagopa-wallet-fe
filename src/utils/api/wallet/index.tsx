@@ -10,6 +10,7 @@ import {
   TransactionMethods
 } from "../../../routes/models/paymentMethodRoutes";
 import env from "../../env";
+import config from "../config";
 
 const { NODE_ENV, API_HOST = "", API_WALLET_BASEPATH } = env;
 
@@ -19,7 +20,7 @@ const { NODE_ENV, API_HOST = "", API_WALLET_BASEPATH } = env;
 const apiWalletClient = createWalletClient({
   baseUrl: NODE_ENV === "development" ? "" : API_HOST,
   basePath: API_WALLET_BASEPATH,
-  fetchApi: fetch
+  fetchApi: config.fetchWithTimeout
 });
 
 const getAllPaymentMethods = async (
