@@ -71,7 +71,7 @@ stages:
           - template: azure-templates/setup-env.yml
             parameters:
               api_payment_methods_basepath: '/payment-methods/checkout/v1'
-              pagopa_assets_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
+              pagopa_wallet_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
               pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
 
           - script: |
@@ -203,7 +203,7 @@ stages:
             parameters:
               env: 'UAT'
               api_payment_methods_basepath: '/payment-methods/checkout/v1'
-              pagopa_assets_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
+              pagopa_wallet_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
               pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi/'
 
           - script: |
@@ -309,7 +309,7 @@ stages:
             parameters:
               env: 'PROD'
               api_payment_methods_basepath: '/payment-methods/checkout/v1'
-              pagopa_assets_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
+              pagopa_wallet_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
               pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi/'
 
           - script: |
