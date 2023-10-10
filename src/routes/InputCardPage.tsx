@@ -22,6 +22,7 @@ export default function InputCardPage() {
       SessionItems.sessionToken
     ) || utils.storage.load(SessionItems.sessionToken);
 
+  // eslint-disable-next-line
   const onError = (e: Error) => console.error(e.message);
 
   const onSubmit = async (inputCardData: InputCardFormFields) => {
