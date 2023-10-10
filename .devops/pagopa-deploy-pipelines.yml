@@ -70,7 +70,6 @@ stages:
 
           - template: azure-templates/setup-env.yml
             parameters:
-              env: 'DEV'
               api_payment_methods_basepath: '/payment-methods/checkout/v1'
               pagopa_assets_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
               pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
