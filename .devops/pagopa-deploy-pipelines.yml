@@ -1,0 +1,359 @@
+# Azure DevOps pipeline to release a new version and deploy to production.
+
+parameters:
+  - name: 'DEV_DEPLOY'
+    displayName: 'Deploy on DEV environment'
+    type: boolean
+    default: True
+    values:
+      - False
+      - True
+  - name: 'UAT_PROD_DEPLOY'
+    displayName: 'Deploy on UAT then PROD environments'
+    type: boolean
+    default: False
+    values:
+      - False
+      - True
+  - name: 'RELEASE_SEMVER'
+    displayName: 'When packing a release, define the version bump to apply (release is done automatically when deploying on UAT and skipped on DEV) '
+    type: string
+    values:
+      - major
+      - minor
+      - patch
+    default: minor
+
+
+variables:
+  NODE_VERSION: 14.16.0
+  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+
+
+# Only manual activations are intended
+trigger: none
+pr: none
+
+# This pipeline has been implemented to be run on hosted agent pools based both
+# on 'windows' and 'ubuntu' virtual machine images and using the scripts defined
+# in the package.json file. Since we are deploying on Azure functions on Windows
+# runtime, the pipeline is currently configured to use a Windows hosted image for
+# the build and deploy.
+pool:
+  vmImage: 'ubuntu-latest'
+
+resources:
+  repositories:
+    - repository: pagopaCommons
+      type: github
+      name: pagopa/azure-pipeline-templates
+      ref: refs/tags/v19
+      endpoint: 'io-azure-devops-github-ro'
+
+stages:
+  - stage: Prepare_artifact_dev
+    condition: and(succeeded(), eq(${{parameters.DEV_DEPLOY}}, true))
+    dependsOn: []
+    jobs:
+      - job: make_build
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - template: templates/node-job-setup/template.yaml@pagopaCommons
+            parameters:
+              # On the assumption that this stage is executed only when Relase stage is,
+              #  with this parameter we set the reference the deploy script must pull changes from.
+              # The branch/tag name is calculated from the source branch
+              #  ex: Build.SourceBranch=refs/heads/release/pagopa-porting --> release/pagopa-porting
+              #  ex: Build.SourceBranch=refs/tags/v1.2.3-RELEASE --> v1.2.3-RELEASE
+              gitReference: ${{ replace(replace(variables['Build.SourceBranch'], 'refs/tags/', ''), 'refs/heads/', '') }}
+
+          - template: azure-templates/setup-env.yml
+            parameters:
+              api_payment_methods_basepath: '/payment-methods/checkout/v1'
+              pagopa_wallet_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
+              pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
+
+          - script: |
+              yarn build
+            displayName: 'Build'
+
+          - publish: $(System.DefaultWorkingDirectory)/dist
+            artifact: Bundle_DEV
+
+  - stage: Deploy_DEV_pagoPA
+    dependsOn:
+      - Prepare_artifact_dev
+    jobs:
+      - job: 'deploy'
+        steps:
+          - checkout: none
+
+          - download: current
+            artifact: Bundle_DEV
+
+          - task: AzureCLI@1
+            displayName: 'Sync wallet storage on DEV'
+            inputs:
+              azureSubscription: 'DEV-PAGOPA-SERVICE-CONN'
+              scriptLocation: inlineScript
+              inlineScript: |
+                call az storage blob sync --container $web --account-name pagopadwalletsa -s "$(Pipeline.Workspace)\Bundle_DEV" --exclude-path pagopa-wallet-fe
+
+          - task: AzureCLI@1
+            displayName: 'Purge CDN endpoint on DEV'
+            inputs:
+              azureSubscription: 'DEV-PAGOPA-SERVICE-CONN'
+              scriptLocation: inlineScript
+              inlineScript: |
+                call az cdn endpoint purge -g pagopa-wallet-rg -n pagopa-wallet-cdn-endpoint --profile-name pagopa-d-wallet-cdn-profile --content-paths "/*"
+   
+  #- stage: End_to_End_Tests_DEV
+  #  dependsOn:
+  #    - Deploy_DEV_pagoPA
+  #  pool:
+  #    vmImage: 'ubuntu-latest'
+  #  jobs:
+  #    - job: end_to_end_tests_dev
+  #      steps:
+  #        - checkout: checkoutTests
+   #       - script : |
+   #          echo "##[debug] Change placeholder for CHECKOUT_URL ..."
+   #          cd e2e-tests 
+   #          mv dev.env .env
+   #       - script: |
+   #          docker build -t ui_test e2e-tests
+   #         displayName: 'Build test image'
+   #
+   #       - script: |
+   #           docker run --name=ui_test ui_test
+   #         displayName: 'Run UI test container'
+   #         continueOnError: true 
+   #
+   #       - script: |
+   #           docker cp ui_test:/puppeteer/test_reports  test_reports
+   #         displayName: 'Copy test result'
+   #         continueOnError: true 
+   #
+   #       - task: PublishTestResults@2
+   #         inputs:
+   #           testResultsFormat: 'JUnit'
+   #           testResultsFiles: '**/*-TEST.xml' 
+   #           searchFolder: '$(System.DefaultWorkingDirectory)'
+
+  # Create a relase
+  # Activated when ONE OF these are met:
+  # - is on branch main
+  # - is a tag in the form v{version}-RELEASE
+
+  - stage: Release
+    dependsOn: []
+    condition:
+      and(
+        succeeded(),
+        eq(${{parameters.UAT_PROD_DEPLOY}}, true),
+        or(
+          eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+          and(
+            startsWith(variables['Build.SourceBranch'], 'refs/tags'),
+            endsWith(variables['Build.SourceBranch'], '-RELEASE')
+          )
+        )
+      )
+    pool:
+      vmImage: 'ubuntu-latest'
+    jobs:
+      - job: make_release
+        steps:
+        - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+          - template: templates/node-job-setup/template.yaml@pagopaCommons
+            parameters:
+              persistCredentials: true
+          - template: templates/node-github-release/template.yaml@pagopaCommons
+            parameters:
+              semver: '${{ parameters.RELEASE_SEMVER }}'
+              gitEmail: $(GIT_EMAIL)
+              gitUsername: $(GIT_USERNAME)
+              gitHubConnection: $(GITHUB_CONNECTION)
+              release_branch: main
+
+        - ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+          - script: |
+              echo "We assume this reference to be a valid release: $(Build.SourceBranch). Therefore, there is no need to bundle a new release."
+            displayName: 'Skip release bundle'
+  # Prepare Artifact
+  - stage: Prepare_artifact_uat
+    dependsOn:
+      - Release
+    jobs:
+      - job: make_build
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - template: templates/node-job-setup/template.yaml@pagopaCommons
+            parameters:
+              # On the assumption that this stage is executed only when Relase stage is,
+              #  with this parameter we set the reference the deploy script must pull changes from.
+              # The branch/tag name is calculated from the source branch
+              #  ex: Build.SourceBranch=refs/heads/main --> main
+              #  ex: Build.SourceBranch=refs/tags/v1.2.3-RELEASE --> v1.2.3-RELEASE
+              gitReference: ${{ replace(replace(variables['Build.SourceBranch'], 'refs/tags/', ''), 'refs/heads/', '') }}
+
+          - template: azure-templates/setup-env.yml
+            parameters:
+              api_payment_methods_basepath: '/payment-methods/checkout/v1'
+              pagopa_wallet_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
+              pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi/'
+
+          - script: |
+              yarn build
+            displayName: 'Build'
+
+          - publish: $(System.DefaultWorkingDirectory)/dist
+            artifact: Bundle_UAT
+
+  - stage: UAT_Deploy_approval
+    dependsOn:
+      - Prepare_artifact_uat
+    jobs:
+      - job: Deploy_UAT_WaitForApproval
+        displayName: Wait for UAT approval
+        pool: server
+        timeoutInMinutes: 4320 # 3 days
+        steps:
+        - task: ManualValidation@0
+          timeoutInMinutes: 4320 # 3 days
+          inputs:
+            onTimeout: 'skip'
+
+  - stage: Deploy_UAT_pagoPA
+    dependsOn:
+      - UAT_Deploy_approval
+    jobs:
+      - job: 'deploy'
+        steps:
+          - checkout: none
+
+          - download: current
+            artifact: Bundle_UAT
+
+          - task: AzureCLI@1
+            displayName: 'Sync wallet storage on UAT'
+            inputs:
+              azureSubscription: 'UAT-PAGOPA-SERVICE-CONN'
+              scriptLocation: inlineScript
+              inlineScript: |
+                call az storage blob sync --container $web --account-name pagopauwalletsa -s "$(Pipeline.Workspace)\Bundle_UAT" --exclude-path payment-transactions-gateway
+
+          - task: AzureCLI@1
+            displayName: 'Purge CDN endpoint on UAT'
+            inputs:
+              azureSubscription: 'UAT-PAGOPA-SERVICE-CONN'
+              scriptLocation: inlineScript
+              inlineScript: |
+                call az cdn endpoint purge -g pagopa-u-wallet-rg -n pagopa-u-wallet-cdn-endpoint --profile-name pagopa-u-wallet-cdn-profile --content-paths "/*"
+ 
+  #- stage: End_to_End_Tests_UAT
+  #  dependsOn:
+  #    - Deploy_UAT_pagoPA
+  #  pool:
+  #    vmImage: 'ubuntu-latest'
+  #  jobs:
+  #    - job: end_to_end_tests_uat
+  #      steps:
+  #        - checkout: checkoutTests
+  #        - script : |
+  #           echo "##[debug] Change placeholder for CHECKOUT_URL ..."
+  #           cd e2e-tests 
+  #           mv uat.env .env
+  #        - script: |
+  #           docker build -t ui_test e2e-tests
+  #          displayName: 'Build test image'
+  #
+  #        - script: |
+  #            docker run --name=ui_test ui_test
+  #          displayName: 'Run UI test container'
+  #          continueOnError: true 
+  #
+  #        - script: |
+  #            docker cp ui_test:/puppeteer/test_reports  test_reports
+  #          displayName: 'Copy test result'
+  #          continueOnError: true 
+  #
+  #        - task: PublishTestResults@2
+  #          inputs:
+  #            testResultsFormat: 'JUnit'
+  #            testResultsFiles: '**/*-TEST.xml' 
+  #            searchFolder: '$(System.DefaultWorkingDirectory)'
+
+    # Prepare Artifact
+  - stage: Prepare_artifact_prod
+    dependsOn:
+      - Deploy_UAT_pagoPA
+    jobs:
+      - job: make_build
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - template: templates/node-job-setup/template.yaml@pagopaCommons
+            parameters:
+              # On the assumption that this stage is executed only when Relase stage is,
+              #  with this parameter we set the reference the deploy script must pull changes from.
+              # The branch/tag name is calculated from the source branch
+              #  ex: Build.SourceBranch=refs/heads/main --> main
+              #  ex: Build.SourceBranch=refs/tags/v1.2.3-RELEASE --> v1.2.3-RELEASE
+              gitReference: ${{ replace(replace(variables['Build.SourceBranch'], 'refs/tags/', ''), 'refs/heads/', '') }}
+
+          - template: azure-templates/setup-env.yml
+            parameters:
+              api_payment_methods_basepath: '/payment-methods/checkout/v1'
+              pagopa_wallet_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
+              pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi/'
+
+          - script: |
+              yarn build
+            displayName: 'Build'
+
+          - publish: $(System.DefaultWorkingDirectory)/dist
+            artifact: Bundle
+
+  - stage: UAT_to_PROD_promotion
+    dependsOn:
+      - Prepare_artifact_prod
+    jobs:
+      - job: Deploy_Prod_WaitForApproval
+        displayName: Wait for PROD approval
+        pool: server
+        timeoutInMinutes: 4320 # 3 days
+        steps:
+        - task: ManualValidation@0
+          timeoutInMinutes: 4320 # 3 days
+          inputs:
+            onTimeout: 'skip'
+
+  - stage: Deploy_PROD_pagoPA
+    dependsOn:
+      - UAT_to_PROD_promotion
+    jobs:
+      - job: 'deploy'
+        steps:
+          - checkout: none
+
+          - download: current
+            artifact: Bundle
+
+          - task: AzureCLI@1
+            displayName: 'Sync wallet storage on PROD'
+            inputs:
+              azureSubscription: 'PROD-PAGOPA-SERVICE-CONN'
+              scriptLocation: inlineScript
+              inlineScript: |
+                call az storage blob sync --container $web --account-name pagopapwalletsa -s "$(Pipeline.Workspace)\Bundle" --exclude-path payment-transactions-gateway
+
+          - task: AzureCLI@1
+            displayName: 'Purge CDN endpoint on PROD'
+            inputs:
+              azureSubscription: 'PROD-PAGOPA-SERVICE-CONN'
+              scriptLocation: inlineScript
+              inlineScript: |
+                call az cdn endpoint purge -g pagopa-p-wallet-rg -n pagopa-p-wallet-cdn-endpoint --profile-name pagopa-p-wallet-cdn-profile --content-paths "/*"
