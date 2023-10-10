@@ -48,7 +48,6 @@ stages:
 
         - template: azure-templates/setup-env.yml
           parameters:
-            env: 'DEV'
             api_payment_methods_basepath: '/payment-methods/checkout/v1'
             pagopa_wallet_cdn: $WALLET_PAGOPA_ASSETS_CDN
             pagopa_logos_cdn:  $WALLET_PAGOPA_LOGOS_CDN
