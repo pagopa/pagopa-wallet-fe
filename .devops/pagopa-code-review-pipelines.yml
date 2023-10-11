@@ -7,7 +7,7 @@
 # 
 
 variables:
-  NODE_VERSION: '14.16.0'
+  NODE_VERSION: '18.18.1'
   YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
 
 # Automatically triggered on PR
