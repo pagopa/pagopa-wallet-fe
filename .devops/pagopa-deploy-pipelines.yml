@@ -52,6 +52,7 @@ resources:
 
 stages:
   - stage: Prepare_artifact_dev
+    name: Build artifact for DEV
     condition: and(succeeded(), eq(${{parameters.DEV_DEPLOY}}, true))
     dependsOn: []
     jobs:
@@ -82,6 +83,7 @@ stages:
             artifact: Bundle_DEV
 
   - stage: Deploy_DEV_pagoPA
+    name: Deploy on https://dev.payment-wallet-pagopa.it (DEV)
     dependsOn:
       - Prepare_artifact_dev
     jobs:
