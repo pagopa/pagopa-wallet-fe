@@ -26,7 +26,7 @@ parameters:
 
 
 variables:
-  NODE_VERSION: 14.16.0
+  NODE_VERSION: '18.18.1'
   YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
 
 
@@ -52,6 +52,7 @@ resources:
 
 stages:
   - stage: Prepare_artifact_dev
+    displayName: Build artifact for DEV
     condition: and(succeeded(), eq(${{parameters.DEV_DEPLOY}}, true))
     dependsOn: []
     jobs:
@@ -82,32 +83,37 @@ stages:
             artifact: Bundle_DEV
 
   - stage: Deploy_DEV_pagoPA
+    displayName: Deploy on DEV (https://dev.payment-wallet-pagopa.it)
     dependsOn:
       - Prepare_artifact_dev
     jobs:
       - job: 'deploy'
+        pool:
+          vmImage: 'ubuntu-latest'
         steps:
           - checkout: none
 
           - download: current
             artifact: Bundle_DEV
 
-          - task: AzureCLI@1
+          - task: AzureCLI@2
             displayName: 'Sync wallet storage on DEV'
             inputs:
               azureSubscription: 'DEV-PAGOPA-SERVICE-CONN'
+              scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                call az storage blob sync --container $web --account-name pagopadwalletsa -s "$(Pipeline.Workspace)\Bundle_DEV" --exclude-path pagopa-wallet-fe
+                az storage blob sync --container '$web' --account-name pagopadweuwalletfesa -s '$(Pipeline.Workspace)/Bundle_DEV'
 
-          - task: AzureCLI@1
+          - task: AzureCLI@2
             displayName: 'Purge CDN endpoint on DEV'
             inputs:
               azureSubscription: 'DEV-PAGOPA-SERVICE-CONN'
+              scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                call az cdn endpoint purge -g pagopa-wallet-rg -n pagopa-wallet-cdn-endpoint --profile-name pagopa-d-wallet-cdn-profile --content-paths "/*"
-   
+                az cdn endpoint purge -g pagopa-d-weu-wallet-fe-rg -n pagopa-d-weu-wallet-fe-cdn-endpoint --profile-name pagopa-d-weu-wallet-fe-cdn-profile --content-paths "/*"
+
   #- stage: End_to_End_Tests_DEV
   #  dependsOn:
   #    - Deploy_DEV_pagoPA
@@ -237,21 +243,23 @@ stages:
           - download: current
             artifact: Bundle_UAT
 
-          - task: AzureCLI@1
+          - task: AzureCLI@2
             displayName: 'Sync wallet storage on UAT'
             inputs:
               azureSubscription: 'UAT-PAGOPA-SERVICE-CONN'
+              scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                call az storage blob sync --container $web --account-name pagopauwalletsa -s "$(Pipeline.Workspace)\Bundle_UAT" --exclude-path payment-transactions-gateway
+                az storage blob sync --container '$web' --account-name pagopauweuwalletfesa -s '$(Pipeline.Workspace)/Bundle_UAT'
 
-          - task: AzureCLI@1
+          - task: AzureCLI@2
             displayName: 'Purge CDN endpoint on UAT'
             inputs:
               azureSubscription: 'UAT-PAGOPA-SERVICE-CONN'
+              scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                call az cdn endpoint purge -g pagopa-u-wallet-rg -n pagopa-u-wallet-cdn-endpoint --profile-name pagopa-u-wallet-cdn-profile --content-paths "/*"
+                az cdn endpoint purge -g pagopa-u-weu-wallet-fe-rg -n pagopa-u-weu-wallet-fe-cdn-endpoint --profile-name pagopa-u-weu-wallet-fe-cdn-profile --content-paths "/*"
  
   #- stage: End_to_End_Tests_UAT
   #  dependsOn:
@@ -287,73 +295,73 @@ stages:
   #            searchFolder: '$(System.DefaultWorkingDirectory)'
 
     # Prepare Artifact
-  - stage: Prepare_artifact_prod
-    dependsOn:
-      - Deploy_UAT_pagoPA
-    jobs:
-      - job: make_build
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - template: templates/node-job-setup/template.yaml@pagopaCommons
-            parameters:
-              # On the assumption that this stage is executed only when Relase stage is,
-              #  with this parameter we set the reference the deploy script must pull changes from.
-              # The branch/tag name is calculated from the source branch
-              #  ex: Build.SourceBranch=refs/heads/main --> main
-              #  ex: Build.SourceBranch=refs/tags/v1.2.3-RELEASE --> v1.2.3-RELEASE
-              gitReference: ${{ replace(replace(variables['Build.SourceBranch'], 'refs/tags/', ''), 'refs/heads/', '') }}
+  # - stage: Prepare_artifact_prod
+  #   dependsOn:
+  #     - Deploy_UAT_pagoPA
+  #   jobs:
+  #     - job: make_build
+  #       pool:
+  #         vmImage: 'ubuntu-latest'
+  #       steps:
+  #         - template: templates/node-job-setup/template.yaml@pagopaCommons
+  #           parameters:
+  #             # On the assumption that this stage is executed only when Relase stage is,
+  #             #  with this parameter we set the reference the deploy script must pull changes from.
+  #             # The branch/tag name is calculated from the source branch
+  #             #  ex: Build.SourceBranch=refs/heads/main --> main
+  #             #  ex: Build.SourceBranch=refs/tags/v1.2.3-RELEASE --> v1.2.3-RELEASE
+  #             gitReference: ${{ replace(replace(variables['Build.SourceBranch'], 'refs/tags/', ''), 'refs/heads/', '') }}
 
-          - template: azure-templates/setup-env.yml
-            parameters:
-              api_payment_methods_basepath: '/payment-methods/checkout/v1'
-              pagopa_wallet_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
-              pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi/'
+  #         - template: azure-templates/setup-env.yml
+  #           parameters:
+  #             api_payment_methods_basepath: '/payment-methods/checkout/v1'
+  #             pagopa_wallet_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
+  #             pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi/'
 
-          - script: |
-              yarn build
-            displayName: 'Build'
+  #         - script: |
+  #             yarn build
+  #           displayName: 'Build'
 
-          - publish: $(System.DefaultWorkingDirectory)/dist
-            artifact: Bundle
+  #         - publish: $(System.DefaultWorkingDirectory)/dist
+  #           artifact: Bundle
 
-  - stage: UAT_to_PROD_promotion
-    dependsOn:
-      - Prepare_artifact_prod
-    jobs:
-      - job: Deploy_Prod_WaitForApproval
-        displayName: Wait for PROD approval
-        pool: server
-        timeoutInMinutes: 4320 # 3 days
-        steps:
-        - task: ManualValidation@0
-          timeoutInMinutes: 4320 # 3 days
-          inputs:
-            onTimeout: 'skip'
+  # - stage: UAT_to_PROD_promotion
+  #   dependsOn:
+  #     - Prepare_artifact_prod
+  #   jobs:
+  #     - job: Deploy_Prod_WaitForApproval
+  #       displayName: Wait for PROD approval
+  #       pool: server
+  #       timeoutInMinutes: 4320 # 3 days
+  #       steps:
+  #       - task: ManualValidation@0
+  #         timeoutInMinutes: 4320 # 3 days
+  #         inputs:
+  #           onTimeout: 'skip'
 
-  - stage: Deploy_PROD_pagoPA
-    dependsOn:
-      - UAT_to_PROD_promotion
-    jobs:
-      - job: 'deploy'
-        steps:
-          - checkout: none
+  # - stage: Deploy_PROD_pagoPA
+  #   dependsOn:
+  #     - UAT_to_PROD_promotion
+  #   jobs:
+  #     - job: 'deploy'
+  #       steps:
+  #         - checkout: none
 
-          - download: current
-            artifact: Bundle
+  #         - download: current
+  #           artifact: Bundle
 
-          - task: AzureCLI@1
-            displayName: 'Sync wallet storage on PROD'
-            inputs:
-              azureSubscription: 'PROD-PAGOPA-SERVICE-CONN'
-              scriptLocation: inlineScript
-              inlineScript: |
-                call az storage blob sync --container $web --account-name pagopapwalletsa -s "$(Pipeline.Workspace)\Bundle" --exclude-path payment-transactions-gateway
+  #         - task: AzureCLI@1
+  #           displayName: 'Sync wallet storage on PROD'
+  #           inputs:
+  #             azureSubscription: 'PROD-PAGOPA-SERVICE-CONN'
+  #             scriptLocation: inlineScript
+  #             inlineScript: |
+  #               call az storage blob sync --container $web --account-name pagopapwalletsa -s "$(Pipeline.Workspace)\Bundle" --exclude-path payment-transactions-gateway
 
-          - task: AzureCLI@1
-            displayName: 'Purge CDN endpoint on PROD'
-            inputs:
-              azureSubscription: 'PROD-PAGOPA-SERVICE-CONN'
-              scriptLocation: inlineScript
-              inlineScript: |
-                call az cdn endpoint purge -g pagopa-p-wallet-rg -n pagopa-p-wallet-cdn-endpoint --profile-name pagopa-p-wallet-cdn-profile --content-paths "/*"
+  #         - task: AzureCLI@1
+  #           displayName: 'Purge CDN endpoint on PROD'
+  #           inputs:
+  #             azureSubscription: 'PROD-PAGOPA-SERVICE-CONN'
+  #             scriptLocation: inlineScript
+  #             inlineScript: |
+  #               call az cdn endpoint purge -g pagopa-p-wallet-rg -n pagopa-p-wallet-cdn-endpoint --profile-name pagopa-p-wallet-cdn-profile --content-paths "/*"
