@@ -40,7 +40,7 @@ pr: none
 # runtime, the pipeline is currently configured to use a Windows hosted image for
 # the build and deploy.
 pool:
-  vmImage: 'windows-2022'
+  vmImage: 'ubuntu-latest'
 
 resources:
   repositories:
