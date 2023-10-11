@@ -1,6 +1,5 @@
 export enum CheckoutRoutes {
   ROOT = "",
-  SCEGLI_METODO = "onboard/scegli-metodo",
-  INSERISCI_CARTA = "onboard/inserisci-carta",
+  INSERISCI_CARTA = "onboarding",
   ERRORE = "errore"
 }

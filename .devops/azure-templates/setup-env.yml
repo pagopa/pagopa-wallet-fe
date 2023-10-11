@@ -12,6 +12,22 @@ parameters:
     type: string
     default: ''
 
+  - name: 'api_host'
+    type: string
+    default: ''
+
+  - name: 'api_wallet_basepath'
+    type: string
+    default: ''
+    
+  - name: 'api_pm_basepath'
+    type: string
+    default: ''
+
+  - name: 'api_timeout'
+    type: number
+    default: 10000
+
 steps:
 - bash: |
     chmod +x env.sh
@@ -19,6 +35,10 @@ steps:
       API_PAYMENT_METHODS_BASEPATH=${{ parameters.api_payment_methods_basepath }} \
       WALLET_PAGOPA_ASSETS_CDN=${{ parameters.pagopa_wallet_cdn }} \
       WALLET_PAGOPA_LOGOS_CDN=${{ parameters.pagopa_logos_cdn }} \
+      API_HOST=${{ parameters.api_host }} \
+      API_WALLET_BASEPATH=${{ parameters.api_wallet_basepath }} \
+      API_PM_BASEPATH=${{ parameters.api_pm_basepath }} \
+      API_TIMEOUT=${{ parameters.api_timeout }} \
       bash env.sh
 
   displayName: 'Populate environment file'

@@ -9,10 +9,10 @@
 require('dotenv').config()
 const {createProxyMiddleware} = require("http-proxy-middleware");
 
-const { API_HOST, API_BASEPATH } = process.env;
+const { API_HOST, API_WALLET_BASEPATH, API_PM_BASEPATH } = process.env;
 
 module.exports = function (app) {
-    app.use(createProxyMiddleware(API_BASEPATH, {
+    app.use(createProxyMiddleware([API_WALLET_BASEPATH, API_PM_BASEPATH], {
         target: API_HOST,
         changeOrigin: true
     }));
