@@ -96,7 +96,7 @@ stages:
             displayName: 'Sync wallet storage on DEV'
             inputs:
               azureSubscription: 'DEV-PAGOPA-SERVICE-CONN'
-              scriptType: ps
+              scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
                 az storage blob sync --container $web --account-name pagopadwalletsa -s "$(Pipeline.Workspace)\Bundle_DEV" --exclude-path pagopa-wallet-fe
