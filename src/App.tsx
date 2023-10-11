@@ -10,11 +10,8 @@ import {
 } from "react-router-dom";
 import Layout from "./components/commons/Layout";
 import InputCardPage from "./routes/InputCardPage";
-// import PaymentMethodSelectionPage from "./routes/PaymentMethodPage";
 import { CheckoutRoutes } from "./routes/models/routeModel";
 import "./translations/i18n";
-// import Guard from "./components/commons/Guard";
-// import { SessionItems } from "./utils/storage";
 import utils from "./utils";
 
 utils.app.init();
@@ -36,10 +33,6 @@ export function App() {
       <Layout>
         <Router>
           <Routes>
-            {/* <Route
-              path={CheckoutRoutes.SCEGLI_METODO}
-              element={<PaymentMethodSelectionPage />}
-            /> */}
             <Route
               path={CheckoutRoutes.INSERISCI_CARTA}
               element={<InputCardPage />}
