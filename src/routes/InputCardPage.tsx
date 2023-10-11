@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-// import cardValidator from "card-validator";
 import React from "react";
 import PageContainer from "../components/commons/PageContainer";
 import { InputCardFormFields } from "../features/onboard/models";
@@ -8,59 +7,54 @@ import utils from "../utils";
 import { SessionItems } from "../utils/storage";
 import { WalletRequest } from "../../generated/definitions/payment-manager-v1/WalletRequest";
 import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet";
-import Verify, { Props as VerifyProps } from "../components/Verify";
+import Verify from "../components/Verify";
+import { ErrorsType } from "../utils/errors/checkErrorsModel";
 
 export default function InputCardPage() {
   const [loading, setLoading] = React.useState(false);
-  const [data, setData] = React.useState<Omit<VerifyProps, "sessionToken">>();
+  const [data, setData] = React.useState<{ idWallet: number; cvv: number }>();
 
-  // maybe it's not necessary to store the session Token in session storage
-  // because the selection method phase will be in the context of the IO app
-  const sessionToken =
-    utils.url.getFragmentParameter(
-      window.location.href,
-      SessionItems.sessionToken
-    ) || utils.storage.load(SessionItems.sessionToken);
+  const sessionToken = utils.url.getFragmentParameter(
+    window.location.href,
+    SessionItems.sessionToken
+  );
 
   // eslint-disable-next-line
-  const onError = (e: Error) => console.error(e.message);
+  const onError = (errroMessage: ErrorsType) => console.error(errroMessage);
 
-  const onSubmit = async (inputCardData: InputCardFormFields) => {
-    try {
-      setLoading(true);
-      if (!sessionToken) {
-        throw new Error("Bearer token can't be empty");
-      }
-      const wallet: WalletRequest = {
-        data: {
-          creditCard: {
-            holder: inputCardData.name,
-            securityCode: inputCardData.cvv,
-            pan: inputCardData.number,
-            expireMonth: inputCardData.expirationDate.substring(0, 2),
-            expireYear: inputCardData.expirationDate.substring(3)
-          },
-          type: TypeEnum.CREDIT_CARD
-        }
-      };
+  const onSuccess = (cvv: number) => (idWallet: number) => {
+    setData({ idWallet, cvv });
+  };
 
-      const resp = await utils.api.addWallet(sessionToken, wallet);
-
-      if (resp) {
-        const { status } = resp;
-        const idWallet = resp.value?.data?.idWallet;
-        const { cvv } = inputCardData;
-
-        if (status === 200 && idWallet) {
-          setData({
-            idWallet,
-            cvv: Number(cvv)
-          });
-        }
-      }
-    } catch (e) {
-      onError(e as Error);
+  const onSubmit = (inputCardData: InputCardFormFields) => {
+    setLoading(true);
+    if (!sessionToken) {
+      return onError(ErrorsType.MISSING_SESSIONTOKEN);
     }
+    const {
+      cvv: securityCode,
+      name: holder,
+      number: pan,
+      expirationDate
+    } = inputCardData;
+    const wallet: WalletRequest = {
+      data: {
+        creditCard: {
+          holder,
+          securityCode,
+          pan,
+          expireMonth: expirationDate.substring(0, 2),
+          expireYear: expirationDate.substring(3)
+        },
+        type: TypeEnum.CREDIT_CARD
+      }
+    };
+    void utils.api.addWallet(
+      sessionToken,
+      wallet,
+      onSuccess(Number(securityCode)),
+      onError
+    );
   };
 
   return (
