@@ -26,7 +26,7 @@ parameters:
 
 
 variables:
-  NODE_VERSION: 14.16.0
+  NODE_VERSION: '18.18.1'
   YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
 
 
@@ -92,14 +92,15 @@ stages:
           - download: current
             artifact: Bundle_DEV
 
-          - task: AzureCLI@1
+          - task: AzureCLI@2
             displayName: 'Sync wallet storage on DEV'
             inputs:
               azureSubscription: 'DEV-PAGOPA-SERVICE-CONN'
+              scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
-                call az storage blob sync --container $web --account-name pagopadwalletsa -s "$(Pipeline.Workspace)\Bundle_DEV" --exclude-path pagopa-wallet-fe
-
+                az storage blob sync --container $web --account-name pagopadwalletsa -s "$(Pipeline.Workspace)\Bundle_DEV" --exclude-path pagopa-wallet-fe
+                
           - task: AzureCLI@1
             displayName: 'Purge CDN endpoint on DEV'
             inputs:
