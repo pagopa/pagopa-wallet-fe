@@ -96,9 +96,10 @@ stages:
             displayName: 'Sync wallet storage on DEV'
             inputs:
               azureSubscription: 'DEV-PAGOPA-SERVICE-CONN'
+              scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
-                call az storage blob sync --container $web --account-name pagopadwalletsa -s "$(Pipeline.Workspace)\Bundle_DEV" --exclude-path pagopa-wallet-fe
+                az storage blob sync --container $web --account-name pagopadwalletsa -s "$(Pipeline.Workspace)\Bundle_DEV" --exclude-path pagopa-wallet-fe
                 
           - task: AzureCLI@1
             displayName: 'Purge CDN endpoint on DEV'
