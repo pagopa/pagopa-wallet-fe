@@ -102,14 +102,16 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 az storage blob sync --container '$web' --account-name pagopadweuwalletfesa -s '$(Pipeline.Workspace)/Bundle_DEV'
-          - task: AzureCLI@1
+
+          - task: AzureCLI@2
             displayName: 'Purge CDN endpoint on DEV'
             inputs:
               azureSubscription: 'DEV-PAGOPA-SERVICE-CONN'
+              scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                call az cdn endpoint purge -g pagopa-wallet-rg -n pagopa-wallet-cdn-endpoint --profile-name pagopa-d-wallet-cdn-profile --content-paths "/*"
-   
+                az cdn endpoint purge -g pagopa-d-weu-wallet-fe-rg -n pagopa-d-weu-wallet-fe-cdn-endpoint --profile-name pagopa-d-weu-wallet-fe-cdn-profile --content-paths "/*"
+
   #- stage: End_to_End_Tests_DEV
   #  dependsOn:
   #    - Deploy_DEV_pagoPA
