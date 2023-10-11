@@ -99,7 +99,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az storage blob sync --container $web --account-name pagopadweuwalletfesa -s "$(Pipeline.Workspace)\Bundle_DEV"
+                az storage blob sync --container "$web" --account-name pagopadweuwalletfesa -s "$(Pipeline.Workspace)\Bundle_DEV"
           - task: AzureCLI@1
             displayName: 'Purge CDN endpoint on DEV'
             inputs:
