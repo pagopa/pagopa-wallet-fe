@@ -83,7 +83,7 @@ stages:
             artifact: Bundle_DEV
 
   - stage: Deploy_DEV_pagoPA
-    displayName: Deploy on https://dev.payment-wallet-pagopa.it (DEV)
+    displayName: Deploy on DEV (https://dev.payment-wallet-pagopa.it)
     dependsOn:
       - Prepare_artifact_dev
     jobs:
