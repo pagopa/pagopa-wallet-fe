@@ -23,14 +23,13 @@
     "test:coverage": "jest --coverage --passWithNoTests"
   },
   "devDependencies": {
-    "@parcel/transformer-pug": "^2.6.0",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
     "@typescript-eslint/eslint-plugin": "^4.8.2",
     "@typescript-eslint/parser": "^4.8.2",
     "api-spec-converter": "^2.12.0",
-    "buffer": "^6.0.3",
+    "buffer": "^5.5.0",
     "crypto-browserify": "^3.12.0",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^6.15.0",
