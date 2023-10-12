@@ -4,11 +4,13 @@ import * as TE from "fp-ts/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { createClient as createPaymentManagerClient } from "../../../../generated/definitions/payment-manager-v1/client";
 import { WalletRequest } from "../../../../generated/definitions/payment-manager-v1/WalletRequest";
-import env from "../../env";
 import config from "../config";
 import { ErrorsType } from "../../errors/checkErrorsModel";
+import { getConfigOrThrow } from "../../../config";
 
-const { NODE_ENV, API_HOST = "", API_PM_BASEPATH } = env;
+const NODE_ENV = getConfigOrThrow().WALLET_CONFIG_API_ENV;
+const API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
+const API_PM_BASEPATH = getConfigOrThrow().WALLET_CONFIG_API_PM_BASEPATH;
 
 /**
  * Api client for payment manager API

@@ -9,7 +9,9 @@
 require('dotenv').config()
 const {createProxyMiddleware} = require("http-proxy-middleware");
 
-const { API_HOST, API_WALLET_BASEPATH, API_PM_BASEPATH } = process.env;
+const API_HOST = process.env.WALLET_CONFIG_API_HOST;
+const API_WALLET_BASEPATH =  process.env.WALLET_CONFIG_API_HOST;
+const API_PM_BASEPATH =  process.env.WALLET_CONFIG_API_HOST;
 
 module.exports = function (app) {
     app.use(createProxyMiddleware([API_WALLET_BASEPATH, API_PM_BASEPATH], {
