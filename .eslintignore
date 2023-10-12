@@ -13,4 +13,4 @@ jest.integration.config.js
 jest-puppeteer.config.js
 src/__inegration_tests__/*
 
-env-config.js
+src/env-config.js
