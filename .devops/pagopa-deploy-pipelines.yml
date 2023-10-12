@@ -71,9 +71,10 @@ stages:
 
           - template: azure-templates/setup-env.yml
             parameters:
-              api_payment_methods_basepath: '/payment-methods/checkout/v1'
-              pagopa_wallet_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
-              pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
+              api_host: 'https://api.dev.platform.pagopa.it'
+              api_wallet_basepath: '/webview-payment-wallet/v1'
+              api_pm_basepath: '/pp-restapi-CD'
+              api_timeout:  10000
 
           - script: |
               yarn build
@@ -83,7 +84,7 @@ stages:
             artifact: Bundle_DEV
 
   - stage: Deploy_DEV_pagoPA
-    displayName: Deploy on DEV (https://dev.payment-wallet-pagopa.it)
+    displayName: Deploy on DEV (https://dev.payment-wallet.pagopa.it)
     dependsOn:
       - Prepare_artifact_dev
     jobs:
@@ -207,9 +208,10 @@ stages:
 
           - template: azure-templates/setup-env.yml
             parameters:
-              api_payment_methods_basepath: '/payment-methods/checkout/v1'
-              pagopa_wallet_cdn: 'https://assets.cdn.platform.pagopa.it/payment-methods'
-              pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi/'
+              api_host: 'https://api.uat.platform.pagopa.it'
+              api_wallet_basepath: '/webview-payment-wallet/v1'
+              api_pm_basepath: '/pp-restapi-CD'
+              api_timeout:  10000
 
           - script: |
               yarn build
