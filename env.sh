@@ -1,15 +1,10 @@
 #!/usr/bin/env bash
 
-# Recreate config file and assignment
-echo "window._env_ = {" > ./src/env-config.js
+# Recreate the .env file used by parcel when building
+# Loop on environment variables prefixed with _API and add them to .env
+for wallet_fe_var in $(env | grep -i API_); do
+    varname=$(printf '%s\n' "$wallet_fe_var" | sed -e 's/=.*//')
+    varvalue=$(printf '%s\n' "$wallet_fe_var" | sed -e 's/^[^=]*=//')
 
-# Loop on environment variables prefixed with
-# checkout_var and add them to env-config.js
-for checkout_var in $(env | grep -Ei '(checkout_|wallet_|api_)'); do
-    varname=$(printf '%s\n' "$checkout_var" | sed -e 's/=.*//')
-    varvalue=$(printf '%s\n' "$checkout_var" | sed -e 's/^[^=]*=//')
-
-    echo "  $varname: \"$varvalue\"," >> ./src/env-config.js
+    echo $varname=$varvalue >> .env
 done
-
-echo "}" >> ./src/env-config.js
