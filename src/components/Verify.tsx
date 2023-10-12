@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import env from "../utils/env";
+import { getConfigOrThrow } from "../config";
 
-const url = env.API_HOST + "/pp-restapi-CD/v3/webview/transactions/cc/verify";
+const url =
+  getConfigOrThrow().WALLET_CONFIG_API_HOST +
+  "/pp-restapi-CD/v3/webview/transactions/cc/verify";
 
 export interface Props {
   idWallet: number;
