@@ -1,5 +1,5 @@
 /* eslint-disable functional/immutable-data */
-import { TextField, inputLabelClasses } from "@mui/material";
+import { TextField } from "@mui/material";
 import { SxProps } from "@mui/system";
 import React, { FocusEventHandler, FormEventHandler } from "react";
 import { useTranslation } from "react-i18next";
@@ -36,6 +36,7 @@ interface TextFormFieldProps {
 
 function TextFormField(props: TextFormFieldProps) {
   const { t } = useTranslation();
+
   return (
     <TextField
       fullWidth={props.fullWidth}
@@ -50,17 +51,6 @@ function TextFormField(props: TextFormFieldProps) {
       autoComplete={props.autoComplete}
       style={props.style}
       sx={props.sx}
-      InputLabelProps={{
-        shrink: Boolean(props.value),
-        sx: {
-          marginLeft: 6,
-          fontSize: 16,
-          fontWeight: 400,
-          [`&.${inputLabelClasses.shrink}`]: {
-            transform: "translate(12px, 4px) scale(0.75)"
-          }
-        }
-      }}
       InputProps={{
         name: props.id,
         type: props.type,
@@ -69,17 +59,7 @@ function TextFormField(props: TextFormFieldProps) {
         endAdornment: props.endAdornment,
         startAdornment: props.startAdornment,
         value: props.value,
-        readOnly: props.readOnly,
-        sx: {
-          input: {
-            fontSize: "16px",
-            paddingBottom: "10px",
-            paddingTop: "20px"
-          },
-          legend: {
-            width: 0
-          }
-        }
+        readOnly: props.readOnly
       }}
       inputProps={{
         inputMode: props.inputMode
