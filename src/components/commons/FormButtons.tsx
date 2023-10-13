@@ -67,7 +67,7 @@ export function FormButtons(props: SubmitButton | CancellableButtons) {
             {props.loadingSubmit ? "" : t(props.submitTitle)}
           </LoadingButton>
         </Grid>
-        {props?.disabledCancel || (
+        {!props?.disabledCancel && (
           <Grid xs={4} style={useSmallDevice ? { paddingTop: 0 } : {}} item>
             <LoadingButton
               variant="outlined"
