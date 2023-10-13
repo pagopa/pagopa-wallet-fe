@@ -6,7 +6,7 @@
  * on localhost:1234 so we don't have to deal with CORS.
  *
  */
-require('dotenv').config()
+require('dotenv').config({ path: '.env.development'});
 const {createProxyMiddleware} = require("http-proxy-middleware");
 
 const API_HOST = process.env.WALLET_CONFIG_API_HOST;
