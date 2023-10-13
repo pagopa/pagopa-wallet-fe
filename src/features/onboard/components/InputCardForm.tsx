@@ -13,7 +13,7 @@ import cardValidator from "card-validator";
 import { Formik, FormikProps } from "formik";
 import React from "react";
 import sprite from "../../../assets/app.svg";
-import FormButtons from "../../../components/commons/FormButtons";
+import { FormButtons } from "../../../components/commons/FormButtons";
 import TextFormField from "../../../components/commons/TextFormField";
 import utils from "../../../utils";
 
@@ -31,7 +31,7 @@ export function InputCardForm(props: {
   hideCancel?: boolean;
 }) {
   const formRef = React.useRef<FormikProps<InputCardFormFields>>(null);
-  const [, setDisabled] = React.useState(true);
+  const [disabled, setDisabled] = React.useState(true);
   const [cvvLength, setCvvLength] = React.useState(SecureCodeDigits.cvv);
   const [ccIcon, setCcIcon] = React.useState<string | undefined>(undefined);
 
@@ -168,7 +168,7 @@ export function InputCardForm(props: {
                 autoComplete="cc-number"
                 handleChange={handleNumberChange}
                 handleBlur={handleBlur}
-                sx={{ mb: 1 }}
+                sx={{ mb: 4 }}
                 endAdornment={
                   <InputAdornment position="end">
                     {utils.validators.getFormErrorIcon(
@@ -205,7 +205,7 @@ export function InputCardForm(props: {
                   autoComplete="cc-exp"
                   handleChange={handleExpireChange}
                   handleBlur={handleBlur}
-                  sx={{ mb: 1 }}
+                  sx={{ mb: 4 }}
                   endAdornment={
                     <InputAdornment position="end">
                       {utils.validators.getFormErrorIcon(
@@ -231,7 +231,7 @@ export function InputCardForm(props: {
                   autoComplete="cc-csc"
                   handleChange={handleCvvChange}
                   handleBlur={handleBlur}
-                  sx={{ mb: 1 }}
+                  sx={{ mb: 4 }}
                   endAdornment={
                     <InputAdornment position="end">
                       {utils.validators.getFormErrorIcon(
@@ -255,15 +255,16 @@ export function InputCardForm(props: {
                 autoComplete="cc-name"
                 handleChange={handleNameChange}
                 handleBlur={handleBlur}
-                sx={{ mb: 1 }}
+                sx={{ mb: 2 }}
                 startAdornment={<PersonIcon sx={{ mr: 2 }} color="action" />}
               />
               <FormButtons
-                loadingSubmit={props.loading}
-                type="submit"
-                submitTitle="inputCardPage.formButtons.submit"
+                disabledCancel
+                disabledSubmit={!!disabled}
                 handleSubmit={handleSubmit}
-                hideCancel={true}
+                loadingSubmit={props.loading}
+                submitTitle="inputCardPage.formButtons.submit"
+                type="submit"
               />
             </Box>
           </form>
