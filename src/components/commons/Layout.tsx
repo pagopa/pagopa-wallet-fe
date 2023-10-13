@@ -1,7 +1,6 @@
 import { Container, useTheme } from "@mui/material";
 import { Box, SxProps } from "@mui/system";
 import React from "react";
-import Header from "./Header";
 
 interface LayoutProps {
   sx?: SxProps;
@@ -19,7 +18,6 @@ export default function Layout({ sx, children }: LayoutProps) {
         bgcolor: theme.palette.background.paper
       }}
     >
-      <Header />
       <Container
         sx={{
           ...sx,
