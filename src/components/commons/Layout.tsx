@@ -1,37 +1,25 @@
-import { Container, useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 import { Box, SxProps } from "@mui/system";
 import React from "react";
-import Header from "./Header";
 
 interface LayoutProps {
   sx?: SxProps;
   children?: React.ReactNode;
 }
+
 export default function Layout({ sx, children }: LayoutProps) {
   const theme = useTheme();
   return (
     <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        height: "100vh",
-        bgcolor: theme.palette.background.paper
-      }}
+      sx={sx}
+      bgcolor={theme.palette.background.paper}
+      display="flex"
+      flexGrow={1}
+      height="100vh"
+      justifyContent="center"
+      px={{ xs: 3, sm: 6, md: 0 }}
     >
-      <Header />
-      <Container
-        sx={{
-          ...sx,
-          p: { xs: 0 },
-          pl: { xs: 3, sm: 6, md: 0 },
-          pr: { xs: 3, sm: 6, md: 0 },
-          flexGrow: 1
-        }}
-        maxWidth={"sm"}
-      >
-        {children}
-      </Container>
+      {children}
     </Box>
   );
 }
