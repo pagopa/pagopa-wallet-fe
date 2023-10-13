@@ -10,7 +10,7 @@ export const TRANSLATIONS_IT = {
       name: "Titolare carta",
       number: "Numero carta",
       expirationDate: "Scadenza",
-      cvv: "CVV (3 cifre)",
+      cvv: "Codice di sicurezza",
       cid: "CID (4 cifre)"
     },
     formErrors: {
