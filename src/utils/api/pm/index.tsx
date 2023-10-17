@@ -1,5 +1,6 @@
 import { pipe } from "fp-ts/function";
 import * as E from "fp-ts/Either";
+import * as O from "fp-ts/Option";
 import * as TE from "fp-ts/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { createClient as createPaymentManagerClient } from "../../../../generated/definitions/payment-manager-v1/client";
@@ -7,6 +8,7 @@ import { WalletRequest } from "../../../../generated/definitions/payment-manager
 import config from "../config";
 import { ErrorsType } from "../../errors/errorsModel";
 import { getConfigOrThrow } from "../../../config";
+import utils from '../../';
 
 const NODE_ENV = getConfigOrThrow().WALLET_CONFIG_API_ENV;
 const API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
@@ -34,25 +36,33 @@ const addWallet = async (
           Bearer: "Bearer " + bearer,
           walletRequest
         }),
-      (_e) => {
-        onError(ErrorsType.GENERIC_ERROR);
-        return toError;
-      }
+      (_error) => toError
     ),
     TE.fold(
-      (_e) => async () => onError(ErrorsType.GENERIC_ERROR),
+      () => async () => onError(ErrorsType.GENERIC_ERROR), // When the promise rejects
       (resp) => async () =>
         pipe(
           resp,
           E.fold(
-            () => onError(ErrorsType.GENERIC_ERROR),
+            (_errors) => onError(ErrorsType.GENERIC_ERROR), // When errors
             ({ status, value }) => {
-              const idWallet = value?.data?.idWallet;
-              if (status === 200 && idWallet) {
-                onSuccess(idWallet);
-              } else {
-                onError(ErrorsType.GENERIC_ERROR);
-              }
+              pipe(
+                status,
+                utils.validators.evaluateHTTPfamilyStatusCode,
+                O.match(
+                  () => onError(ErrorsType.GENERIC_ERROR),
+                  utils.validators.matchHttpFamilyResponseStatusCode({
+                    '1xx': () => onError(ErrorsType.GENERIC_ERROR),
+                    '2xx': () => {
+                      const idWallet = value?.data?.idWallet;
+                      idWallet ? onSuccess(idWallet) : onError(ErrorsType.GENERIC_ERROR);
+                    },
+                    '3xx': () => onError(ErrorsType.GENERIC_ERROR),
+                    '4xx': () => window.location.href = `${API_HOST}${API_PM_BASEPATH}/v3/webview/logout/bye?outcome=0`,
+                    '5xx': () => onError(ErrorsType.GENERIC_ERROR)
+                  })
+                )
+              )
             }
           )
         )
@@ -62,3 +72,4 @@ const addWallet = async (
 export default {
   addWallet
 };
+
