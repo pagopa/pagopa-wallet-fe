@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import Layout from "./components/commons/Layout";
 import InputCardPage from "./routes/InputCardPage";
+import IFrameCardPage from "./routes/IframeCardPage";
 import { CheckoutRoutes } from "./routes/models/routeModel";
 import "./translations/i18n";
 import utils from "./utils";
@@ -50,6 +51,10 @@ export function App() {
             <Route
               path={CheckoutRoutes.INSERISCI_CARTA}
               element={<InputCardPage />}
+            />
+            <Route
+              path={CheckoutRoutes.NPG_INSERISCI_CARTA}
+              element={<IFrameCardPage />}
             />
             <Route
               path="*"

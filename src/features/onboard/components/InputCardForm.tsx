@@ -13,7 +13,7 @@ import cardValidator from "card-validator";
 import { Formik, FormikProps } from "formik";
 import React from "react";
 import sprite from "../../../assets/app.svg";
-import { FormButtons } from "../../../components/commons/FormButtons";
+import FormButtons from "../../../components/commons/FormButtons";
 import TextFormField from "../../../components/commons/TextFormField";
 import utils from "../../../utils";
 
