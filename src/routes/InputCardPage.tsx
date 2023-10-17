@@ -9,10 +9,13 @@ import { WalletRequest } from "../../generated/definitions/payment-manager-v1/Wa
 import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet";
 import Verify from "../components/Verify";
 import { ErrorsType } from "../utils/errors/checkErrorsModel";
+import ErrorModal from "../components/commons/ErrorModal";
 
 export default function InputCardPage() {
   const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState<{ idWallet: number; cvv: number }>();
+  const [errorModalOpen, setErrorModalOpen] = React.useState(false);
+  const [error, setError] = React.useState("");
 
   const sessionToken = utils.url.getFragmentParameter(
     window.location.href,
@@ -20,7 +23,12 @@ export default function InputCardPage() {
   );
 
   // eslint-disable-next-line
-  const onError = (errroMessage: ErrorsType) => console.error(errroMessage);
+  const onError = (errroMessage: ErrorsType) => {
+    console.error(errroMessage);
+    setError(errroMessage);
+    setErrorModalOpen(true);
+    setLoading(false)
+  }
 
   const onSuccess = (cvv: number) => (idWallet: number) => {
     setData({ idWallet, cvv });
@@ -69,6 +77,19 @@ export default function InputCardPage() {
           />
         )}
       </Box>
+      {!!error && (
+        <ErrorModal
+          error={error}
+          open={errorModalOpen}
+          onClose={() => {
+            setErrorModalOpen(false);
+          }}
+          // onRetry={onRetry}
+          titleId="inputCardPageErrorTitleId"
+          errorId="inputCardPageErrorId"
+          bodyId="inputCardPageErrorBodyId"
+        />
+      )}
     </PageContainer>
   );
 }
