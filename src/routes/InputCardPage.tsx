@@ -8,23 +8,21 @@ import { SessionItems } from "../utils/storage";
 import { WalletRequest } from "../../generated/definitions/payment-manager-v1/WalletRequest";
 import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet";
 import Verify from "../components/Verify";
-import { ErrorsType } from "../utils/errors/checkErrorsModel";
+import { ErrorsType } from "../utils/errors/errorsModel";
 import ErrorModal from "../components/commons/ErrorModal";
 
 export default function InputCardPage() {
   const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState<{ idWallet: number; cvv: number }>();
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
-  const [error, setError] = React.useState("");
+  const [error, setError] = React.useState<ErrorsType | "">("");
 
   const sessionToken = utils.url.getFragmentParameter(
     window.location.href,
     SessionItems.sessionToken
   );
 
-  // eslint-disable-next-line
   const onError = (errroMessage: ErrorsType) => {
-    console.error(errroMessage);
     setError(errroMessage);
     setErrorModalOpen(true);
     setLoading(false)
@@ -84,7 +82,6 @@ export default function InputCardPage() {
           onClose={() => {
             setErrorModalOpen(false);
           }}
-          // onRetry={onRetry}
           titleId="inputCardPageErrorTitleId"
           errorId="inputCardPageErrorId"
           bodyId="inputCardPageErrorBodyId"

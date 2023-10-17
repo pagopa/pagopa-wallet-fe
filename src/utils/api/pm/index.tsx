@@ -5,7 +5,7 @@ import { toError } from "fp-ts/lib/Either";
 import { createClient as createPaymentManagerClient } from "../../../../generated/definitions/payment-manager-v1/client";
 import { WalletRequest } from "../../../../generated/definitions/payment-manager-v1/WalletRequest";
 import config from "../config";
-import { ErrorsType } from "../../errors/checkErrorsModel";
+import { ErrorsType } from "../../errors/errorsModel";
 import { getConfigOrThrow } from "../../../config";
 
 const NODE_ENV = getConfigOrThrow().WALLET_CONFIG_API_ENV;
@@ -35,12 +35,12 @@ const addWallet = async (
           walletRequest
         }),
       (_e) => {
-        onError(ErrorsType.CONNECTION);
+        onError(ErrorsType.GENERIC_ERROR);
         return toError;
       }
     ),
     TE.fold(
-      (_e) => async () => onError(ErrorsType.SERVER),
+      (_e) => async () => onError(ErrorsType.GENERIC_ERROR),
       (resp) => async () =>
         pipe(
           resp,

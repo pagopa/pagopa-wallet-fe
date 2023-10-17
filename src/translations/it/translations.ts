@@ -35,5 +35,21 @@ export const TRANSLATIONS_IT = {
       descriptionAE:
         "Sulle carte American Express il codice (CID) è a quattro cifre ed è posizionato sul fronte."
     }
-  }
+  },
+  errorButton: {
+    help: "Contatta l'assistenza",
+    close: "Chiudi",
+    retry: "Riprova"
+  },
+  GENERIC_ERROR: {
+    title: "Spiacenti, si è verificato un errore imprevisto",
+    body: "Prova di nuovo o contattaci per ricevere assistenza."
+  },
+  NOT_LISTED: {
+    title: "Spiacenti, si è verificato un errore imprevisto",
+    body: "Prova di nuovo o contattaci per ricevere assistenza."
+  },
+  ERRORE_TECNICO: {
+    title: "Spiacenti, si è verificato un errore tecnico",
+  },
 };

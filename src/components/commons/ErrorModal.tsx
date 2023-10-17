@@ -16,16 +16,16 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ErrorsType } from "../../utils/errors/checkErrorsModel";
+import { ErrorsType } from "../../utils/errors/errorsModel";
 import {
-  PaymentCategoryResponses,
-  PaymentFaultCategory,
-  PaymentResponses,
+  ErrorModalByErrorCategory,
+  WalletErrors,
+  WalletFaultCategory,
 } from "../../utils/errors/errorsModel";
 import { ErrorButtons } from "./ErrorButtons";
 
 function ErrorModal(props: {
-  error: string;
+  error: ErrorsType;
   open: boolean;
   onClose: () => void;
   onRetry?: () => void;
@@ -38,47 +38,48 @@ function ErrorModal(props: {
   const theme = useTheme();
   const [copy, setCopy] = React.useState(t("clipboard.copy"));
 
-  const isCustom = (error: string) =>
-    PaymentResponses[error]?.category === PaymentFaultCategory.CUSTOM;
-  const notListed = (error: string) => PaymentResponses[error] === undefined;
-  const hasDetail = (error: string) =>
-    !!PaymentCategoryResponses[PaymentResponses[error]?.category]?.detail;
+  const isCustom = (error: ErrorsType) =>
+    WalletErrors[error]?.category === WalletFaultCategory.CUSTOM;
+  const notListed = (error: ErrorsType) => WalletErrors[error] === undefined;
+  const hasDetail = (error: ErrorsType) =>
+    !!ErrorModalByErrorCategory[WalletErrors[error]?.category]?.detail;
   const showDetail = (text: string) => text === "ErrorCodeDescription";
 
   const getErrorTitle = () => {
     if (isCustom(props.error)) {
-      return PaymentResponses[props.error]?.title;
+      return WalletErrors[props.error]?.title;
     }
     if (notListed(props.error)) {
-      return PaymentCategoryResponses[PaymentFaultCategory.NOTLISTED]?.title;
+      return ErrorModalByErrorCategory[WalletFaultCategory.NOT_LISTED]?.title;
     }
-    return PaymentCategoryResponses[PaymentResponses[props.error]?.category]
+    return ErrorModalByErrorCategory[WalletErrors[props.error]?.category]
       ?.title;
   };
+
   const getErrorBody = () => {
     if (isCustom(props.error)) {
-      return PaymentResponses[props.error]?.body;
+      return WalletErrors[props.error]?.body;
     }
     if (notListed(props.error)) {
-      return PaymentCategoryResponses[PaymentFaultCategory.NOTLISTED]?.body;
+      return ErrorModalByErrorCategory[WalletFaultCategory.NOTLISTED]?.body;
     }
     if (hasDetail(props.error)) {
       return "ErrorCodeDescription";
     }
-    return PaymentCategoryResponses[PaymentResponses[props.error]?.category]
+    return ErrorModalByErrorCategory[WalletErrors[props.error]?.category]
       ?.body;
   };
 
   const getErrorButtons = () => {
     if (isCustom(props.error)) {
-      return PaymentResponses[props.error]?.buttons
-        ? PaymentResponses[props.error]?.buttons
-        : PaymentCategoryResponses[PaymentFaultCategory.CUSTOM]?.buttons;
+      return WalletErrors[props.error]?.buttons
+        ? WalletErrors[props.error]?.buttons
+        : ErrorModalByErrorCategory[WalletFaultCategory.CUSTOM]?.buttons;
     }
     if (notListed(props.error)) {
-      return PaymentCategoryResponses[PaymentFaultCategory.NOTLISTED]?.buttons;
+      return ErrorModalByErrorCategory[WalletFaultCategory.NOT_LISTED]?.buttons;
     }
-    return PaymentCategoryResponses[PaymentResponses[props.error]?.category]
+    return ErrorModalByErrorCategory[WalletErrors[props.error]?.category]
       ?.buttons;
   };
 
