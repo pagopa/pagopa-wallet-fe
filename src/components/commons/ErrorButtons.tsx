@@ -1,8 +1,8 @@
 import { Button, Grid } from "@mui/material";
 import { default as React } from "react";
 import { useTranslation } from "react-i18next";
-import { useSmallDevice } from "./useSmallDevice";
 import { ErrorModalBtn } from "../../utils/errors/errorsModel";
+import { useSmallDevice } from "./useSmallDevice";
 
 export function ErrorButtons(props: {
   handleClose: () => void;
@@ -17,7 +17,7 @@ export function ErrorButtons(props: {
           mt: 4,
           justifyContent: { xs: "center", sm: "flex-end" },
           flexDirection: { xs: "column", sm: "row" },
-          alignItems: "center",
+          alignItems: "center"
         }}
         container
         spacing={2}
@@ -37,7 +37,7 @@ export function ErrorButtons(props: {
               style={{
                 width: "100%",
                 height: "100%",
-                minHeight: 45,
+                minHeight: 45
               }}
             >
               {t(button.title)}

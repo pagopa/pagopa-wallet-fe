@@ -41,42 +41,42 @@ export const ErrorModalByErrorCategory: Record<
         title: "errorButton.help",
         action: () => {
           window.open(HELPDESK_URL, "_blank")?.focus();
-        },
+        }
       },
       {
-        title: "errorButton.close",
-      },
-    ],
+        title: "errorButton.close"
+      }
+    ]
   },
   CUSTOM: {
     title: "",
     detail: false,
     buttons: [
       {
-        title: "errorButton.close",
+        title: "errorButton.close"
       },
       {
         title: "errorButton.help",
         action: () => {
           window.open(HELPDESK_URL, "_blank")?.focus();
-        },
-      },
-    ],
+        }
+      }
+    ]
   },
   GENERIC_ERROR: {
     title: "ERRORE_GENERICO.title",
     detail: false,
     buttons: [
       {
-        title: "errorButton.close",
+        title: "errorButton.close"
       },
       {
         title: "errorButton.help",
         action: () => {
           window.open(HELPDESK_URL, "_blank")?.focus();
-        },
-      },
-    ],
+        }
+      }
+    ]
   },
   NOT_LISTED: {
     title: "NOT_LISTED.title",
@@ -84,16 +84,16 @@ export const ErrorModalByErrorCategory: Record<
     body: "NOT_LISTED.body",
     buttons: [
       {
-        title: "errorButton.close",
+        title: "errorButton.close"
       },
       {
         title: "errorButton.help",
         action: () => {
           window.open(HELPDESK_URL, "_blank")?.focus();
-        },
-      },
-    ],
-  },
+        }
+      }
+    ]
+  }
 };
 
 export type WalletErrorMessage = {
@@ -102,8 +102,6 @@ export type WalletErrorMessage = {
   category: WalletFaultCategory;
   buttons?: Array<ErrorModalBtn>;
 };
-
-
 
 export const WalletErrors: Record<ErrorsType, WalletErrorMessage> = {
   [ErrorsType.MISSING_SESSIONTOKEN]: {
@@ -118,17 +116,17 @@ export const WalletErrors: Record<ErrorsType, WalletErrorMessage> = {
         title: "errorButton.help",
         action: () => {
           window.open(HELPDESK_URL, "_blank")?.focus();
-        },
+        }
       },
       {
-        title: "errorButton.retry",
-      },
-    ],
+        title: "errorButton.retry"
+      }
+    ]
   },
   [ErrorsType.POLLING_SLOW]: {
     title: "POLLING_SLOW.title",
     body: "POLLING_SLOW.body",
-    category: WalletFaultCategory.CUSTOM,
+    category: WalletFaultCategory.CUSTOM
   },
   [ErrorsType.STATUS_ERROR]: {
     title: "STATUS_ERROR.title",
@@ -139,12 +137,12 @@ export const WalletErrors: Record<ErrorsType, WalletErrorMessage> = {
         title: "errorButton.help",
         action: () => {
           window.open(HELPDESK_URL, "_blank")?.focus();
-        },
+        }
       },
       {
-        title: "errorButton.retry",
-      },
-    ],
+        title: "errorButton.retry"
+      }
+    ]
   },
   [ErrorsType.GENERIC_ERROR]: {
     category: WalletFaultCategory.NOT_LISTED

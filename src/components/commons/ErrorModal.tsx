@@ -12,7 +12,7 @@ import {
   LinearProgress,
   Tooltip,
   Typography,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -20,7 +20,7 @@ import { ErrorsType } from "../../utils/errors/errorsModel";
 import {
   ErrorModalByErrorCategory,
   WalletErrors,
-  WalletFaultCategory,
+  WalletFaultCategory
 } from "../../utils/errors/errorsModel";
 import { ErrorButtons } from "./ErrorButtons";
 
@@ -36,7 +36,7 @@ function ErrorModal(props: {
 }) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const [copy, setCopy] = React.useState(t("clipboard.copy"));
+  const [copy, setCopy] = React.useState("clipboard.copy");
 
   const isCustom = (error: ErrorsType) =>
     WalletErrors[error]?.category === WalletFaultCategory.CUSTOM;
@@ -61,13 +61,12 @@ function ErrorModal(props: {
       return WalletErrors[props.error]?.body;
     }
     if (notListed(props.error)) {
-      return ErrorModalByErrorCategory[WalletFaultCategory.NOTLISTED]?.body;
+      return ErrorModalByErrorCategory[WalletFaultCategory.NOT_LISTED]?.body;
     }
     if (hasDetail(props.error)) {
       return "ErrorCodeDescription";
     }
-    return ErrorModalByErrorCategory[WalletErrors[props.error]?.category]
-      ?.body;
+    return ErrorModalByErrorCategory[WalletErrors[props.error]?.category]?.body;
   };
 
   const getErrorButtons = () => {
@@ -99,14 +98,14 @@ function ErrorModal(props: {
     <Dialog
       PaperProps={{
         style: {
-          ...props.style,
+          ...props.style
         },
         sx: {
           width: "600px",
           borderRadius: 1,
           p: 4,
-          background: theme.palette.background.default,
-        },
+          background: theme.palette.background.default
+        }
       }}
       fullWidth
       open={props.open}
@@ -136,21 +135,21 @@ function ErrorModal(props: {
               justifyContent: "start",
               mt: 2,
               borderLeftColor: theme.palette.info.main + " !important",
-              borderLeft: "4px solid",
+              borderLeft: "4px solid"
             }}
             action={
-              <Tooltip title={copy} onMouseOver={(e) => e.stopPropagation()}>
+              <Tooltip title={t(copy)} onMouseOver={(e) => e.stopPropagation()}>
                 <Button
                   variant="text"
                   onClick={() => {
                     void navigator.clipboard.writeText(props.error);
-                    setCopy(t("clipboard.copied"));
+                    setCopy("clipboard.copied");
                   }}
-                  onMouseLeave={() => setCopy(t("clipboard.copy"))}
+                  onMouseLeave={() => setCopy("clipboard.copy")}
                 >
                   <CopyAllIcon
                     sx={{
-                      mr: 1,
+                      mr: 1
                     }}
                   />
                   {t("clipboard.copy")}
@@ -161,7 +160,7 @@ function ErrorModal(props: {
             <AlertTitle
               id={props.errorId}
               sx={{
-                mb: 0,
+                mb: 0
               }}
             >
               {props.error}

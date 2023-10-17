@@ -2,7 +2,7 @@ import Check from "@mui/icons-material/Check";
 import Close from "@mui/icons-material/Close";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import * as O from "fp-ts/Option";
-import { makeMatch } from 'ts-adt/MakeADT';
+import { makeMatchers } from "ts-adt/MakeADT";
 import React from "react";
 
 function emailValidation(email: string) {
@@ -64,23 +64,27 @@ function expirationDateChangeValidation(value: string) {
   );
 }
 
-
 type HttpFamilyResponseStatusCode = {
-  familyCode: '1xx' | '2xx' | '3xx' | '4xx' | '5xx',
-  actulaCode: number
-} 
+  familyCode: "1xx" | "2xx" | "3xx" | "4xx" | "5xx";
+  actulaCode: number;
+};
 
-function evaluateHTTPfamilyStatusCode(httpCode: number): O.Option<HttpFamilyResponseStatusCode> {
+function evaluateHTTPfamilyStatusCode(
+  httpCode: number
+): O.Option<HttpFamilyResponseStatusCode> {
   const httpCodeToString = `${httpCode}`;
-  var httpStatusCode = /^[1-5][0-9][0-9]$/;
-  if(!httpStatusCode.test(httpCodeToString)) return O.none;
+  const httpStatusCode = /^[1-5][0-9][0-9]$/;
+  if (!httpStatusCode.test(httpCodeToString)) {
+    return O.none;
+  }
   return O.some({
-    familyCode: `${httpCodeToString[0]}xx` as HttpFamilyResponseStatusCode['familyCode'],
+    familyCode:
+      `${httpCodeToString[0]}xx` as HttpFamilyResponseStatusCode["familyCode"],
     actulaCode: httpCode
   });
 }
 
-const matchHttpFamilyResponseStatusCode =  makeMatch('familyCode')
+const [, matchP] = makeMatchers("familyCode");
 
 export default {
   expirationDateChangeValidation,
@@ -90,5 +94,5 @@ export default {
   cardNameValidation,
   digitValidation,
   evaluateHTTPfamilyStatusCode,
-  matchHttpFamilyResponseStatusCode,
+  matchHttpFamilyResponseStatusCode: matchP
 };

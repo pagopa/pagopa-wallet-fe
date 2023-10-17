@@ -25,8 +25,8 @@ export default function InputCardPage() {
   const onError = (errroMessage: ErrorsType) => {
     setError(errroMessage);
     setErrorModalOpen(true);
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const onSuccess = (cvv: number) => (idWallet: number) => {
     setData({ idWallet, cvv });

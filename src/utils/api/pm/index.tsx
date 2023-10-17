@@ -8,7 +8,7 @@ import { WalletRequest } from "../../../../generated/definitions/payment-manager
 import config from "../config";
 import { ErrorsType } from "../../errors/errorsModel";
 import { getConfigOrThrow } from "../../../config";
-import utils from '../../';
+import utils from "../../";
 
 const NODE_ENV = getConfigOrThrow().WALLET_CONFIG_API_ENV;
 const API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
@@ -51,18 +51,22 @@ const addWallet = async (
                 utils.validators.evaluateHTTPfamilyStatusCode,
                 O.match(
                   () => onError(ErrorsType.GENERIC_ERROR),
-                  utils.validators.matchHttpFamilyResponseStatusCode({
-                    '1xx': () => onError(ErrorsType.GENERIC_ERROR),
-                    '2xx': () => {
-                      const idWallet = value?.data?.idWallet;
-                      idWallet ? onSuccess(idWallet) : onError(ErrorsType.GENERIC_ERROR);
+                  utils.validators.matchHttpFamilyResponseStatusCode(
+                    {
+                      "2xx": () => {
+                        const idWallet = value?.data?.idWallet;
+                        return idWallet
+                          ? onSuccess(idWallet)
+                          : onError(ErrorsType.GENERIC_ERROR);
+                      },
+                      "4xx": () =>
+                        // eslint-disable-next-line functional/immutable-data
+                        (window.location.href = `${API_HOST}${API_PM_BASEPATH}/v3/webview/logout/bye?outcome=0`)
                     },
-                    '3xx': () => onError(ErrorsType.GENERIC_ERROR),
-                    '4xx': () => window.location.href = `${API_HOST}${API_PM_BASEPATH}/v3/webview/logout/bye?outcome=0`,
-                    '5xx': () => onError(ErrorsType.GENERIC_ERROR)
-                  })
+                    () => onError(ErrorsType.GENERIC_ERROR)
+                  )
                 )
-              )
+              );
             }
           )
         )
@@ -72,4 +76,3 @@ const addWallet = async (
 export default {
   addWallet
 };
-

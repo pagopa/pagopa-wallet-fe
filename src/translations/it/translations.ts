@@ -50,6 +50,6 @@ export const TRANSLATIONS_IT = {
     body: "Prova di nuovo o contattaci per ricevere assistenza."
   },
   ERRORE_TECNICO: {
-    title: "Spiacenti, si è verificato un errore tecnico",
-  },
+    title: "Spiacenti, si è verificato un errore tecnico"
+  }
 };
