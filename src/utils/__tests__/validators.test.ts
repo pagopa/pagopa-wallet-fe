@@ -1,7 +1,12 @@
 import * as O from "fp-ts/Option";
 import validators from "../../utils/validators";
 
-const { evaluateHTTPfamilyStatusCode } = validators;
+const {
+  evaluateHTTPfamilyStatusCode,
+  cardNameValidation,
+  digitValidation,
+  expirationDateChangeValidation
+} = validators;
 
 describe("evaluateHTTPfamilyStatusCode function", () => {
   it("Should evaluate the correct HTTP family code", () => {
@@ -51,5 +56,50 @@ describe("evaluateHTTPfamilyStatusCode function", () => {
     expect(evaluateHTTPfamilyStatusCode(0)).toEqual(O.none);
     expect(evaluateHTTPfamilyStatusCode(99)).toEqual(O.none);
     expect(evaluateHTTPfamilyStatusCode(600)).toEqual(O.none);
+  });
+});
+
+describe("cardNameValidation function", () => {
+  it("Should test correctly a right input", () => {
+    expect(cardNameValidation("Pippo Baudo")).toEqual(true);
+  });
+  it("Should test correctly a wrong input", () => {
+    expect(cardNameValidation("")).toEqual(false);
+    expect(cardNameValidation(" ")).toEqual(false);
+    expect(cardNameValidation("111")).toEqual(false);
+    expect(cardNameValidation("a")).toEqual(false);
+  });
+});
+
+describe("digitValidation function", () => {
+  it("Should test correctly a right input", () => {
+    expect(digitValidation("0")).toEqual(true);
+    expect(digitValidation("1")).toEqual(true);
+    expect(digitValidation("01")).toEqual(true);
+    expect(digitValidation("0010")).toEqual(true);
+    expect(digitValidation("999999999")).toEqual(true);
+  });
+  it("Should test correctly a wrong input", () => {
+    expect(digitValidation("-0")).toEqual(false);
+    expect(digitValidation("-1")).toEqual(false);
+    expect(digitValidation("1 1")).toEqual(false);
+    expect(digitValidation("")).toEqual(false);
+    expect(digitValidation(" ")).toEqual(false);
+    expect(digitValidation("a")).toEqual(false);
+  });
+});
+
+describe("expirationDateChangeValidation function", () => {
+  it("Should test correctly a right input", () => {
+    expect(expirationDateChangeValidation("")).toEqual(true);
+    expect(expirationDateChangeValidation("11/23")).toEqual(true);
+  });
+  it("Should test correctly a wrong input", () => {
+    expect(expirationDateChangeValidation("1.1")).toEqual(false);
+    expect(expirationDateChangeValidation("11.23")).toEqual(false);
+    expect(expirationDateChangeValidation("11-23")).toEqual(false);
+    expect(expirationDateChangeValidation("11 23")).toEqual(false);
+    expect(expirationDateChangeValidation("1 2023")).toEqual(false);
+    expect(expirationDateChangeValidation("abc")).toEqual(false);
   });
 });
