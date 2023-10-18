@@ -64,14 +64,14 @@ function expirationDateChangeValidation(value: string) {
   );
 }
 
-type HttpFamilyResponseStatusCode = {
+type HTTPFamilyResponseStatusCode = {
   familyCode: "1xx" | "2xx" | "3xx" | "4xx" | "5xx";
-  actulaCode: number;
+  actualCode: number;
 };
 
 function evaluateHTTPfamilyStatusCode(
   httpCode: number
-): O.Option<HttpFamilyResponseStatusCode> {
+): O.Option<HTTPFamilyResponseStatusCode> {
   const httpCodeToString = `${httpCode}`;
   const httpStatusCode = /^[1-5][0-9][0-9]$/;
   if (!httpStatusCode.test(httpCodeToString)) {
@@ -79,8 +79,8 @@ function evaluateHTTPfamilyStatusCode(
   }
   return O.some({
     familyCode:
-      `${httpCodeToString[0]}xx` as HttpFamilyResponseStatusCode["familyCode"],
-    actulaCode: httpCode
+      `${httpCodeToString[0]}xx` as HTTPFamilyResponseStatusCode["familyCode"],
+    actualCode: httpCode
   });
 }
 
