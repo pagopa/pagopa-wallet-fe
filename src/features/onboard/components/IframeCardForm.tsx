@@ -127,8 +127,6 @@ export default function IframeCardForm() {
       };
 
       void (async () => {
-        const token = "captcha token";
-        console.debug(onError, onResponse, token);
         void npgSessionsFields(onError, onResponse);
       })();
     }
