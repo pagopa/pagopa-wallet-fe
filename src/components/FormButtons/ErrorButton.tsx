@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useSmallDevice } from "../../hooks/useSmallDevice";
 import { ErrorModalBtn } from "../../utils/errors/errorsModel";
 
-export function ErrorButtons(props: {
+export function ErrorButton(props: {
   handleClose: () => void;
   buttonsDetail: Array<ErrorModalBtn>;
 }) {

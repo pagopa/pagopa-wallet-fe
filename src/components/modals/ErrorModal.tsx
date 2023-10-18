@@ -22,7 +22,7 @@ import {
   PaymentFaultCategory,
   PaymentResponses
 } from "../../utils/errors/errorsModel";
-import { ErrorButtons } from "../FormButtons/ErrorButton";
+import { ErrorButton } from "../FormButtons/ErrorButton";
 
 function ErrorModal(props: {
   error: string;
@@ -174,7 +174,7 @@ function ErrorModal(props: {
           <LinearProgress sx={{ my: 2 }} />
         ) : (
           !!buttonsDetail && (
-            <ErrorButtons
+            <ErrorButton
               handleClose={props.onClose}
               buttonsDetail={buttonsDetail}
             />
