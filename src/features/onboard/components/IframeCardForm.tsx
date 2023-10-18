@@ -6,6 +6,7 @@ import ErrorModal from "../../../components/modals/ErrorModal";
 import createBuildConfig from "../../../utils/buildConfig";
 import { CreateSessionResponse } from "../../../../generated/definitions/payment-ecommerce/CreateSessionResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
+import { npgSessionsFields } from "../../../utils/api/helper";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -128,42 +129,7 @@ export default function IframeCardForm() {
       void (async () => {
         const token = "captcha token";
         console.debug(onError, onResponse, token);
-        // void npgSessionsFields(onError, onResponse, token);
-
-        const body = {
-          orderId: "",
-          paymentMethodData: {
-            paymentMethod: "CARDS",
-            form: [
-              {
-                type: "TEXT",
-                id: "CARD_NUMBER",
-                src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=CARD_NUMBER&lang=ITA",
-                class: "CARD_FIELD"
-              },
-              {
-                type: "TEXT",
-                id: "EXPIRATION_DATE",
-                src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=EXPIRATION_DATE&lang=ITA",
-                class: "CARD_FIELD"
-              },
-              {
-                type: "TEXT",
-                id: "SECURITY_CODE",
-                src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=SECURITY_CODE&lang=ITA",
-                class: "CARD_FIELD"
-              },
-              {
-                type: "TEXT",
-                id: "CARDHOLDER_NAME",
-                src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=CARDHOLDER_NAME&lang=ITA",
-                class: "CARD_FIELD"
-              }
-            ]
-          }
-        };
-
-        onResponse(body);
+        void npgSessionsFields(onError, onResponse);
       })();
     }
   }, [form?.orderId]);
