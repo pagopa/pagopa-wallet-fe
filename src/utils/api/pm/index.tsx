@@ -60,8 +60,9 @@ const addWallet = async (
                           : onError(ErrorsType.GENERIC_ERROR);
                       },
                       "4xx": () =>
-                        // eslint-disable-next-line functional/immutable-data
-                        (window.location.href = `${API_HOST}${API_PM_BASEPATH}/v3/webview/logout/bye?outcome=1`)
+                        window.location.replace(
+                          `${API_HOST}${API_PM_BASEPATH}/v3/webview/logout/bye?outcome=1`
+                        )
                     },
                     () => onError(ErrorsType.GENERIC_ERROR)
                   )
