@@ -1,22 +1,14 @@
 import React from "react";
 import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import * as O from "fp-ts/Option";
-import { pipe } from "fp-ts/function";
-import { useNavigate } from "react-router-dom";
-import FormButtons from "../../../components/commons/FormButtons";
-import { npgSessionsFields } from "../../../../utils/api/helper";
-// import { ErrorsType } from "../../../../utils/errors/checkErrorsModel";
-// import ErrorModal from "../../../../components/modals/ErrorModal";
-import createBuildConfig from "../../../../utils/buildConfig";
+import { ErrorsType } from "../../../utils/errors/checkErrorsModel";
+import ErrorModal from "../../../components/modals/ErrorModal";
+import createBuildConfig from "../../../utils/buildConfig";
+import { CreateSessionResponse } from "../../../../generated/definitions/payment-ecommerce/CreateSessionResponse";
+import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
-
-interface Props {
-  loading?: boolean;
-  onSubmit?: (bin: string) => void;
-}
 
 const initialFieldStatus: FieldStatus = {
   isValid: undefined,
@@ -32,7 +24,7 @@ const initialFieldsState: FormStatus = Object.values(
 );
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export default function IframeCardForm(props: Props) {
+export default function IframeCardForm() {
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -42,7 +34,6 @@ export default function IframeCardForm(props: Props) {
   );
   const [formStatus, setFormStatus] =
     React.useState<FormStatus>(initialFieldsState);
-  const dispatch = useAppDispatch();
 
   const [buildInstance, setBuildInstance] = React.useState();
 
@@ -54,8 +45,6 @@ export default function IframeCardForm(props: Props) {
     setError(m);
     setErrorModalOpen(true);
   };
-
-  const navigate = useNavigate();
 
   const transaction = async () => {
     console.log("TO-DO!");
@@ -137,7 +126,9 @@ export default function IframeCardForm(props: Props) {
       };
 
       void (async () => {
-        void npgSessionsFields(onError, onResponse, token);
+        const token = "captcha token";
+        console.debug(onError, onResponse, token);
+        // void npgSessionsFields(onError, onResponse, token);
       })();
     }
   }, [form?.orderId]);
@@ -213,10 +204,10 @@ export default function IframeCardForm(props: Props) {
         <FormButtons
           loadingSubmit={loading}
           type="submit"
-          submitTitle="paymentNoticePage.formButtons.submit"
-          cancelTitle="paymentNoticePage.formButtons.cancel"
+          submitTitle="inputCardPage.formButtons.submit"
           disabledSubmit={loading || !formIsValid(formStatus)}
           handleSubmit={handleSubmit}
+          disabledCancel
         />
       </form>
       {!!errorModalOpen && (
@@ -225,7 +216,7 @@ export default function IframeCardForm(props: Props) {
           open={errorModalOpen}
           onClose={() => {
             setErrorModalOpen(false);
-            window.location.replace(`/${CheckoutRoutes.ERRORE}`);
+            // window.location.replace(`/${CheckoutRoutes.ERRORE}`);
           }}
           titleId="iframeCardFormErrorTitleId"
           errorId="iframeCardFormErrorId"
