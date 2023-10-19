@@ -19,7 +19,7 @@ import "whatwg-fetch";
 import "jest-location-mock";
 
 describe("add wallet", () => {
-  it("should call onError callback function when the promise rejects", async () => {
+  it("should call onError callback function passing a GENERIC_ERROR when the fetch promise rejects", async () => {
     global.fetch = jest.fn(() => Promise.reject());
     const onError = jest.fn();
     const onSucces = jest.fn();
@@ -28,7 +28,7 @@ describe("add wallet", () => {
     expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
   });
 
-  it("should call onError callback function server error 5xx", async () => {
+  it("should call onError callback function passing a GENERIC_ERROR on 5xx type response", async () => {
     const response = new Response(null, { status: 500 });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
@@ -38,7 +38,7 @@ describe("add wallet", () => {
     expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
   });
 
-  it("should call onSucces callback function on 2xx response passing the idWallet parameters", async () => {
+  it("should call onSucces callback function passing the idWallet parameter on 2xx type response", async () => {
     const response = new Response(walletResponseBody, {
       status: 200
     });
@@ -50,7 +50,7 @@ describe("add wallet", () => {
     expect(onError).not.toBeCalled();
   });
 
-  it("should call onError callback function server error 4xx", async () => {
+  it("should change the location and include outcome=1 on 4xx type response", async () => {
     const response = new Response(null, { status: 404 });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
