@@ -1,5 +1,5 @@
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable functional/immutable-data */
+/* eslint-disable no-underscore-dangle */
 (window as any)._env_ = {
   WALLET_CONFIG_API_BASEPATH: "/webview-payment-wallet/v1",
   WALLET_CONFIG_API_PM_BASEPATH: "/pp-restapi-CD",
@@ -7,73 +7,57 @@
   WALLET_CONFIG_API_ENV: "DEV",
   WALLET_CONFIG_API_HOST: "https://api.dev.platform.pagopa.it"
 };
-import { TypeEnum } from "../../../generated/definitions/payment-manager-v1/Wallet";
-import api from "../api";
-
-const request = {
-  data: {
-    creditCard: {
-      holder: "Pippo Baudo",
-      securityCode: "123",
-      pan: "4242424242424242",
-      expireMonth: "11",
-      expireYear: "23"
-    },
-    type: TypeEnum.CREDIT_CARD
-  }
-};
-
-// const response = {
-//   status: 200,
-//   value: {
-//     data: {
-//       idWallet: 1222302,
-//       type: "CREDIT_CARD",
-//       favourite: false,
-//       creditCard: {
-//         id: 1157851,
-//         holder: "a b",
-//         pan: "************4242",
-//         expireMonth: "01",
-//         expireYear: "32",
-//         brandLogo:
-//           "https://api.dev.platform.pagopa.it/wallet/assets/img/creditcard/generic.png",
-//         flag3dsVerified: false,
-//         brand: "OTHER",
-//         isOnUs: false,
-//         hasAlreadyPaid: false,
-//         onlyOnUs: false,
-//         flagForwardCreateToTkm: false,
-//         flagForwardDeleteToTkm: false
-//       },
-//       pspEditable: true,
-//       onboardingChannel: "IO",
-//       services: ["pagoPA", "BPD", "FA"],
-//       isPspToIgnore: false,
-//       registeredNexi: false,
-//       pagoPa: true,
-//       saved: false
-//     }
-//   }
-// };
+import pm from "../api/pm";
+import { ErrorsType } from "../errors/errorsModel";
+import {
+  walletRequest,
+  sessionToken,
+  idWallet,
+  walletResponseBody
+} from "./utils";
+import "whatwg-fetch";
+import "jest-location-mock";
 
 describe("add wallet", () => {
   it("should call onError callback function when the promise rejects", async () => {
     global.fetch = jest.fn(() => Promise.reject());
     const onError = jest.fn();
     const onSucces = jest.fn();
-    await api.addWallet("token", request, onSucces, onError);
+    await pm.addWallet(sessionToken, walletRequest, onSucces, onError);
     expect(onSucces).not.toBeCalled();
-    expect(onError).toBeCalled();
+    expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
   });
 
   it("should call onError callback function server error 5xx", async () => {
-    // @ts-ignore
-    global.fetch = jest.fn(() => Promise.resolve({ status: 500 }));
+    const response = new Response(null, { status: 500 });
+    global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
     const onSucces = jest.fn();
-    await api.addWallet("token", request, onSucces, onError);
+    await pm.addWallet(sessionToken, walletRequest, onSucces, onError);
     expect(onSucces).not.toBeCalled();
-    expect(onError).toBeCalled();
+    expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
+  });
+
+  it("should call onSucces callback function on 2xx response passing the idWallet parameters", async () => {
+    const response = new Response(walletResponseBody, {
+      status: 200
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const onError = jest.fn();
+    const onSucces = jest.fn();
+    await pm.addWallet(sessionToken, walletRequest, onSucces, onError);
+    expect(onSucces).toHaveBeenCalledWith(idWallet);
+    expect(onError).not.toBeCalled();
+  });
+
+  it("should call onError callback function server error 4xx", async () => {
+    const response = new Response(null, { status: 404 });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const onError = jest.fn();
+    const onSucces = jest.fn();
+    await pm.addWallet(sessionToken, walletRequest, onSucces, onError);
+    expect(onSucces).not.toBeCalled();
+    expect(onError).not.toBeCalled();
+    expect(global.location.href).toContain("outcome=1");
   });
 });
