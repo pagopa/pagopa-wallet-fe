@@ -4,19 +4,19 @@
 import * as E from "fp-ts/Either";
 import * as TE from "fp-ts/TaskEither";
 import { pipe } from "fp-ts/function";
-import { CreateSessionResponse } from "../../../generated/definitions/payment-ecommerce/CreateSessionResponse";
-import { apiPaymentEcommerceClientWithRetry } from "./client";
+import { WalletFieldsResponse } from "../../../generated/definitions/webview-payment-wallet/WalletFieldsResponse";
+import { apiWalletClient } from "./client";
 
 export const npgSessionsFields = async (
   onError: (e: string) => void,
-  onResponse: (data: CreateSessionResponse) => void
+  onResponse: (data: WalletFieldsResponse) => void
 ) =>
   await pipe(
     TE.tryCatch(
       () =>
-        apiPaymentEcommerceClientWithRetry.createSession({
-          id: "e7058cac-5e1a-4002-8994-5bab31e9f385",
-          recaptchaResponse: "atoken"
+        apiWalletClient.getWalletFieldsById({
+          walletId: "11111",
+          bearerAuth: "atoken"
         }),
       (_e) => "err"
     ),

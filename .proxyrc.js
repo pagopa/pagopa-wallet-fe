@@ -7,7 +7,10 @@
  *
  */
 require('dotenv').config({ path: '.env.development'});
+
 const {createProxyMiddleware} = require("http-proxy-middleware");
+const express = require('express')
+const path = require('path')
 
 const API_HOST = process.env.WALLET_CONFIG_API_HOST;
 const API_WALLET_BASEPATH =  process.env.WALLET_CONFIG_API_HOST;
@@ -18,4 +21,6 @@ module.exports = function (app) {
         target: API_HOST,
         changeOrigin: true
     }));
+
+    app.use('/', express.static(path.join(__dirname, 'static')))
 }

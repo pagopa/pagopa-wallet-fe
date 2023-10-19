@@ -27,6 +27,8 @@ export default (buildConfig: BuildConfig) => {
     onPaymentComplete,
     onPaymentRedirect
   } = buildConfig;
+
+  console.debug('building');
   return {
     onBuildSuccess({ id }: NpgEvtData) {
       // write some code to manage the successful data entering in the specified field: evtData.id

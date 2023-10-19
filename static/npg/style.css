@@ -1,0 +1,64 @@
+@import  '../normalize.css';
+
+* {
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.npg-container {
+	font-family: "Titillium Web",sans-serif;
+	font-weight: 400;
+	font-size: 1.125rem;
+	line-height: 1.4375em;
+	color: #17324D;
+	letter-spacing: 0;
+	box-sizing: border-box;
+	position: relative;
+	cursor: text;
+	display: -webkit-inline-box;
+	display: -webkit-inline-flex;
+	display: -ms-inline-flexbox;
+	display: inline-flex;
+	-webkit-align-items: center;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	width: 100%;
+	position: relative;
+	font-weight: 600;
+}
+
+.npg-component {
+	display: flex;
+	align-items: center;
+  font: inherit;
+	letter-spacing: inherit;
+	color: currentColor;
+	box-sizing: content-box;
+	height: 100%;
+	margin: 0;
+	-webkit-tap-highlight-color: transparent;
+	min-width: 0;
+	width: 100%;
+  outline: none;
+	border: 0;
+}
+
+#CARD_NUMBER {
+	padding-left: 50px;
+	background-position: 5px !important;
+	background-image: url('./card-default.svg');
+	background-repeat: no-repeat;
+	background-size: 35px;
+}
+

@@ -18,8 +18,6 @@ export const IConfig = t.interface({
   WALLET_CONFIG_API_PM_BASEPATH: NonEmptyString,
   WALLET_CONFIG_API_ENV: NonEmptyString,
   WALLET_CONFIG_API_TIMEOUT: t.number,
-  WALLET_ECOMMERCE_HOST: NonEmptyString,
-  WALLET_API_ECOMMERCE_BASEPATH: NonEmptyString,
   WALLET_NPG_SDK_URL: NonEmptyString
 });
 

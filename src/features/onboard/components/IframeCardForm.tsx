@@ -1,12 +1,12 @@
-import React from "react";
 import { Box } from "@mui/material";
+import React from "react";
 import { useTranslation } from "react-i18next";
-import { ErrorsType } from "../../../utils/errors/checkErrorsModel";
-import ErrorModal from "../../../components/modals/ErrorModal";
-import createBuildConfig from "../../../utils/buildConfig";
-import { CreateSessionResponse } from "../../../../generated/definitions/payment-ecommerce/CreateSessionResponse";
+import { WalletFieldsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletFieldsResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import { npgSessionsFields } from "../../../utils/api/helper";
+import createBuildConfig from "../../../utils/buildConfig";
+import { ErrorsType } from "../../../utils/errors/errorsModel";
+import ErrorModal from "../../../components/commons/ErrorModal";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -28,8 +28,7 @@ const initialFieldsState: FormStatus = Object.values(
 export default function IframeCardForm() {
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState("");
-  const [form, setForm] = React.useState<CreateSessionResponse>();
+  const [form, setForm] = React.useState<WalletFieldsResponse>();
   const [activeField, setActiveField] = React.useState<FieldId | undefined>(
     undefined
   );
@@ -41,9 +40,8 @@ export default function IframeCardForm() {
   const formIsValid = (fieldFormStatus: FormStatus) =>
     Object.values(fieldFormStatus).every((el) => el.isValid);
 
-  const onError = (m: string) => {
+  const onError = () => {
     setLoading(false);
-    setError(m);
     setErrorModalOpen(true);
   };
 
@@ -88,7 +86,7 @@ export default function IframeCardForm() {
 
   React.useEffect(() => {
     if (!form) {
-      const onResponse = (body: CreateSessionResponse) => {
+      const onResponse = (body: WalletFieldsResponse) => {
         setForm(body);
         const onReadyForPayment = () => void transaction();
 
@@ -126,11 +124,9 @@ export default function IframeCardForm() {
         }
       };
 
-      void (async () => {
-        void npgSessionsFields(onError, onResponse);
-      })();
+      void npgSessionsFields(onError, onResponse);
     }
-  }, [form?.orderId]);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     try {
@@ -139,7 +135,7 @@ export default function IframeCardForm() {
       // @ts-ignore
       buildInstance.confirmData(() => setLoading(true));
     } catch (e) {
-      onError(ErrorsType.GENERIC_ERROR);
+      onError();
     }
   };
 
@@ -152,7 +148,7 @@ export default function IframeCardForm() {
           <Box>
             <IframeCardField
               label={t("inputCardPage.formFields.number")}
-              fields={form?.paymentMethodData.form}
+              fields={form?.cardFormFields}
               id={"CARD_NUMBER"}
               errorCode={formStatus.CARD_NUMBER?.errorCode}
               errorMessage={formStatus.CARD_NUMBER?.errorMessage}
@@ -168,7 +164,7 @@ export default function IframeCardForm() {
             <Box sx={{ flex: "1 1 0" }}>
               <IframeCardField
                 label={t("inputCardPage.formFields.expirationDate")}
-                fields={form?.paymentMethodData.form}
+                fields={form?.cardFormFields}
                 id={"EXPIRATION_DATE"}
                 errorCode={formStatus.EXPIRATION_DATE?.errorCode}
                 errorMessage={formStatus.EXPIRATION_DATE?.errorMessage}
@@ -179,7 +175,7 @@ export default function IframeCardForm() {
             <Box width="50%">
               <IframeCardField
                 label={t("inputCardPage.formFields.cvv")}
-                fields={form?.paymentMethodData.form}
+                fields={form?.cardFormFields}
                 id={"SECURITY_CODE"}
                 errorCode={formStatus.SECURITY_CODE?.errorCode}
                 errorMessage={formStatus.SECURITY_CODE?.errorMessage}
@@ -191,7 +187,7 @@ export default function IframeCardForm() {
           <Box>
             <IframeCardField
               label={t("inputCardPage.formFields.name")}
-              fields={form?.paymentMethodData.form}
+              fields={form?.cardFormFields}
               id={"CARDHOLDER_NAME"}
               errorCode={formStatus.CARDHOLDER_NAME?.errorCode}
               errorMessage={formStatus.CARDHOLDER_NAME?.errorMessage}
@@ -211,7 +207,7 @@ export default function IframeCardForm() {
       </form>
       {!!errorModalOpen && (
         <ErrorModal
-          error={error}
+          error={ErrorsType.GENERIC_ERROR}
           open={errorModalOpen}
           onClose={() => {
             setErrorModalOpen(false);
