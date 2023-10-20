@@ -1,15 +1,7 @@
-import Check from "@mui/icons-material/Check";
-import Close from "@mui/icons-material/Close";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import * as O from "fp-ts/Option";
 import { makeMatchers } from "ts-adt/MakeADT";
 import React from "react";
-
-function emailValidation(email: string) {
-  return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i.test(
-    email
-  );
-}
 
 function cardNameValidation(name: string) {
   return /^[a-zA-Z]+[\s']+([a-zA-Z]+[\s']*){1,}$/.test(name);
@@ -18,18 +10,6 @@ function cardNameValidation(name: string) {
 function digitValidation(text: string) {
   return /^\d+$/.test(text);
 }
-
-const getFormValidationIcon = (
-  touched: boolean | undefined,
-  error: boolean | undefined
-) =>
-  touched ? (
-    error ? (
-      <Close sx={{ mr: 1 }} color="error" />
-    ) : (
-      <Check sx={{ mr: 1, color: "green" }} />
-    )
-  ) : undefined;
 
 const getFormErrorIcon = (
   touched: boolean | undefined,
@@ -64,14 +44,14 @@ function expirationDateChangeValidation(value: string) {
   );
 }
 
-type HttpFamilyResponseStatusCode = {
+type HTTPFamilyResponseStatusCode = {
   familyCode: "1xx" | "2xx" | "3xx" | "4xx" | "5xx";
-  actulaCode: number;
+  actualCode: number;
 };
 
 function evaluateHTTPfamilyStatusCode(
   httpCode: number
-): O.Option<HttpFamilyResponseStatusCode> {
+): O.Option<HTTPFamilyResponseStatusCode> {
   const httpCodeToString = `${httpCode}`;
   const httpStatusCode = /^[1-5][0-9][0-9]$/;
   if (!httpStatusCode.test(httpCodeToString)) {
@@ -79,8 +59,8 @@ function evaluateHTTPfamilyStatusCode(
   }
   return O.some({
     familyCode:
-      `${httpCodeToString[0]}xx` as HttpFamilyResponseStatusCode["familyCode"],
-    actulaCode: httpCode
+      `${httpCodeToString[0]}xx` as HTTPFamilyResponseStatusCode["familyCode"],
+    actualCode: httpCode
   });
 }
 
@@ -89,8 +69,6 @@ const [, matchP] = makeMatchers("familyCode");
 export default {
   expirationDateChangeValidation,
   getFormErrorIcon,
-  getFormValidationIcon,
-  emailValidation,
   cardNameValidation,
   digitValidation,
   evaluateHTTPfamilyStatusCode,
