@@ -10,7 +10,7 @@ import {
 import { SxProps } from "@mui/system";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Field } from "../../../../generated/definitions/payment-ecommerce/Field";
+import { Field } from "../../../../generated/definitions/webview-payment-wallet/Field";
 import { FieldId, IdFields } from "./types";
 
 interface Props {

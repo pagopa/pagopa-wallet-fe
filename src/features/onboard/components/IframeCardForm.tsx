@@ -45,9 +45,9 @@ export default function IframeCardForm() {
     setErrorModalOpen(true);
   };
 
-  const transaction = async () => {
-    console.log("TO-DO!");
-  };
+  // TODO
+  const transaction = async () => null;
+
   /*
   const transaction = async () => {
     const transactionId = (
@@ -91,7 +91,6 @@ export default function IframeCardForm() {
         const onReadyForPayment = () => void transaction();
 
         const onPaymentComplete = () => {
-          console.log("TO-DO!");
           window.location.replace(`/`);
         };
 
@@ -101,7 +100,6 @@ export default function IframeCardForm() {
 
         const onBuildError = () => {
           setLoading(false);
-          console.log("TO-DO!");
           // window.location.replace(`/`);
         };
 

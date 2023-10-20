@@ -19,8 +19,8 @@ const API_PM_BASEPATH =  process.env.WALLET_CONFIG_API_HOST;
 module.exports = function (app) {
     app.use(createProxyMiddleware([API_WALLET_BASEPATH, API_PM_BASEPATH], {
         target: API_HOST,
-        changeOrigin: true
     }));
 
     app.use('/', express.static(path.join(__dirname, 'static')))
+
 }
