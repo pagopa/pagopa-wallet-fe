@@ -11,5 +11,8 @@ module.exports = {
       } ]
     ],
     coverageReporters: ["cobertura"],
-    modulePathIgnorePatterns: ["__integration_tests__"]
+    coveragePathIgnorePatterns: [
+        "generated",
+      ],
+    modulePathIgnorePatterns: ["__integration_tests__", "generated"]
   };
