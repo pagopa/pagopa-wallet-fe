@@ -1,5 +1,6 @@
 export enum SessionItems {
-  sessionToken = "sessionToken"
+  sessionToken = "sessionToken",
+  walletId = "walletId"
 }
 
 const load = (item: SessionItems) => sessionStorage.getItem(item);

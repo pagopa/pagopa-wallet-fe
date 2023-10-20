@@ -7,6 +7,8 @@ import { npgSessionsFields } from "../../../utils/api/helper";
 import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import ErrorModal from "../../../components/commons/ErrorModal";
+import utils from "../../../utils";
+import { SessionItems } from "../../../utils/storage";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -44,6 +46,16 @@ export default function IframeCardForm() {
     setLoading(false);
     setErrorModalOpen(true);
   };
+
+  const sessionToken = utils.url.getFragmentParameter(
+    window.location.href,
+    SessionItems.sessionToken
+  );
+
+  const walletId = utils.url.getFragmentParameter(
+    window.location.href,
+    SessionItems.walletId
+  );
 
   // TODO
   const transaction = async () => null;
@@ -122,7 +134,7 @@ export default function IframeCardForm() {
         }
       };
 
-      void npgSessionsFields(onError, onResponse);
+      void npgSessionsFields(sessionToken, walletId, onError, onResponse);
     }
   }, []);
 
