@@ -49,6 +49,11 @@ resources:
       name: pagopa/azure-pipeline-templates
       ref: refs/tags/v19
       endpoint: 'io-azure-devops-github-ro'
+    - repository: walletTests
+      type: github
+      name: pagopa/pagopa-wallet-tests
+      ref: main
+      endpoint: 'io-azure-devops-github-ro'
 
 stages:
   - stage: Prepare_artifact_dev
@@ -116,38 +121,18 @@ stages:
               inlineScript: |
                 az cdn endpoint purge -g pagopa-d-weu-wallet-fe-rg -n pagopa-d-weu-wallet-fe-cdn-endpoint --profile-name pagopa-d-weu-wallet-fe-cdn-profile --content-paths "/*"
 
-  #- stage: End_to_End_Tests_DEV
-  #  dependsOn:
-  #    - Deploy_DEV_pagoPA
-  #  pool:
-  #    vmImage: 'ubuntu-latest'
-  #  jobs:
-  #    - job: end_to_end_tests_dev
-  #      steps:
-  #        - checkout: checkoutTests
-   #       - script : |
-   #          echo "##[debug] Change placeholder for CHECKOUT_URL ..."
-   #          cd e2e-tests 
-   #          mv dev.env .env
-   #       - script: |
-   #          docker build -t ui_test e2e-tests
-   #         displayName: 'Build test image'
-   #
-   #       - script: |
-   #           docker run --name=ui_test ui_test
-   #         displayName: 'Run UI test container'
-   #         continueOnError: true 
-   #
-   #       - script: |
-   #           docker cp ui_test:/puppeteer/test_reports  test_reports
-   #         displayName: 'Copy test result'
-   #         continueOnError: true 
-   #
-   #       - task: PublishTestResults@2
-   #         inputs:
-   #           testResultsFormat: 'JUnit'
-   #           testResultsFiles: '**/*-TEST.xml' 
-   #           searchFolder: '$(System.DefaultWorkingDirectory)'
+  - stage: End_to_End_Tests_DEV
+    dependsOn:
+      - Deploy_DEV_pagoPA
+    pool:
+      vmImage: 'ubuntu-latest'
+    jobs:
+      - job: e2e_tests
+        steps:
+          - template: .devops/azure-templates/e2e-tests.yaml@walletTests
+            parameters:
+              ENVIRONMENT: DEV
+              CHECKOUT_RESOURCE_REPO_NAME: walletTests
 
   # Create a relase
   # Activated when ONE OF these are met:
@@ -265,38 +250,18 @@ stages:
               inlineScript: |
                 az cdn endpoint purge -g pagopa-u-weu-wallet-fe-rg -n pagopa-u-weu-wallet-fe-cdn-endpoint --profile-name pagopa-u-weu-wallet-fe-cdn-profile --content-paths "/*"
  
-  #- stage: End_to_End_Tests_UAT
-  #  dependsOn:
-  #    - Deploy_UAT_pagoPA
-  #  pool:
-  #    vmImage: 'ubuntu-latest'
-  #  jobs:
-  #    - job: end_to_end_tests_uat
-  #      steps:
-  #        - checkout: checkoutTests
-  #        - script : |
-  #           echo "##[debug] Change placeholder for CHECKOUT_URL ..."
-  #           cd e2e-tests 
-  #           mv uat.env .env
-  #        - script: |
-  #           docker build -t ui_test e2e-tests
-  #          displayName: 'Build test image'
-  #
-  #        - script: |
-  #            docker run --name=ui_test ui_test
-  #          displayName: 'Run UI test container'
-  #          continueOnError: true 
-  #
-  #        - script: |
-  #            docker cp ui_test:/puppeteer/test_reports  test_reports
-  #          displayName: 'Copy test result'
-  #          continueOnError: true 
-  #
-  #        - task: PublishTestResults@2
-  #          inputs:
-  #            testResultsFormat: 'JUnit'
-  #            testResultsFiles: '**/*-TEST.xml' 
-  #            searchFolder: '$(System.DefaultWorkingDirectory)'
+  - stage: End_to_End_Tests_UAT
+    dependsOn:
+      - Deploy_UAT_pagoPA
+    pool:
+      vmImage: 'ubuntu-latest'
+    jobs:
+      - job: e2e_tests
+        steps:
+          - template: .devops/azure-templates/e2e-tests.yaml@walletTests
+            parameters:
+              ENVIRONMENT: UAT
+              CHECKOUT_RESOURCE_REPO_NAME: walletTests
 
     # Prepare Artifact
   # - stage: Prepare_artifact_prod
