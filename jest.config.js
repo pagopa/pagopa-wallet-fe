@@ -10,9 +10,9 @@ module.exports = {
         outputName: 'wallet-fe-unit-TEST.xml',
       } ]
     ],
-    coverageReporters: ["cobertura"],
+    coverageReporters: ["cobertura",'lcov'],
     coveragePathIgnorePatterns: [
         "generated",
       ],
-    modulePathIgnorePatterns: ["__integration_tests__", "generated"]
+    modulePathIgnorePatterns: ["__integration_tests__"]
   };

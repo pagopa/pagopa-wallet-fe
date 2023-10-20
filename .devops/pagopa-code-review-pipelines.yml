@@ -31,12 +31,6 @@ resources:
       ref: refs/tags/v19
       endpoint: 'io-azure-devops-github-ro'
 
-    - repository: checkout-be-mock
-      type: github
-      name: pagopa/pagopa-checkout-be-mock
-      ref: master
-      endpoint: 'io-azure-devops-github-ro'
-
 stages:
   - stage: Build
     dependsOn: []
