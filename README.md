@@ -10,8 +10,8 @@ These are all the environment variables needed to configure the frontend:
 
 | Variable                        | Description                                  | Type   | Default |
 |---------------------------------|----------------------------------------------|--------|---------|
-| CHECKOUT_API_TIMEOUT            | Timeout in seconds for HTTP requests to APIs | number | 10      |
-| CHECKOUT_API_ECOMMERCE_BASEPATH | API basepath for eCommerce Checkout APIs     | string |         |
-| CHECKOUT_ECOMMERCE_HOST         | Host of eCommerce Checkout APIs              | string |         |
-| CHECKOUT_PAGOPA_ASSETS_CDN      | URL of CDN where to get logos from           | string |         |
-| WALLET_ENV                      | Deployment environment (DEV, UAT or PROD)    | string |         |
+| WALLET_CONFIG_API_TIMEOUT       | Timeout in millis for HTTP requests to APIs  | number |         |
+| WALLET_CONFIG_API_BASEPATH      | APIs basepath                                | string |         |
+| WALLET_CONFIG_API_HOST          | APIs host                                    | string |         |
+| WALLET_CONFIG_API_PM_BASEPATH   | API pm basepath                              | string |         |
+| WALLET_CONFIG_API_ENV           | Deployment environment (DEV, UAT or PROD)    | string |         |
