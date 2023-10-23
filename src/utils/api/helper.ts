@@ -5,7 +5,7 @@ import * as E from "fp-ts/Either";
 import * as TE from "fp-ts/TaskEither";
 import { pipe } from "fp-ts/function";
 import { toError } from "fp-ts/lib/Either";
-import { WalletFieldsResponse } from "../../../generated/definitions/webview-payment-wallet/WalletFieldsResponse";
+import { SessionWalletCreateResponse } from "../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { WalletId } from "../../../generated/definitions/webview-payment-wallet/WalletId";
 import { ErrorsType } from "../errors/errorsModel";
 import { apiWalletClient } from "./client";
@@ -14,12 +14,12 @@ export const npgSessionsFields = async (
   bearer: string,
   walletId: WalletId,
   onError: (e: string) => void,
-  onResponse: (data: WalletFieldsResponse) => void
+  onResponse: (data: SessionWalletCreateResponse) => void
 ) =>
   await pipe(
     TE.tryCatch(
       () =>
-        apiWalletClient.getWalletFieldsById({
+        apiWalletClient.createSessionWallet({
           walletId,
           bearerAuth: bearer
         }),
