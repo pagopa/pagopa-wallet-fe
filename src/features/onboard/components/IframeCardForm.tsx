@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { WalletFieldsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletFieldsResponse";
+import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import { npgSessionsFields } from "../../../utils/api/helper";
 import createBuildConfig from "../../../utils/buildConfig";
@@ -30,7 +30,7 @@ const initialFieldsState: FormStatus = Object.values(
 export default function IframeCardForm() {
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [form, setForm] = React.useState<WalletFieldsResponse>();
+  const [form, setForm] = React.useState<SessionWalletCreateResponse>();
   const [activeField, setActiveField] = React.useState<FieldId | undefined>(
     undefined
   );
@@ -98,7 +98,7 @@ export default function IframeCardForm() {
 
   React.useEffect(() => {
     if (!form) {
-      const onResponse = (body: WalletFieldsResponse) => {
+      const onResponse = (body: SessionWalletCreateResponse) => {
         setForm(body);
         const onReadyForPayment = () => void transaction();
 
