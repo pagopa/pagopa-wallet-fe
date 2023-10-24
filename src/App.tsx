@@ -11,7 +11,7 @@ import {
 import Layout from "./components/commons/Layout";
 import InputCardPage from "./routes/InputCardPage";
 import IFrameCardPage from "./routes/IframeCardPage";
-import { CheckoutRoutes } from "./routes/models/routeModel";
+import { WalletRoutes } from "./routes/models/routeModel";
 import "./translations/i18n";
 import utils from "./utils";
 
@@ -49,16 +49,16 @@ export function App() {
         <Router>
           <Routes>
             <Route
-              path={CheckoutRoutes.INSERISCI_CARTA}
+              path={WalletRoutes.INSERISCI_CARTA}
               element={<InputCardPage />}
             />
             <Route
-              path={CheckoutRoutes.NPG_INSERISCI_CARTA}
+              path={WalletRoutes.NPG_INSERISCI_CARTA}
               element={<IFrameCardPage />}
             />
             <Route
               path="*"
-              element={<Navigate replace to={CheckoutRoutes.INSERISCI_CARTA} />}
+              element={<Navigate replace to={WalletRoutes.INSERISCI_CARTA} />}
             />
           </Routes>
         </Router>

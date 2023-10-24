@@ -9,6 +9,8 @@ import { ErrorsType } from "../../../utils/errors/errorsModel";
 import ErrorModal from "../../../components/commons/ErrorModal";
 import utils from "../../../utils";
 import { SessionItems } from "../../../utils/storage";
+import { clearNavigationEvents } from "../../../utils/eventListener";
+import { WalletRoutes } from "../../../routes/models/routeModel";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -57,34 +59,9 @@ export default function IframeCardForm() {
     SessionItems.walletId
   );
 
-  // TODO
-  const transaction = async () => null;
-
-  /*
-  const transaction = async () => {
-    const transactionId = (
-      getSessionItem(SessionItems.transaction) as
-        | NewTransactionResponse
-        | undefined
-    )?.transactionId;
-    if (transactionId) {
-      void retrievePaymentSession(
-        (
-          getSessionItem(SessionItems.paymentMethod) as
-            | PaymentMethod
-            | undefined
-        )?.paymentMethodId || "",
-        getSessionItem(SessionItems.orderId) as string
-      );
-    } else {
-      await activatePayment({
-        token,
-        onResponseActivate: retrievePaymentSession,
-        onErrorActivate: onError
-      });
-    }
+  const validation = async () => {
+    // TODO call POST wallets/:walletId/validation with return value redirect to 3ds page
   };
-  */
 
   const onChange = (id: FieldId, status: FieldStatus) => {
     if (Object.keys(IdFields).includes(id)) {
@@ -100,19 +77,21 @@ export default function IframeCardForm() {
     if (!form) {
       const onResponse = (body: SessionWalletCreateResponse) => {
         setForm(body);
-        const onReadyForPayment = () => void transaction();
+        const onReadyForPayment = () => void validation();
 
         const onPaymentComplete = () => {
-          window.location.replace(`/`);
+          clearNavigationEvents();
+          window.location.replace(`/${WalletRoutes.ESITO}`);
         };
 
         const onPaymentRedirect = (urlredirect: string) => {
+          clearNavigationEvents();
           window.location.replace(urlredirect);
         };
 
         const onBuildError = () => {
           setLoading(false);
-          // window.location.replace(`/`);
+          window.location.replace(`/${WalletRoutes.ERRORE}`);
         };
 
         try {
@@ -136,7 +115,7 @@ export default function IframeCardForm() {
 
       void npgSessionsFields(sessionToken, walletId, onResponse, onError);
     }
-  }, []);
+  }, [form?.orderId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     try {
@@ -145,7 +124,7 @@ export default function IframeCardForm() {
       // @ts-ignore
       buildInstance.confirmData(() => setLoading(true));
     } catch (e) {
-      onError();
+      onError(); // possible redirect to app with outcome != 0
     }
   };
 
