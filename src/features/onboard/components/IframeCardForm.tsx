@@ -134,7 +134,7 @@ export default function IframeCardForm() {
         }
       };
 
-      void npgSessionsFields(sessionToken, walletId, onError, onResponse);
+      void npgSessionsFields(sessionToken, walletId, onResponse, onError);
     }
   }, []);
 

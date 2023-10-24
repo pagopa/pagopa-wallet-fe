@@ -13,8 +13,8 @@ import { apiWalletClient } from "./client";
 export const npgSessionsFields = async (
   bearer: string,
   walletId: WalletId,
-  onError: (e: string) => void,
-  onResponse: (data: SessionWalletCreateResponse) => void
+  onResponse: (data: SessionWalletCreateResponse) => void,
+  onError: (e: string) => void
 ) =>
   await pipe(
     TE.tryCatch(
