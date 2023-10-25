@@ -9,10 +9,14 @@ const GdiCheckPage = () => {
     "gdiIframeUrl"
   );
 
+  const decodedGdiIframeUrl = Buffer.from(gdiIframeUrl, "base64").toString(
+    "ascii"
+  );
+
   return (
     <PageContainer>
       <WalletLoader />
-      <iframe src={gdiIframeUrl} style={{ display: "none" }} />
+      <iframe src={decodedGdiIframeUrl} style={{ display: "none" }} />
     </PageContainer>
   );
 };

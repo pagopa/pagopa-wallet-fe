@@ -1,12 +1,17 @@
 import { Box } from "@mui/material";
+import * as E from "fp-ts/Either";
+import * as O from "fp-ts/Option";
+import { pipe } from "fp-ts/function";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
+import { WalletVerifyRequestAPMDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestAPMDetails";
 import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
 import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import ErrorModal from "../../../components/commons/ErrorModal";
+import { getConfigOrThrow } from "../../../config";
 import { WalletRoutes } from "../../../routes/models/routeModel";
 import utils from "../../../utils";
 import { npg } from "../../../utils/api/npg";
@@ -67,11 +72,29 @@ export default function IframeCardForm() {
   const onValidation = ({
     details
   }: WalletVerifyRequestsResponse & {
-    details: WalletVerifyRequestCardDetails;
+    details: WalletVerifyRequestCardDetails | WalletVerifyRequestAPMDetails;
   }) => {
-    if (details?.iframeUrl) {
-      navigate(`/${WalletRoutes.GDI_CHECK}#gdiIframeUrl=${details.iframeUrl}`);
-    }
+    pipe(
+      WalletVerifyRequestCardDetails.decode(details),
+      E.fold(
+        () =>
+          pipe(
+            WalletVerifyRequestAPMDetails.decode(details),
+            E.fold(onError, (detail) => {
+              pipe(
+                O.fromNullable(detail.redirectUrl),
+                O.match(onError, (redirect) =>
+                  window.location.replace(redirect)
+                )
+              );
+            })
+          ),
+        (detail) =>
+          navigate(
+            `/${WalletRoutes.GDI_CHECK}#gdiIframeUrl=${detail.iframeUrl}`
+          )
+      )
+    );
   };
 
   const validation = async ({ orderId }: SessionWalletCreateResponse) => {
@@ -102,7 +125,11 @@ export default function IframeCardForm() {
 
         const onPaymentComplete = () => {
           clearNavigationEvents();
-          window.location.replace(`/${WalletRoutes.ESITO}`);
+          window.location.replace(
+            `${getConfigOrThrow().WALLET_CONFIG_API_HOST}${
+              getConfigOrThrow().WALLET_CONFIG_API_PM_BASEPATH
+            }/v3/webview/logout/bye?outcome=0`
+          );
         };
 
         const onPaymentRedirect = (redirect: string) => {
