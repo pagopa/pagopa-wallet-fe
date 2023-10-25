@@ -3,7 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
-import { npgSessionsFields } from "../../../utils/api/helper";
+import { npgSessionsFields, npgValidations } from "../../../utils/api/helper";
 import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import ErrorModal from "../../../components/commons/ErrorModal";
@@ -11,6 +11,8 @@ import utils from "../../../utils";
 import { SessionItems } from "../../../utils/storage";
 import { clearNavigationEvents } from "../../../utils/eventListener";
 import { WalletRoutes } from "../../../routes/models/routeModel";
+import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
+import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -59,8 +61,18 @@ export default function IframeCardForm() {
     SessionItems.walletId
   );
 
+  const onResponse = ({
+    details
+  }: WalletVerifyRequestsResponse & {
+    details: WalletVerifyRequestCardDetails;
+  }) => {
+    if (details?.iframeUrl) {
+      // window.location.replace(details?.iframeUrl);
+    }
+  };
+
   const validation = async () => {
-    // TODO call POST wallets/:walletId/validation with return value redirect to 3ds page
+    void npgValidations(sessionToken, walletId, onResponse, onError);
   };
 
   const onChange = (id: FieldId, status: FieldStatus) => {
