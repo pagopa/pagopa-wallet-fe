@@ -60,7 +60,7 @@ const validations = async ({
   orderId: string;
   walletId: WalletId;
   onResponse: (data: WalletVerifyRequestsResponse) => void;
-  onError: () => void;
+  onError: (e: string) => void;
 }) =>
   await pipe(
     TE.tryCatch(
@@ -74,7 +74,7 @@ const validations = async ({
     ),
     TE.fold(
       (err) => {
-        onError();
+        onError(ErrorsType.GENERIC_ERROR);
         return TE.left(err);
       },
       (myResExt) => async () =>
