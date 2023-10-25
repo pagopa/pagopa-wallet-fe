@@ -3,7 +3,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
-import { npgSessionsFields, npgValidations } from "../../../utils/api/helper";
 import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import ErrorModal from "../../../components/commons/ErrorModal";
@@ -13,6 +12,7 @@ import { clearNavigationEvents } from "../../../utils/eventListener";
 import { WalletRoutes } from "../../../routes/models/routeModel";
 import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
 import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
+import { npg } from "../../../utils/api/npg";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -73,7 +73,7 @@ export default function IframeCardForm() {
   };
 
   const validation = async ({ orderId }: SessionWalletCreateResponse) => {
-    void npgValidations({
+    void npg.validations({
       orderId,
       sessionToken,
       walletId,
@@ -103,9 +103,9 @@ export default function IframeCardForm() {
           window.location.replace(`/${WalletRoutes.ESITO}`);
         };
 
-        const onPaymentRedirect = (urlredirect: string) => {
+        const onPaymentRedirect = (redirect: string) => {
           clearNavigationEvents();
-          window.location.replace(urlredirect);
+          window.location.replace(redirect);
         };
 
         const onBuildError = () => {
@@ -132,7 +132,7 @@ export default function IframeCardForm() {
         }
       };
 
-      void npgSessionsFields(sessionToken, walletId, onResponse, onError);
+      void npg.sessionsFields(sessionToken, walletId, onResponse, onError);
     }
   }, [form?.orderId]);
 

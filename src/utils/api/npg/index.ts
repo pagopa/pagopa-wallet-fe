@@ -5,13 +5,13 @@ import * as E from "fp-ts/Either";
 import * as TE from "fp-ts/TaskEither";
 import { pipe } from "fp-ts/function";
 import { toError } from "fp-ts/lib/Either";
-import { SessionWalletCreateResponse } from "../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
-import { WalletId } from "../../../generated/definitions/webview-payment-wallet/WalletId";
-import { WalletVerifyRequestsResponse } from "../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
-import { ErrorsType } from "../errors/errorsModel";
-import { apiWalletClient } from "./client";
+import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
+import { WalletId } from "../../../../generated/definitions/webview-payment-wallet/WalletId";
+import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
+import { ErrorsType } from "../../errors/errorsModel";
+import { apiWalletClient } from "../client";
 
-export const npgSessionsFields = async (
+const sessionsFields = async (
   bearer: string,
   walletId: WalletId,
   onResponse: (data: SessionWalletCreateResponse) => void,
@@ -49,7 +49,7 @@ export const npgSessionsFields = async (
     )
   )();
 
-export const npgValidations = async ({
+const validations = async ({
   sessionToken: bearerAuth,
   orderId,
   walletId,
@@ -94,3 +94,8 @@ export const npgValidations = async ({
         )
     )
   )();
+
+export const npg = {
+  validations,
+  sessionsFields
+};
