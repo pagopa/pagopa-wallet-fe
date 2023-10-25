@@ -19,7 +19,8 @@
     "dev": "rimraf .cache && rimraf dist && mkdir -p dist && npm-run-all generate type-check dev:env dev:server",
     "test": "jest --config=jest.config.js",
     "test:integration": "jest --config=jest.integration.config.js",
-    "test:coverage": "jest --coverage --passWithNoTests"
+    "test:coverage": "jest --coverage --passWithNoTests",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
@@ -39,6 +40,7 @@
     "eslint-plugin-sonarjs": "^0.5.0",
     "events": "^3.1.0",
     "http-proxy-middleware": "^1.0.6",
+    "husky": "^8.0.3",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-junit": "^16.0.0",
