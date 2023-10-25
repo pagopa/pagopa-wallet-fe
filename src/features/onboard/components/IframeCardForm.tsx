@@ -1,18 +1,19 @@
 import { Box } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
+import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
+import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
+import ErrorModal from "../../../components/commons/ErrorModal";
+import { WalletRoutes } from "../../../routes/models/routeModel";
+import utils from "../../../utils";
+import { npg } from "../../../utils/api/npg";
 import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
-import ErrorModal from "../../../components/commons/ErrorModal";
-import utils from "../../../utils";
-import { SessionItems } from "../../../utils/storage";
 import { clearNavigationEvents } from "../../../utils/eventListener";
-import { WalletRoutes } from "../../../routes/models/routeModel";
-import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
-import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
-import { npg } from "../../../utils/api/npg";
+import { SessionItems } from "../../../utils/storage";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -43,6 +44,8 @@ export default function IframeCardForm() {
 
   const [buildInstance, setBuildInstance] = React.useState();
 
+  const navigate = useNavigate();
+
   const formIsValid = (fieldFormStatus: FormStatus) =>
     Object.values(fieldFormStatus).every((el) => el.isValid);
 
@@ -67,8 +70,7 @@ export default function IframeCardForm() {
     details: WalletVerifyRequestCardDetails;
   }) => {
     if (details?.iframeUrl) {
-      // TODO handle response based on details type
-      // window.location.replace(details?.iframeUrl);
+      navigate(`/${WalletRoutes.GDI_CHECK}#gdiIframeUrl=${details.iframeUrl}`);
     }
   };
 

@@ -12,7 +12,8 @@ export function getFragmentParameter(uri: string, name: string): string {
     if (gdiFragmentUrl === null) {
       return "";
     }
-    return urlParams.get(name) || "";
+
+    return Buffer.from(gdiFragmentUrl, "base64").toString("ascii");
   } catch (e) {
     return "";
   }
