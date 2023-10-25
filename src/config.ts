@@ -17,7 +17,8 @@ export const IConfig = t.interface({
   WALLET_CONFIG_API_BASEPATH: NonEmptyString,
   WALLET_CONFIG_API_PM_BASEPATH: NonEmptyString,
   WALLET_CONFIG_API_ENV: NonEmptyString,
-  WALLET_CONFIG_API_TIMEOUT: t.number
+  WALLET_CONFIG_API_TIMEOUT: t.number,
+  WALLET_NPG_SDK_URL: NonEmptyString
 });
 
 // No need to re-evaluate this object for each call

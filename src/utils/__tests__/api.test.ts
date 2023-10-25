@@ -5,7 +5,9 @@
   WALLET_CONFIG_API_PM_BASEPATH: "/pp-restapi-CD",
   WALLET_CONFIG_API_TIMEOUT: "10000",
   WALLET_CONFIG_API_ENV: "DEV",
-  WALLET_CONFIG_API_HOST: "https://api.dev.platform.pagopa.it"
+  WALLET_CONFIG_API_HOST: "https://api.dev.platform.pagopa.it",
+  WALLET_NPG_SDK_URL:
+    "https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js"
 };
 import pm from "../api/pm";
 import { ErrorsType } from "../errors/errorsModel";

@@ -1,5 +1,7 @@
-export enum CheckoutRoutes {
+export enum WalletRoutes {
   ROOT = "",
   INSERISCI_CARTA = "onboarding",
-  ERRORE = "errore"
+  ERRORE = "errore",
+  NPG_INSERISCI_CARTA = "npg-onboarding",
+  ESITO = "esito"
 }
