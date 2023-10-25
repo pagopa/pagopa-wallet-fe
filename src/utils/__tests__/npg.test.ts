@@ -34,7 +34,7 @@ describe("get card form fields", () => {
     expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
   });
 
-  it("should call onError callback function passing a GENERIC_ERROR on 5xx type response", async () => {
+  it("should call onError callback function passing a GENERIC_ERROR on 500 status code", async () => {
     const response = new Response(null, { status: 500 });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
@@ -44,7 +44,7 @@ describe("get card form fields", () => {
     expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
   });
 
-  it("should call onSucces callback function passing the idWallet parameter on 2xx type response", async () => {
+  it("should call onSucces callback function passing the response data on 200 status code", async () => {
     const response = new Response(npgSessionFieldsResponseBody, {
       status: 200
     });
@@ -73,7 +73,7 @@ describe("validate card data fields", () => {
     expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
   });
 
-  it.skip("should call onError callback function passing a GENERIC_ERROR on 5xx type response", async () => {
+  it.skip("should call onError callback function passing a GENERIC_ERROR on 500 status code", async () => {
     const response = new Response(null, { status: 500 });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
@@ -89,7 +89,7 @@ describe("validate card data fields", () => {
     expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
   });
 
-  it("should call onResponse callback function passing the idWallet parameter on 2xx type response", async () => {
+  it("should call onResponse callback function passing the response data on 200 status code", async () => {
     const response = new Response(walletValidationsResponseBody, {
       status: 200
     });
