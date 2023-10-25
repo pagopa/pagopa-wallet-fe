@@ -68,8 +68,19 @@ stages:
       vmImage: 'ubuntu-latest'
     dependsOn: []
     jobs:
+      
       - job: run_unit_tests
         steps:
+        - task: SonarCloudPrepare@1
+          displayName: 'Prepare SonarCloud analysis configuration'
+          inputs:
+            SonarCloud: '$(SONARCLOUD_SERVICE_CONN)'
+            organization: '$(SONARCLOUD_ORG)'
+            scannerMode: Other
+            extraProperties: |
+              sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
+              sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
+              sonar.javascript.lcov.reportPaths=./coverage/lcov.info
         - template: templates/node-job-setup/template.yaml@pagopaCommons
         
         - script: yarn generate
@@ -77,7 +88,11 @@ stages:
 
         - script: yarn test:coverage
           displayName: 'Unit tests exec'
-        
+
+        - task: SonarCloudPublish@1
+          displayName: 'Publish SonarCloud results on build summary'
+          inputs:
+            pollingTimeoutSec: '300' 
         - task: PublishTestResults@2
           displayName: 'Publish test results from Jest tests'
           inputs:
