@@ -1,8 +1,11 @@
 import { WalletRequest } from "../../../generated/definitions/payment-manager-v1/WalletRequest";
 import { WalletResponse } from "../../../generated/definitions/payment-manager-v1/WalletResponse";
 import { TypeEnum } from "../../../generated/definitions/payment-manager-v1/Wallet";
+import { SessionWalletCreateResponse } from "../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 
 export const idWallet = 1222302;
+export const walletId = "1222302";
+export const orderId = "1222302";
 
 export const walletRequest: WalletRequest = {
   data: {
@@ -47,3 +50,37 @@ const walletResponse: WalletResponse = {
 };
 
 export const walletResponseBody = JSON.stringify(walletResponse);
+
+const npgSessionFieldsResponse: SessionWalletCreateResponse = {
+  orderId,
+  cardFormFields: [
+    {
+      type: "TEXT",
+      class: "CARD_FIELD",
+      id: "CARD_NUMBER",
+      src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=CARD_NUMBER&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
+    },
+    {
+      type: "TEXT",
+      class: "CARD_FIELD",
+      id: "EXPIRATION_DATE",
+      src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=EXPIRATION_DATE&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
+    },
+    {
+      type: "TEXT",
+      class: "CARD_FIELD",
+      id: "SECURITY_CODE",
+      src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=SECURITY_CODE&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
+    },
+    {
+      type: "TEXT",
+      class: "CARD_FIELD",
+      id: "CARDHOLDER_NAME",
+      src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=CARDHOLDER_NAME&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
+    }
+  ]
+};
+
+export const npgSessionFieldsResponseBody = JSON.stringify(
+  npgSessionFieldsResponse
+);

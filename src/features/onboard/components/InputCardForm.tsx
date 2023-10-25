@@ -13,7 +13,6 @@ import cardValidator from "card-validator";
 import { Formik, FormikProps } from "formik";
 import React from "react";
 import sprite from "../../../assets/app.svg";
-import { FormButtons } from "../../../components/commons/FormButtons";
 import TextFormField from "../../../components/commons/TextFormField";
 import utils from "../../../utils";
 
@@ -23,6 +22,7 @@ import {
   SecureCodeDigits,
   SecureCodeLabels
 } from "../models";
+import { FormButtons } from "../../../components/FormButtons/FormButtons";
 
 export function InputCardForm(props: {
   loading: boolean;
@@ -261,7 +261,7 @@ export function InputCardForm(props: {
               <FormButtons
                 disabledCancel
                 disabledSubmit={!!disabled}
-                handleSubmit={handleSubmit}
+                handleSubmit={handleSubmit as () => void}
                 loadingSubmit={props.loading}
                 submitTitle="inputCardPage.formButtons.submit"
                 type="submit"

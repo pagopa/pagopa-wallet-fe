@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 type SubmitButton = {
-  handleSubmit: () => void;
+  handleSubmit: (e: React.FormEvent) => void;
   type?: "submit" | "button";
   disabledSubmit: boolean;
   loadingSubmit?: boolean;
@@ -14,7 +14,7 @@ type SubmitButton = {
 };
 
 type CancellableButtons = {
-  handleSubmit: () => void;
+  handleSubmit: (e: React.FormEvent) => void;
   handleCancel: () => void;
   type?: "submit" | "button";
   disabledSubmit: boolean;

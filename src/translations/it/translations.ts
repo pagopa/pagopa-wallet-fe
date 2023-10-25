@@ -51,5 +51,10 @@ export const TRANSLATIONS_IT = {
   },
   ERRORE_TECNICO: {
     title: "Spiacenti, si è verificato un errore tecnico"
+  },
+  clipboard: {
+    copy: "Copia",
+    copied: "Copiato",
+    edit: "Modifica"
   }
 };
