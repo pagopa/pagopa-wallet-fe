@@ -49,24 +49,32 @@ export const npgSessionsFields = async (
     )
   )();
 
-export const npgValidations = async (
-  bearer: string,
-  walletId: WalletId,
-  onResponse: (data: WalletVerifyRequestsResponse) => void,
-  onError: (e: string) => void
-) =>
+export const npgValidations = async ({
+  sessionToken: bearerAuth,
+  orderId,
+  walletId,
+  onResponse,
+  onError
+}: {
+  sessionToken: string;
+  orderId: string;
+  walletId: WalletId;
+  onResponse: (data: WalletVerifyRequestsResponse) => void;
+  onError: () => void;
+}) =>
   await pipe(
     TE.tryCatch(
       () =>
         apiWalletClient.postWalletValidations({
-          bearerAuth: bearer,
+          orderId,
+          bearerAuth,
           walletId
         }),
       (_e) => toError
     ),
     TE.fold(
       (err) => {
-        onError(ErrorsType.GENERIC_ERROR);
+        onError();
         return TE.left(err);
       },
       (myResExt) => async () =>

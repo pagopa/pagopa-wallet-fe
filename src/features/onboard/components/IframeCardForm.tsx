@@ -61,18 +61,25 @@ export default function IframeCardForm() {
     SessionItems.walletId
   );
 
-  const onResponse = ({
+  const onValidation = ({
     details
   }: WalletVerifyRequestsResponse & {
     details: WalletVerifyRequestCardDetails;
   }) => {
     if (details?.iframeUrl) {
+      // TODO handle response based on details type
       // window.location.replace(details?.iframeUrl);
     }
   };
 
-  const validation = async () => {
-    void npgValidations(sessionToken, walletId, onResponse, onError);
+  const validation = async ({ orderId }: SessionWalletCreateResponse) => {
+    void npgValidations({
+      orderId,
+      sessionToken,
+      walletId,
+      onResponse: onValidation,
+      onError
+    });
   };
 
   const onChange = (id: FieldId, status: FieldStatus) => {
@@ -89,7 +96,7 @@ export default function IframeCardForm() {
     if (!form) {
       const onResponse = (body: SessionWalletCreateResponse) => {
         setForm(body);
-        const onReadyForPayment = () => void validation();
+        const onReadyForPayment = () => void validation(body);
 
         const onPaymentComplete = () => {
           clearNavigationEvents();
