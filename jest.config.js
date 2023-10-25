@@ -11,6 +11,7 @@ module.exports = {
       } ]
     ],
     coverageReporters: ["cobertura",'lcov'],
+    collectCoverage: true,
     coveragePathIgnorePatterns: [
         "generated",
       ],
