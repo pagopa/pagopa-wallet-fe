@@ -6,10 +6,23 @@ import * as TE from "fp-ts/TaskEither";
 import { pipe } from "fp-ts/function";
 import { toError } from "fp-ts/lib/Either";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
+import { createClient as createWalletClient } from "../../../../generated/definitions/webview-payment-wallet/client";
 import { WalletId } from "../../../../generated/definitions/webview-payment-wallet/WalletId";
 import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
 import { ErrorsType } from "../../errors/errorsModel";
-import { apiWalletClient } from "../client";
+import { getConfigOrThrow } from "../../../config";
+import config from "../config";
+
+const NODE_ENV = getConfigOrThrow().WALLET_CONFIG_API_ENV;
+const WALLET_CONFIG_API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
+const WALLET_CONFIG_API_BASEPATH =
+  getConfigOrThrow().WALLET_CONFIG_API_BASEPATH;
+
+const apiWalletClient = createWalletClient({
+  baseUrl: NODE_ENV === "development" ? "" : WALLET_CONFIG_API_HOST,
+  basePath: WALLET_CONFIG_API_BASEPATH as string,
+  fetchApi: config.fetchWithTimeout
+});
 
 const sessionsFields = async (
   bearer: string,
