@@ -90,9 +90,9 @@ export default function IframeCardForm() {
             })
           ),
         (detail) =>
-          navigate(
-            `/${WalletRoutes.GDI_CHECK}#gdiIframeUrl=${detail.iframeUrl}`
-          )
+          navigate(`/${WalletRoutes.GDI_CHECK}`, {
+            state: { gdiIframeUrl: detail.iframeUrl }
+          })
       )
     );
   };
