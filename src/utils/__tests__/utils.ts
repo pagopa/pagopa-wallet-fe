@@ -51,7 +51,7 @@ const walletResponse: WalletResponse = {
 
 export const walletResponseBody = JSON.stringify(walletResponse);
 
-const npgSessionFieldsResponse: SessionWalletCreateResponse = {
+export const npgSessionFieldsResponse: SessionWalletCreateResponse = {
   orderId,
   cardFormFields: [
     {
@@ -83,4 +83,17 @@ const npgSessionFieldsResponse: SessionWalletCreateResponse = {
 
 export const npgSessionFieldsResponseBody = JSON.stringify(
   npgSessionFieldsResponse
+);
+
+export const walletValidationsResponse = {
+  details: {
+    iframeUrl:
+      "aHR0cHM6Ly9zdGctdGEubmV4aWdyb3VwLmNvbS9waG9lbml4LTAuMC92My8/aWQ9Z2RpJmxhbmc9SVRBJmNvcnJlbGF0aW9uaWQ9OGEwZjg5ZGItMmVlNi00ZGIxLTk2MTctZTM3NDVmNDBmYTZkJnNlc3Npb25pZD1heDNXbzN3aUhxWUVqUE16VnhFVVBBJTNEJTNEJnBsYWNlaG9sZGVyPVk=",
+    type: "CARD"
+  },
+  orderId: "1c6d2265-dd49-4"
+};
+
+export const walletValidationsResponseBody = JSON.stringify(
+  walletValidationsResponse
 );

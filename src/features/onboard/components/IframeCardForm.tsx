@@ -3,7 +3,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
-import { npgSessionsFields } from "../../../utils/api/helper";
 import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import ErrorModal from "../../../components/commons/ErrorModal";
@@ -11,6 +10,9 @@ import utils from "../../../utils";
 import { SessionItems } from "../../../utils/storage";
 import { clearNavigationEvents } from "../../../utils/eventListener";
 import { WalletRoutes } from "../../../routes/models/routeModel";
+import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
+import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
+import { npg } from "../../../utils/api/npg";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -59,8 +61,25 @@ export default function IframeCardForm() {
     SessionItems.walletId
   );
 
-  const validation = async () => {
-    // TODO call POST wallets/:walletId/validation with return value redirect to 3ds page
+  const onValidation = ({
+    details
+  }: WalletVerifyRequestsResponse & {
+    details: WalletVerifyRequestCardDetails;
+  }) => {
+    if (details?.iframeUrl) {
+      // TODO handle response based on details type
+      // window.location.replace(details?.iframeUrl);
+    }
+  };
+
+  const validation = async ({ orderId }: SessionWalletCreateResponse) => {
+    void npg.validations({
+      orderId,
+      sessionToken,
+      walletId,
+      onResponse: onValidation,
+      onError
+    });
   };
 
   const onChange = (id: FieldId, status: FieldStatus) => {
@@ -77,16 +96,16 @@ export default function IframeCardForm() {
     if (!form) {
       const onResponse = (body: SessionWalletCreateResponse) => {
         setForm(body);
-        const onReadyForPayment = () => void validation();
+        const onReadyForPayment = () => void validation(body);
 
         const onPaymentComplete = () => {
           clearNavigationEvents();
           window.location.replace(`/${WalletRoutes.ESITO}`);
         };
 
-        const onPaymentRedirect = (urlredirect: string) => {
+        const onPaymentRedirect = (redirect: string) => {
           clearNavigationEvents();
-          window.location.replace(urlredirect);
+          window.location.replace(redirect);
         };
 
         const onBuildError = () => {
@@ -113,7 +132,7 @@ export default function IframeCardForm() {
         }
       };
 
-      void npgSessionsFields(sessionToken, walletId, onResponse, onError);
+      void npg.sessionsFields(sessionToken, walletId, onResponse, onError);
     }
   }, [form?.orderId]);
 
