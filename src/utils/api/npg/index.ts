@@ -48,12 +48,16 @@ const sessionsFields = async (
         pipe(
           myResExt,
           E.fold(
-            () => ({}),
+            () => {
+              onError(ErrorsType.GENERIC_ERROR);
+              return {};
+            },
             (myRes) => {
               if (myRes.status === 200) {
                 onResponse(myRes.value);
                 return myRes;
               } else {
+                onError(ErrorsType.GENERIC_ERROR);
                 return {};
               }
             }
@@ -94,12 +98,16 @@ const validations = async ({
         pipe(
           myResExt,
           E.fold(
-            () => ({}),
+            () => {
+              onError(ErrorsType.GENERIC_ERROR);
+              return {};
+            },
             (myRes) => {
               if (myRes.status === 200) {
                 onResponse(myRes.value);
                 return myRes;
               } else {
+                onError(ErrorsType.GENERIC_ERROR);
                 return {};
               }
             }

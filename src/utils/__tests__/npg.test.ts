@@ -73,7 +73,7 @@ describe("validate card data fields", () => {
     expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
   });
 
-  it.skip("should call onError callback function passing a GENERIC_ERROR on 500 status code", async () => {
+  it("should call onError callback function passing a GENERIC_ERROR on 500 status code", async () => {
     const response = new Response(null, { status: 500 });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
