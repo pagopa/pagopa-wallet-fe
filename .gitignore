@@ -44,3 +44,10 @@ __blobstorage__/
 generated/
 
 target/
+
+
+## Sonar files
+test-report.xml
+.sonar_lock
+**/*.ucfgs
+**/*.scannerwork
