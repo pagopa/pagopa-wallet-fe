@@ -71,6 +71,9 @@ stages:
       
       - job: run_unit_tests
         steps:
+        
+        - template: templates/node-job-setup/template.yaml@pagopaCommons
+        
         - task: SonarCloudPrepare@1
           displayName: 'Prepare SonarCloud analysis configuration'
           inputs:
@@ -81,7 +84,6 @@ stages:
               sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
               sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
               sonar.javascript.lcov.reportPaths=coverage/lcov.info
-        - template: templates/node-job-setup/template.yaml@pagopaCommons
         
         - script: yarn generate
           displayName: 'Generate definitions'
