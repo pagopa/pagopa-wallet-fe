@@ -102,7 +102,7 @@ export default function IframeCardForm() {
       orderId,
       sessionToken,
       walletId,
-      onResponse: onValidation,
+      onSuccess: onValidation,
       onError
     });
   };
@@ -119,7 +119,7 @@ export default function IframeCardForm() {
 
   React.useEffect(() => {
     if (!form) {
-      const onResponse = (body: SessionWalletCreateResponse) => {
+      const onSuccess = (body: SessionWalletCreateResponse) => {
         setForm(body);
         const onReadyForPayment = () => void validation(body);
 
@@ -161,7 +161,12 @@ export default function IframeCardForm() {
         }
       };
 
-      void npg.sessionsFields(sessionToken, walletId, onResponse, onError);
+      void npg.sessionsFields({
+        sessionToken,
+        walletId,
+        onSuccess,
+        onError
+      });
     }
   }, [form?.orderId]);
 
@@ -248,7 +253,6 @@ export default function IframeCardForm() {
           open={errorModalOpen}
           onClose={() => {
             setErrorModalOpen(false);
-            // window.location.replace(`/${CheckoutRoutes.ERRORE}`);
           }}
           titleId="iframeCardFormErrorTitleId"
           errorId="iframeCardFormErrorId"

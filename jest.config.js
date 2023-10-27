@@ -7,7 +7,7 @@ module.exports = {
       'default',
       [ 'jest-junit', {
         outputDirectory: './test_reports',
-        outputName: 'wallet-fe-unit-TEST.xml',
+        outputName: 'wallet-unit-TEST.xml',
       } ]
     ],
     coverageReporters: ["cobertura"],
