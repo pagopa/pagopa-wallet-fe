@@ -10,6 +10,8 @@ import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/
 import { getConfigOrThrow } from "../../../config";
 import config from "../config";
 import utils from "../..";
+import { useNpgOutcomeRedirect } from "../../../hooks/useNpgOutcomeRedirect";
+import { NPG_OUTCOME_ROUTE } from "../../../routes/models/routeModel";
 
 const {
   WALLET_CONFIG_API_ENV,
@@ -24,11 +26,7 @@ const apiWalletClient = createWalletClient({
   fetchApi: config.fetchWithTimeout
 });
 
-const errorRedirect = () => {
-  window.location.replace(
-    `${WALLET_CONFIG_API_HOST}${WALLET_CONFIG_API_BASEPATH}/v3/webview/logout/bye?outcome=1`
-  );
-};
+const errorRedirect = useNpgOutcomeRedirect(NPG_OUTCOME_ROUTE.ERROR);
 
 const sessionsFields = async ({
   sessionToken: bearerAuth,

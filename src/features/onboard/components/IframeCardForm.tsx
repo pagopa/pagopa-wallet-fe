@@ -11,14 +11,17 @@ import { WalletVerifyRequestCardDetails } from "../../../../generated/definition
 import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import ErrorModal from "../../../components/commons/ErrorModal";
-import { getConfigOrThrow } from "../../../config";
-import { WalletRoutes } from "../../../routes/models/routeModel";
+import {
+  NPG_OUTCOME_ROUTE,
+  WalletRoutes
+} from "../../../routes/models/routeModel";
 import utils from "../../../utils";
 import { npg } from "../../../utils/api/npg";
 import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import { clearNavigationEvents } from "../../../utils/eventListener";
 import { SessionItems } from "../../../utils/storage";
+import { useNpgOutcomeRedirect } from "../../../hooks/useNpgOutcomeRedirect";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -50,6 +53,8 @@ export default function IframeCardForm() {
   const [buildInstance, setBuildInstance] = React.useState();
 
   const navigate = useNavigate();
+
+  const outcomeRedirect = useNpgOutcomeRedirect();
 
   const formIsValid = (fieldFormStatus: FormStatus) =>
     Object.values(fieldFormStatus).every((el) => el.isValid);
@@ -125,11 +130,7 @@ export default function IframeCardForm() {
 
         const onPaymentComplete = () => {
           clearNavigationEvents();
-          window.location.replace(
-            `${getConfigOrThrow().WALLET_CONFIG_API_HOST}${
-              getConfigOrThrow().WALLET_CONFIG_API_PM_BASEPATH
-            }/v3/webview/logout/bye?outcome=0`
-          );
+          outcomeRedirect(NPG_OUTCOME_ROUTE.SUCCESS);
         };
 
         const onPaymentRedirect = (redirect: string) => {
