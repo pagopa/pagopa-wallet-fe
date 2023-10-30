@@ -93,6 +93,9 @@ stages:
         - script: yarn test:coverage
           displayName: 'Unit tests exec'
 
+        - task: SonarCloudAnalyze@1
+          displayName: 'Run SonarCloud analysis'
+          
         - task: SonarCloudPublish@1
           displayName: 'Publish SonarCloud results on build summary'
           inputs:
