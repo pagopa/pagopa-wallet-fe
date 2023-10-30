@@ -20,6 +20,10 @@ parameters:
     type: number
     default: 10000
 
+  - name: 'npg_sdk_url'
+    type: string
+    default: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
+
 steps:
 - bash: |
     chmod +x env.sh
@@ -29,6 +33,7 @@ steps:
       WALLET_CONFIG_API_PM_BASEPATH=${{ parameters.api_pm_basepath }} \
       WALLET_CONFIG_API_TIMEOUT=${{ parameters.api_timeout }} \
       WALLET_CONFIG_API_ENV==${{ parameters.env }} \
+      WALLET_NPG_SDK_URL==${{ parameters.npg_sdk_url }} \
       bash env.sh
 
   displayName: 'Populate environment file'
