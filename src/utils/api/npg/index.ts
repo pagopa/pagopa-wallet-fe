@@ -1,7 +1,3 @@
-/* eslint-disable functional/no-let */
-/* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable sonarjs/no-identical-functions */
-
 import * as E from "fp-ts/Either";
 import * as O from "fp-ts/Option";
 import * as TE from "fp-ts/TaskEither";
@@ -27,6 +23,12 @@ const apiWalletClient = createWalletClient({
   basePath: WALLET_CONFIG_API_BASEPATH,
   fetchApi: config.fetchWithTimeout
 });
+
+const errorRedirect = () => {
+  window.location.replace(
+    `${WALLET_CONFIG_API_HOST}${WALLET_CONFIG_API_BASEPATH}/v3/webview/logout/bye?outcome=1`
+  );
+};
 
 const sessionsFields = async ({
   sessionToken: bearerAuth,
@@ -67,10 +69,7 @@ const sessionsFields = async ({
                         E.fold(onError, onSuccess)
                       );
                     },
-                    "4xx": () =>
-                      window.location.replace(
-                        `${WALLET_CONFIG_API_HOST}${WALLET_CONFIG_API_BASEPATH}/v3/webview/logout/bye?outcome=1`
-                      )
+                    "4xx": errorRedirect
                   },
                   onError
                 )
@@ -125,10 +124,7 @@ const validations = async ({
                         );
                       }
                     },
-                    "4xx": () =>
-                      window.location.replace(
-                        `${WALLET_CONFIG_API_HOST}${WALLET_CONFIG_API_BASEPATH}/v3/webview/logout/bye?outcome=1`
-                      )
+                    "4xx": errorRedirect
                   },
                   onError
                 )
