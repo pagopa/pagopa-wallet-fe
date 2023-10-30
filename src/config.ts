@@ -18,6 +18,7 @@ export const IConfig = t.interface({
   WALLET_CONFIG_API_PM_BASEPATH: NonEmptyString,
   WALLET_CONFIG_API_ENV: NonEmptyString,
   WALLET_CONFIG_API_TIMEOUT: t.number,
+  WALLET_GDI_CHECK_TIMEOUT: t.number,
   WALLET_NPG_SDK_URL: NonEmptyString
 });
 
@@ -28,6 +29,11 @@ const errorOrConfig: t.Validation<IConfig> = IConfig.decode({
   WALLET_CONFIG_API_TIMEOUT: parseInt(
     // eslint-disable-next-line no-underscore-dangle
     (window as any)._env_.WALLET_CONFIG_API_TIMEOUT,
+    10
+  ),
+  WALLET_GDI_CHECK_TIMEOUT: parseInt(
+    // eslint-disable-next-line no-underscore-dangle
+    (window as any)._env_.WALLET_GDI_CHECK_TIMEOUT,
     10
   )
 });

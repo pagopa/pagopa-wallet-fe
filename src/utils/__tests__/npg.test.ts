@@ -11,7 +11,6 @@
 };
 
 import { npg } from "../api/npg";
-import { ErrorsType } from "../errors/errorsModel";
 import {
   npgSessionFieldsResponse,
   npgSessionFieldsResponseBody,
@@ -25,85 +24,136 @@ import "whatwg-fetch";
 import "jest-location-mock";
 
 describe("get card form fields", () => {
-  it("should call onError callback function passing a GENERIC_ERROR when the fetch promise rejects", async () => {
+  it("should call onError callback when the fetch rejects", async () => {
     global.fetch = jest.fn(() => Promise.reject());
     const onError = jest.fn();
-    const onSucces = jest.fn();
-    await npg.sessionsFields(sessionToken, walletId, onSucces, onError);
-    expect(onSucces).not.toBeCalled();
-    expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
+    const onSuccess = jest.fn();
+    await npg.sessionsFields({
+      sessionToken,
+      walletId,
+      onSuccess,
+      onError
+    });
+    expect(onSuccess).not.toBeCalled();
+    expect(onError).toHaveBeenCalled();
   });
 
-  it("should call onError callback function passing a GENERIC_ERROR on 500 status code", async () => {
+  it("should call onError callback on 500 status code", async () => {
     const response = new Response(null, { status: 500 });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
-    const onSucces = jest.fn();
-    await npg.sessionsFields(sessionToken, walletId, onSucces, onError);
-    expect(onSucces).not.toBeCalled();
-    expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
+    const onSuccess = jest.fn();
+    await npg.sessionsFields({
+      sessionToken,
+      walletId,
+      onSuccess,
+      onError
+    });
+    expect(onSuccess).not.toBeCalled();
+    expect(onError).toHaveBeenCalled();
   });
 
-  it("should call onSucces callback function passing the response data on 200 status code", async () => {
+  it("should change the location and include outcome=1 on 4xx type response", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 404
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const onError = jest.fn();
+    const onSuccess = jest.fn();
+    await npg.sessionsFields({
+      sessionToken,
+      walletId,
+      onSuccess,
+      onError
+    });
+    expect(onSuccess).not.toBeCalled();
+    expect(onError).not.toBeCalled();
+    expect(global.location.href).toContain("outcome=1");
+  });
+
+  it("should call onSuccess callback function passing the response data on 200 status code", async () => {
     const response = new Response(npgSessionFieldsResponseBody, {
       status: 200
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
-    const onSucces = jest.fn();
-    await npg.sessionsFields(sessionToken, walletId, onSucces, onError);
-    expect(onSucces).toHaveBeenCalledWith(npgSessionFieldsResponse);
-    expect(onError).not.toBeCalled();
+    const onSuccess = jest.fn();
+    await npg.sessionsFields({
+      sessionToken,
+      walletId,
+      onSuccess,
+      onError
+    });
+    expect(onSuccess).toHaveBeenCalledWith(npgSessionFieldsResponse);
   });
 });
 
 describe("validate card data fields", () => {
-  it("should call onError callback function passing a GENERIC_ERROR when the fetch promise rejects", async () => {
+  it("should call onError callback when the fetch rejects", async () => {
     global.fetch = jest.fn(() => Promise.reject());
     const onError = jest.fn();
-    const onResponse = jest.fn();
+    const onSuccess = jest.fn();
     await npg.validations({
       sessionToken,
       walletId,
       orderId,
-      onResponse,
+      onSuccess,
       onError
     });
-    expect(onResponse).not.toBeCalled();
-    expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
+    expect(onSuccess).not.toBeCalled();
+    expect(onError).toHaveBeenCalled();
   });
 
-  it("should call onError callback function passing a GENERIC_ERROR on 500 status code", async () => {
+  it("should call onError on 500 status code", async () => {
     const response = new Response(null, { status: 500 });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
-    const onResponse = jest.fn();
+    const onSuccess = jest.fn();
     await npg.validations({
       sessionToken,
       walletId,
       orderId,
-      onResponse,
+      onSuccess,
       onError
     });
-    expect(onResponse).not.toBeCalled();
-    expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
+    expect(onSuccess).not.toBeCalled();
+    expect(onError).toHaveBeenCalled();
   });
 
-  it("should call onResponse callback function passing the response data on 200 status code", async () => {
+  it("should change the location and include outcome=1 on 4xx type response", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 404
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const onError = jest.fn();
+    const onSuccess = jest.fn();
+    await npg.validations({
+      sessionToken,
+      walletId,
+      orderId,
+      onSuccess,
+      onError
+    });
+    expect(onSuccess).not.toBeCalled();
+    expect(onError).not.toBeCalled();
+    expect(global.location.href).toContain("outcome=1");
+  });
+
+  it("should call onSuccess callback function passing the response data on 200 status code", async () => {
     const response = new Response(walletValidationsResponseBody, {
       status: 200
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
-    const onResponse = jest.fn();
+    const onSuccess = jest.fn();
     await npg.validations({
       sessionToken,
       walletId,
       orderId,
-      onResponse,
+      onSuccess,
       onError
     });
-    expect(onResponse).toHaveBeenCalledWith(walletValidationsResponse);
+    expect(onSuccess).toHaveBeenCalledWith(walletValidationsResponse);
     expect(onError).not.toBeCalled();
   });
 });
