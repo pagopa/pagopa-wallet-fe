@@ -10,7 +10,7 @@ module.exports = {
         outputName: 'wallet-unit-TEST.xml',
       } ]
     ],
-    coverageReporters: ["cobertura",'lcov'],
+    coverageReporters: ["cobertura",'lcov', 'text-summary', 'html'],
     collectCoverage: true,
     collectCoverageFrom: [
         "src/**/*.ts",

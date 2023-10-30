@@ -85,6 +85,7 @@ stages:
               sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
               sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
               sonar.javascript.lcov.reportPaths=coverage/lcov.info
+              sonar.testExecutionReportPaths=./test-report.xml
         
         - script: yarn generate
           displayName: 'Generate definitions'
