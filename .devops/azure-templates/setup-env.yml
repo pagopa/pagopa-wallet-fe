@@ -33,7 +33,7 @@ steps:
       WALLET_CONFIG_API_PM_BASEPATH=${{ parameters.api_pm_basepath }} \
       WALLET_CONFIG_API_TIMEOUT=${{ parameters.api_timeout }} \
       WALLET_CONFIG_API_ENV==${{ parameters.env }} \
-      WALLET_NPG_SDK_URL==${{ parameters.npg_sdk_url }} \
+      WALLET_NPG_SDK_URL=${{ parameters.npg_sdk_url }} \
       bash env.sh
 
   displayName: 'Populate environment file'
