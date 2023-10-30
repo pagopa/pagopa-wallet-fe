@@ -1,18 +1,24 @@
 import { Box } from "@mui/material";
+import * as E from "fp-ts/Either";
+import * as O from "fp-ts/Option";
+import { pipe } from "fp-ts/function";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
+import { WalletVerifyRequestAPMDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestAPMDetails";
+import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
+import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
+import ErrorModal from "../../../components/commons/ErrorModal";
+import { getConfigOrThrow } from "../../../config";
+import { WalletRoutes } from "../../../routes/models/routeModel";
+import utils from "../../../utils";
+import { npg } from "../../../utils/api/npg";
 import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
-import ErrorModal from "../../../components/commons/ErrorModal";
-import utils from "../../../utils";
-import { SessionItems } from "../../../utils/storage";
 import { clearNavigationEvents } from "../../../utils/eventListener";
-import { WalletRoutes } from "../../../routes/models/routeModel";
-import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
-import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
-import { npg } from "../../../utils/api/npg";
+import { SessionItems } from "../../../utils/storage";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -43,6 +49,8 @@ export default function IframeCardForm() {
 
   const [buildInstance, setBuildInstance] = React.useState();
 
+  const navigate = useNavigate();
+
   const formIsValid = (fieldFormStatus: FormStatus) =>
     Object.values(fieldFormStatus).every((el) => el.isValid);
 
@@ -64,12 +72,29 @@ export default function IframeCardForm() {
   const onValidation = ({
     details
   }: WalletVerifyRequestsResponse & {
-    details: WalletVerifyRequestCardDetails;
+    details: WalletVerifyRequestCardDetails | WalletVerifyRequestAPMDetails;
   }) => {
-    if (details?.iframeUrl) {
-      // TODO handle response based on details type
-      // window.location.replace(details?.iframeUrl);
-    }
+    pipe(
+      WalletVerifyRequestCardDetails.decode(details),
+      E.fold(
+        () =>
+          pipe(
+            WalletVerifyRequestAPMDetails.decode(details),
+            E.fold(onError, (detail) => {
+              pipe(
+                O.fromNullable(detail.redirectUrl),
+                O.match(onError, (redirect) =>
+                  window.location.replace(redirect)
+                )
+              );
+            })
+          ),
+        (detail) =>
+          navigate(`/${WalletRoutes.GDI_CHECK}`, {
+            state: { gdiIframeUrl: detail.iframeUrl }
+          })
+      )
+    );
   };
 
   const validation = async ({ orderId }: SessionWalletCreateResponse) => {
@@ -100,7 +125,11 @@ export default function IframeCardForm() {
 
         const onPaymentComplete = () => {
           clearNavigationEvents();
-          window.location.replace(`/${WalletRoutes.ESITO}`);
+          window.location.replace(
+            `${getConfigOrThrow().WALLET_CONFIG_API_HOST}${
+              getConfigOrThrow().WALLET_CONFIG_API_PM_BASEPATH
+            }/v3/webview/logout/bye?outcome=0`
+          );
         };
 
         const onPaymentRedirect = (redirect: string) => {

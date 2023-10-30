@@ -1,7 +1,8 @@
 export enum WalletRoutes {
-  ROOT = "",
-  INSERISCI_CARTA = "onboarding",
   ERRORE = "errore",
+  ESITO = "esito",
+  GDI_CHECK = "gdi-check",
+  INSERISCI_CARTA = "onboarding",
   NPG_INSERISCI_CARTA = "npg-onboarding",
-  ESITO = "esito"
+  ROOT = ""
 }

@@ -1,16 +1,17 @@
-import React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeProvider } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
 import { theme } from "@pagopa/mui-italia";
+import React from "react";
 import {
-  BrowserRouter as Router,
-  Routes,
+  Navigate,
   Route,
-  Navigate
+  BrowserRouter as Router,
+  Routes
 } from "react-router-dom";
 import Layout from "./components/commons/Layout";
-import InputCardPage from "./routes/InputCardPage";
+import GdiCheckPage from "./routes/GdiCheckPage";
 import IFrameCardPage from "./routes/IframeCardPage";
+import InputCardPage from "./routes/InputCardPage";
 import { WalletRoutes } from "./routes/models/routeModel";
 import "./translations/i18n";
 import utils from "./utils";
@@ -60,6 +61,7 @@ export function App() {
               path="*"
               element={<Navigate replace to={WalletRoutes.INSERISCI_CARTA} />}
             />
+            <Route path={WalletRoutes.GDI_CHECK} element={<GdiCheckPage />} />
           </Routes>
         </Router>
       </Layout>
