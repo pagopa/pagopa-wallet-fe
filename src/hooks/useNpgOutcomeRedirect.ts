@@ -6,6 +6,6 @@ import {
 export const useNpgOutcomeRedirect =
   (outcome?: NPG_OUTCOME_ROUTE) => (curryOutcome?: NPG_OUTCOME_ROUTE) => {
     if (outcome || curryOutcome) {
-      window.location.replace(`${EXTERNAL_OUTCOME}${outcome || curryOutcome}`);
+      window.location.replace(`${EXTERNAL_OUTCOME}${outcome ?? curryOutcome}`);
     }
   };
