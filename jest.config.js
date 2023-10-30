@@ -15,7 +15,7 @@ module.exports = {
     collectCoverageFrom: [
         "src/**/*.ts",
         "!<rootDir>/src/index.ts",
-        "!<rootDir>/src/__tests__/**/*",
+        "!<rootDir>/src/**/__tests__/**/*",
         "!<rootDir>/src/__mocks__/**/*"
     ],
     coveragePathIgnorePatterns: ["index.ts"],
