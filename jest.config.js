@@ -8,6 +8,10 @@ module.exports = {
       [ 'jest-junit', {
         outputDirectory: './test_reports',
         outputName: 'wallet-unit-TEST.xml',
+      } ],
+      [ 'jest-junit', {
+        outputDirectory: './test_reports',
+        outputName: 'sonar-report.xml',
       } ]
     ],
     coverageReporters: ["cobertura",'lcov', 'text-summary', 'html'],
