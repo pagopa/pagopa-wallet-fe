@@ -1,11 +1,13 @@
 import * as O from "fp-ts/Option";
 import validators from "../../utils/validators";
+import { npgSessionFieldsResponse } from "../testUtils";
 
 const {
   evaluateHTTPfamilyStatusCode,
   cardNameValidation,
   digitValidation,
-  expirationDateChangeValidation
+  expirationDateChangeValidation,
+  validateSessionWalletCardFormFields
 } = validators;
 
 describe("evaluateHTTPfamilyStatusCode function", () => {
@@ -101,5 +103,40 @@ describe("expirationDateChangeValidation function", () => {
     expect(expirationDateChangeValidation("11 23")).toEqual(false);
     expect(expirationDateChangeValidation("1 2023")).toEqual(false);
     expect(expirationDateChangeValidation("abc")).toEqual(false);
+  });
+});
+
+describe("validateSessionWalletCardFormFields function", () => {
+  it("Should validate correctly a wrong input", () => {
+    expect(validateSessionWalletCardFormFields([])).toEqual(O.none);
+
+    expect(validateSessionWalletCardFormFields([{}, {}, {}, {}])).toEqual(
+      O.none
+    );
+
+    expect(
+      validateSessionWalletCardFormFields([
+        npgSessionFieldsResponse.cardFormFields[1],
+        npgSessionFieldsResponse.cardFormFields[2],
+        npgSessionFieldsResponse.cardFormFields[3]
+      ])
+    ).toEqual(O.none);
+
+    expect(
+      validateSessionWalletCardFormFields([
+        npgSessionFieldsResponse.cardFormFields[1],
+        npgSessionFieldsResponse.cardFormFields[2],
+        npgSessionFieldsResponse.cardFormFields[3],
+        npgSessionFieldsResponse.cardFormFields[3]
+      ])
+    ).toEqual(O.none);
+  });
+
+  it("Should validate correctly a good input", () => {
+    expect(
+      validateSessionWalletCardFormFields(
+        npgSessionFieldsResponse.cardFormFields
+      )
+    ).toEqual(O.some(npgSessionFieldsResponse.cardFormFields));
   });
 });
