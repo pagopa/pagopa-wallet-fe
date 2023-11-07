@@ -1,4 +1,6 @@
 module.exports = {
+  testEnvironment: "jsdom",
+  preset: "ts-jest",
   reporters: [
     'default',
     [ 'jest-junit', {

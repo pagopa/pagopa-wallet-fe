@@ -95,11 +95,10 @@
     "whatwg-fetch": "^3.6.19"
   },
   "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "jsdom",
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
+    "testEnvironment": "jsdom",
     "testPathIgnorePatterns": ["/dist", "/node_modules"],
     "coverageReporters": ["cobertura", "lcov", "html", "text"],
     "collectCoverage": true,
