@@ -50,9 +50,9 @@ const sessionsFields = async ({
     ),
     TE.fold(
       () => async () => onError(),
-      (validation) => async () =>
+      (resp) => async () =>
         pipe(
-          validation,
+          resp,
           E.fold(onError, ({ status, value }) => {
             pipe(
               status,
@@ -64,7 +64,19 @@ const sessionsFields = async ({
                     "2xx": () => {
                       pipe(
                         SessionWalletCreateResponse.decode(value),
-                        E.fold(onError, onSuccess)
+                        E.fold(onError, (data) => {
+                          pipe(
+                            data.cardFormFields,
+                            utils.validators
+                              .validateSessionWalletCardFormFields,
+                            O.match(onError, (cardFormFields) =>
+                              onSuccess({
+                                orderId: data.orderId,
+                                cardFormFields
+                              })
+                            )
+                          );
+                        })
                       );
                     },
                     "4xx": errorRedirect

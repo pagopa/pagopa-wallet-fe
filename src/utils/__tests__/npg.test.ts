@@ -19,7 +19,7 @@ import {
   walletId,
   walletValidationsResponse,
   walletValidationsResponseBody
-} from "./utils";
+} from "../testUtils";
 import "whatwg-fetch";
 import "jest-location-mock";
 
@@ -85,6 +85,104 @@ describe("get card form fields", () => {
       onError
     });
     expect(onSuccess).toHaveBeenCalledWith(npgSessionFieldsResponse);
+  });
+
+  it("should call onError when the response is not conform: test a", async () => {
+    const response = new Response(
+      JSON.stringify({
+        orderId: "123"
+      }),
+      {
+        status: 200
+      }
+    );
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const onError = jest.fn();
+    const onSuccess = jest.fn();
+    await npg.sessionsFields({
+      sessionToken,
+      walletId,
+      onSuccess,
+      onError
+    });
+    expect(onSuccess).not.toBeCalled();
+    expect(onError).toHaveBeenCalled();
+  });
+
+  it("should call onError when the response is not conform: test b", async () => {
+    const response = new Response(
+      JSON.stringify({
+        orderId: "123",
+        cardFormFields: []
+      }),
+      {
+        status: 200
+      }
+    );
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const onError = jest.fn();
+    const onSuccess = jest.fn();
+    await npg.sessionsFields({
+      sessionToken,
+      walletId,
+      onSuccess,
+      onError
+    });
+    expect(onSuccess).not.toBeCalled();
+    expect(onError).toHaveBeenCalled();
+  });
+
+  it("should call onError when the response is not conform: test c", async () => {
+    const response = new Response(
+      JSON.stringify({
+        orderId: "123",
+        cardFormFields: [
+          {
+            type: "TEXT",
+            class: "CARD_FIELD",
+            id: "CARDHOLDER_NAME",
+            src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=CARDHOLDER_NAME&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
+          }
+        ]
+      }),
+      {
+        status: 200
+      }
+    );
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const onError = jest.fn();
+    const onSuccess = jest.fn();
+    await npg.sessionsFields({
+      sessionToken,
+      walletId,
+      onSuccess,
+      onError
+    });
+    expect(onSuccess).not.toBeCalled();
+    expect(onError).toHaveBeenCalled();
+  });
+
+  it("should call onError when the response is not conform: test d", async () => {
+    const response = new Response(
+      JSON.stringify({
+        orderId: "123",
+        cardFormFields: [{}, {}, {}, {}]
+      }),
+      {
+        status: 200
+      }
+    );
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const onError = jest.fn();
+    const onSuccess = jest.fn();
+    await npg.sessionsFields({
+      sessionToken,
+      walletId,
+      onSuccess,
+      onError
+    });
+    expect(onSuccess).not.toBeCalled();
+    expect(onError).toHaveBeenCalled();
   });
 });
 

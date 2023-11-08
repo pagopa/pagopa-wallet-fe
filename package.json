@@ -95,29 +95,15 @@
     "whatwg-fetch": "^3.6.19"
   },
   "jest": {
-    "testEnvironment": "jsdom",
-    "moduleFileExtensions": [
-      "tsx",
-      "ts",
-      "js",
-      "node"
-    ],
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
-    "testMatch": [
-      "**/__tests__/*test.ts"
-    ],
-    "reporters": [
-      "default",
-      [
-        "jest-junit",
-        {
-          "outputDirectory": "./test_reports",
-          "outputName": "wallet-unit-TEST.xml"
-        }
-      ]
-    ]
+    "testEnvironment": "jsdom",
+    "testPathIgnorePatterns": ["/dist", "/node_modules"],
+    "coverageReporters": ["cobertura", "lcov", "html", "text"],
+    "collectCoverage": true,
+    "coveragePathIgnorePatterns": ["generated"],
+    "coverageDirectory": "<rootDir>/coverage/"
   },
   "jestSonar": {
     "sonar56x": true,

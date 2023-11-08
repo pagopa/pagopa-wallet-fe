@@ -16,7 +16,7 @@ import {
   sessionToken,
   idWallet,
   walletResponseBody
-} from "./utils";
+} from "../testUtils";
 import "whatwg-fetch";
 import "jest-location-mock";
 

@@ -1,7 +1,7 @@
-import { WalletRequest } from "../../../generated/definitions/payment-manager-v1/WalletRequest";
-import { WalletResponse } from "../../../generated/definitions/payment-manager-v1/WalletResponse";
-import { TypeEnum } from "../../../generated/definitions/payment-manager-v1/Wallet";
-import { SessionWalletCreateResponse } from "../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
+import { WalletRequest } from "../../generated/definitions/payment-manager-v1/WalletRequest";
+import { WalletResponse } from "../../generated/definitions/payment-manager-v1/WalletResponse";
+import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet";
+import { SessionWalletCreateResponse } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 
 export const idWallet = 1222302;
 export const walletId = "1222302";
