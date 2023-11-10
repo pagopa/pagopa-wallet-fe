@@ -23,6 +23,10 @@ parameters:
   - name: 'npg_sdk_url'
     type: string
     default: ''
+  
+  - name: 'wallet_gdi_check_timeout'
+    type: number
+    default: 10000
 
 steps:
 - bash: |
@@ -34,6 +38,7 @@ steps:
       WALLET_CONFIG_API_TIMEOUT=${{ parameters.api_timeout }} \
       WALLET_CONFIG_API_ENV==${{ parameters.env }} \
       WALLET_NPG_SDK_URL=${{ parameters.npg_sdk_url }} \
+      WALLET_GDI_CHECK_TIMEOUT=${{ parameters.wallet_gdi_check_timeout }} \
       bash env.sh
 
   displayName: 'Populate environment file'
