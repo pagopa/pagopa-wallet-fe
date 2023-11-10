@@ -82,6 +82,7 @@ stages:
               api_pm_basepath: '/pp-restapi-CD'
               api_timeout:  10000
               npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
+              wallet_gdi_check_timeout: 10000
 
           - script: |
               yarn build
@@ -201,6 +202,7 @@ stages:
               api_pm_basepath: '/pp-restapi-CD'
               api_timeout:  10000
               npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
+              wallet_gdi_check_timeout: 10000
 
           - script: |
               yarn build
