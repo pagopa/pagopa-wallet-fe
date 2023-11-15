@@ -78,6 +78,7 @@ stages:
             parameters:
               env: 'DEV'
               api_host: 'https://api.dev.platform.pagopa.it'
+              api_webview_pm_hostname: 'https://api.dev.platform.pagopa.it'
               api_wallet_basepath: '/webview-payment-wallet/v1'
               api_pm_basepath: '/pp-restapi-CD'
               api_timeout:  10000
@@ -199,6 +200,7 @@ stages:
               env: 'UAT'
               api_host: 'https://api.uat.platform.pagopa.it'
               api_wallet_basepath: '/webview-payment-wallet/v1'
+              api_webview_pm_hostname: 'https://uat.wisp2.pagopa.gov.it'
               api_pm_basepath: '/pp-restapi-CD'
               api_timeout:  10000
               npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'

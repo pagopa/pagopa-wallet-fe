@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { getConfigOrThrow } from "../config";
 
 const url =
-  getConfigOrThrow().WALLET_CONFIG_API_HOST +
+  getConfigOrThrow().WALLET_CONFIG_WEBVIEW_PM_HOST +
   "/pp-restapi-CD/v3/webview/transactions/cc/verify";
 
 export interface Props {
