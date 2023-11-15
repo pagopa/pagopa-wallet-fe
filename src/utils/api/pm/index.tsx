@@ -76,6 +76,17 @@ const addWallet = async (
     )
   )();
 
+const listBpay = async (bearer: string) => {
+  await paymentManagerClient.getBpayListUsingGET({
+    Bearer: "Bearer " + bearer
+  });
+};
+
+// const addBpayWallet = async () => {
+//   paymentManagerClient.addWalletsBPayUsingPOST();
+// };
+
 export default {
-  addWallet
+  addWallet,
+  listBpay
 };

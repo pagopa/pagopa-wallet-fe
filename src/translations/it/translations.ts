@@ -36,6 +36,14 @@ export const TRANSLATIONS_IT = {
         "Sulle carte American Express il codice (CID) è a quattro cifre ed è posizionato sul fronte."
     }
   },
+  bPayPage: {
+    title: "Vuoi Aggiungere questo account?",
+    description: "Account BANCOMAT PAY x di y",
+    formButtons: {
+      submit: "Aggiungi",
+      annulla: "Salta"
+    }
+  },
   errorButton: {
     help: "Contatta l'assistenza",
     close: "Chiudi",

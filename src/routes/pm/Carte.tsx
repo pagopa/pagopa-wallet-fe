@@ -1,15 +1,15 @@
 import { Box } from "@mui/material";
 import React from "react";
-import PageContainer from "../components/commons/PageContainer";
-import { InputCardFormFields } from "../features/onboard/models";
-import { InputCardForm } from "../features/onboard/components/InputCardForm";
-import utils from "../utils";
-import { SessionItems } from "../utils/storage";
-import { WalletRequest } from "../../generated/definitions/payment-manager-v1/WalletRequest";
-import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet";
-import Verify from "../components/Verify";
-import { ErrorsType } from "../utils/errors/errorsModel";
-import ErrorModal from "../components/commons/ErrorModal";
+import PageContainer from "../../components/commons/PageContainer";
+import { InputCardFormFields } from "../../features/onboard/models";
+import { InputCardForm } from "../../features/onboard/components/InputCardForm";
+import utils from "../../utils";
+import { SessionItems } from "../../utils/storage";
+import { WalletRequest } from "../../../generated/definitions/payment-manager-v1/WalletRequest";
+import { TypeEnum } from "../../../generated/definitions/payment-manager-v1/Wallet";
+import Verify from "../../components/Verify";
+import { ErrorsType } from "../../utils/errors/errorsModel";
+import ErrorModal from "../../components/commons/ErrorModal";
 
 export default function InputCardPage() {
   const [loading, setLoading] = React.useState(false);
