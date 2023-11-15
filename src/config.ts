@@ -14,6 +14,7 @@ import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 export type IConfig = t.TypeOf<typeof IConfig>;
 export const IConfig = t.interface({
   WALLET_CONFIG_API_HOST: NonEmptyString,
+  WALLET_CONFIG_WEBVIEW_PM_HOST: NonEmptyString,
   WALLET_CONFIG_API_BASEPATH: NonEmptyString,
   WALLET_CONFIG_API_PM_BASEPATH: NonEmptyString,
   WALLET_CONFIG_API_ENV: NonEmptyString,

@@ -4,6 +4,10 @@ parameters:
     type: string
     default: ''
 
+  - name: 'api_webview_pm_hostname'
+    type: string
+    default: ''
+
   - name: 'env'
     type: string
     default: ''  
@@ -33,6 +37,7 @@ steps:
     chmod +x env.sh
     env -i \
       WALLET_CONFIG_API_HOST=${{ parameters.api_host }} \
+      WALLET_CONFIG_WEBVIEW_PM_HOST=${{ parameters.api_webview_pm_hostname }} \
       WALLET_CONFIG_API_BASEPATH=${{ parameters.api_wallet_basepath }} \
       WALLET_CONFIG_API_PM_BASEPATH=${{ parameters.api_pm_basepath }} \
       WALLET_CONFIG_API_TIMEOUT=${{ parameters.api_timeout }} \
