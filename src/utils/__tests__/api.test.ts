@@ -11,23 +11,30 @@
   WALLET_NPG_SDK_URL:
     "https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js"
 };
+import * as O from "fp-ts/Option";
 import pm from "../api/pm";
 import { ErrorsType } from "../errors/errorsModel";
 import {
   walletRequest,
   sessionToken,
   idWallet,
-  walletResponseBody
+  walletResponseBody,
+  bpayListItems
 } from "../testUtils";
 import "whatwg-fetch";
 import "jest-location-mock";
 
-describe("add wallet", () => {
+describe("Credit Card: add to the wallet", () => {
   it("should call onError callback function passing a GENERIC_ERROR when the fetch promise rejects", async () => {
     global.fetch = jest.fn(() => Promise.reject());
     const onError = jest.fn();
     const onSucces = jest.fn();
-    await pm.addWallet(sessionToken, walletRequest, onSucces, onError);
+    await pm.creditCard.addWallet(
+      sessionToken,
+      walletRequest,
+      onSucces,
+      onError
+    );
     expect(onSucces).not.toBeCalled();
     expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
   });
@@ -37,7 +44,12 @@ describe("add wallet", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
     const onSucces = jest.fn();
-    await pm.addWallet(sessionToken, walletRequest, onSucces, onError);
+    await pm.creditCard.addWallet(
+      sessionToken,
+      walletRequest,
+      onSucces,
+      onError
+    );
     expect(onSucces).not.toBeCalled();
     expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
   });
@@ -49,7 +61,12 @@ describe("add wallet", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
     const onSucces = jest.fn();
-    await pm.addWallet(sessionToken, walletRequest, onSucces, onError);
+    await pm.creditCard.addWallet(
+      sessionToken,
+      walletRequest,
+      onSucces,
+      onError
+    );
     expect(onSucces).toHaveBeenCalledWith(idWallet);
     expect(onError).not.toBeCalled();
   });
@@ -59,7 +76,12 @@ describe("add wallet", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
     const onSucces = jest.fn();
-    await pm.addWallet(sessionToken, walletRequest, onSucces, onError);
+    await pm.creditCard.addWallet(
+      sessionToken,
+      walletRequest,
+      onSucces,
+      onError
+    );
     expect(onSucces).not.toBeCalled();
     expect(onError).not.toBeCalled();
     expect(global.location.href).toContain("outcome=1");
@@ -74,5 +96,41 @@ describe("add wallet", () => {
     expect(onSucces).not.toBeCalled();
     expect(onError).not.toBeCalled();
     expect(global.location.href).toContain("outcome=14");
+  });
+});
+
+describe("Bancomat Pay: getting the list", () => {
+  it("should fails when http !== 200", async () => {
+    const response = new Response(null, { status: 201 });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.getList(sessionToken);
+    expect(result).toEqual(O.none);
+  });
+
+  it("should fails when http === 200 but no bpay item", async () => {
+    const response = new Response(JSON.stringify({ data: [] }), {
+      status: 200
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.getList(sessionToken);
+    expect(result).toEqual(O.none);
+  });
+
+  it("should fails when http === 200 but no data", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 200
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.getList(sessionToken);
+    expect(result).toEqual(O.none);
+  });
+
+  it("should success when http === 200 and data", async () => {
+    const response = new Response(JSON.stringify({ data: bpayListItems }), {
+      status: 200
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.getList(sessionToken);
+    expect(result).toEqual(O.some(bpayListItems));
   });
 });

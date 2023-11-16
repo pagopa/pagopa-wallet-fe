@@ -9,11 +9,11 @@ import config from "../config";
 import { ErrorsType } from "../../errors/errorsModel";
 import { getConfigOrThrow } from "../../../config";
 import utils from "../../";
+import { RestBPayResponse } from "../../../../generated/definitions/payment-manager-v1/RestBPayResponse";
 
 const NODE_ENV = getConfigOrThrow().WALLET_CONFIG_API_ENV;
 const API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
 const API_PM_BASEPATH = getConfigOrThrow().WALLET_CONFIG_API_PM_BASEPATH;
-const WALLET_OUTCOME_BASEPATH = getConfigOrThrow().WALLET_OUTCOME_API_BASEPATH;
 /**
  * Api client for payment manager API
  */
@@ -23,7 +23,7 @@ const paymentManagerClient = createPaymentManagerClient({
   fetchApi: config.fetchWithTimeout
 });
 
-const addWallet = async (
+const addWalletCreditCard = async (
   bearer: string,
   walletRequest: WalletRequest,
   onSuccess: (idWallet: number) => void,
@@ -60,10 +60,8 @@ const addWallet = async (
                           : onError(ErrorsType.GENERIC_ERROR);
                       },
                       "4xx": () => {
-                        const outcome = status === 401 ? "14" : "1";
-                        return window.location.replace(
-                          `${API_HOST}${WALLET_OUTCOME_BASEPATH}/v1/wallets/outcomes?outcome=${outcome}`
-                        );
+                        const outcome = status === 401 ? 14 : 1;
+                        utils.url.redirectWithOutcame(outcome);
                       }
                     },
                     () => onError(ErrorsType.GENERIC_ERROR)
@@ -76,17 +74,68 @@ const addWallet = async (
     )
   )();
 
-const listBpay = async (bearer: string) => {
-  await paymentManagerClient.getBpayListUsingGET({
-    Bearer: "Bearer " + bearer
-  });
-};
+/**
+ * returns Bancomat Pay account items of the user idenfied by the sessionToken parameter
+ */
+const getBpayList = async (
+  sessionToken: string
+): Promise<O.Option<Exclude<RestBPayResponse["data"], undefined>>> =>
+  await pipe(
+    TE.tryCatch(
+      () =>
+        paymentManagerClient.getBpayListUsingGET({
+          Bearer: "Bearer " + sessionToken
+        }),
+      () => toError
+    ),
+    TE.match(
+      () => O.none, // When promise rejects
+      (resp) =>
+        pipe(
+          resp,
+          E.match(
+            () => O.none, // When errors, like decode errors
+            ({ status, value }) =>
+              status === 200 && value?.data && value.data?.length > 0
+                ? O.some(value.data)
+                : O.none
+          )
+        )
+    )
+  )();
 
-// const addBpayWallet = async () => {
-//   paymentManagerClient.addWalletsBPayUsingPOST();
-// };
+const addWalletsBPay = async (sessionToken: string, bpayItem: any) =>
+  await pipe(
+    TE.tryCatch(
+      () =>
+        paymentManagerClient.addWalletsBPayUsingPOST({
+          Bearer: "Bearer " + sessionToken,
+          bPayRequest: {
+            data: bpayItem
+          }
+        }),
+      () => toError
+    ),
+    TE.match(
+      () => O.none,
+      (response) =>
+        pipe(
+          response,
+          E.match(
+            () => O.none,
+            ({ status, value }) =>
+              status === 200 ? O.some(value.data) : O.none
+          )
+        )
+    )
+  )();
 
 export default {
-  addWallet,
-  listBpay
+  creditCard: {
+    addWallet: addWalletCreditCard
+  },
+  bPay: {
+    getList: getBpayList,
+    addWallet: addWalletsBPay
+  }
 };

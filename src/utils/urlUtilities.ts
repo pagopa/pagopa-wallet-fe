@@ -1,3 +1,8 @@
+import { getConfigOrThrow } from "../config";
+
+const API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
+const API_PM_BASEPATH = getConfigOrThrow().WALLET_CONFIG_API_PM_BASEPATH;
+
 /**
  * This function requires a valid URI with a querystrings as the fragment URI
  * example: http://dev.checkout.it/gdi-check#param1=value1&param2=value2.
@@ -18,6 +23,16 @@ export function getFragmentParameter(uri: string, name: string): string {
   }
 }
 
+/**
+ * This function executes a window.locatio.replace on a particular url with a numeric outcome
+ * from the outcome parameter. The IO APP will use the url and the outcome to give a feddback to the user
+ */
+const redirectWithOutcame = (outcome: number) =>
+  window.location.replace(
+    `${API_HOST}${API_PM_BASEPATH}/v3/webview/logout/bye?outcome=${outcome}`
+  );
+
 export default {
-  getFragmentParameter
+  getFragmentParameter,
+  redirectWithOutcame
 };
