@@ -17,6 +17,7 @@ export const IConfig = t.interface({
   WALLET_CONFIG_WEBVIEW_PM_HOST: NonEmptyString,
   WALLET_CONFIG_API_BASEPATH: NonEmptyString,
   WALLET_CONFIG_API_PM_BASEPATH: NonEmptyString,
+  WALLET_OUTCOME_API_BASEPATH: NonEmptyString,
   WALLET_CONFIG_API_ENV: NonEmptyString,
   WALLET_CONFIG_API_TIMEOUT: t.number,
   WALLET_GDI_CHECK_TIMEOUT: t.number,
