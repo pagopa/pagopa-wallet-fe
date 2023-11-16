@@ -55,7 +55,7 @@ export default function InputCardPage() {
         type: TypeEnum.CREDIT_CARD
       }
     };
-    void utils.api.addWallet(
+    void utils.api.creditCard.addWallet(
       sessionToken,
       wallet,
       onSuccess(Number(securityCode)),
