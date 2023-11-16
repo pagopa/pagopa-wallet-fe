@@ -19,7 +19,8 @@ import {
   sessionToken,
   idWallet,
   walletResponseBody,
-  bpayListItems
+  bpayListItems,
+  walletItems
 } from "../testUtils";
 import "whatwg-fetch";
 import "jest-location-mock";
@@ -132,5 +133,14 @@ describe("Bancomat Pay: getting the list", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.bPay.getList(sessionToken);
     expect(result).toEqual(O.some(bpayListItems));
+  });
+});
+
+describe("Bancomat Pay: add wallet", () => {
+  it("should success when http === 200", async () => {
+    const response = new Response(JSON.stringify(walletItems), { status: 200 });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.addWallet(sessionToken, bpayListItems);
+    expect(result).toEqual(O.some(walletItems.data));
   });
 });

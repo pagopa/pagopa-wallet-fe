@@ -3,6 +3,9 @@ import { WalletResponse } from "../../generated/definitions/payment-manager-v1/W
 import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet";
 import { SessionWalletCreateResponse } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { RestBPayResponse } from "../../generated/definitions/payment-manager-v1/RestBPayResponse";
+import { WalletTypeEnum } from "../../generated/definitions/payment-manager-v1/WalletV2";
+import { WalletV2ListResponse } from "../../generated/definitions/payment-manager-v1/WalletV2ListResponse";
+import { EnableableFunctionsEnum } from "../../generated/definitions/payment-manager-v1/EnableableFunctions";
 
 export const idWallet = 1222302;
 export const walletId = "1222302";
@@ -122,3 +125,35 @@ export const bpayListItems: Exclude<RestBPayResponse["data"], undefined> = [
     ]
   }
 ];
+
+export const walletItems: WalletV2ListResponse = {
+  data: [
+    {
+      idWallet: 1302262,
+      walletType: WalletTypeEnum.BPay,
+      enableableFunctions: [
+        EnableableFunctionsEnum.pagoPA,
+        EnableableFunctionsEnum.BPD,
+        EnableableFunctionsEnum.FA
+      ],
+      pagoPA: true,
+      onboardingChannel: "IO",
+      favourite: false,
+      createDate: new Date("2023-11-16 10:16:09"),
+      info: {
+        type: "BPayInfo",
+        instituteCode: "05704",
+        bankName: "CEDACRI - Banca popolare",
+        numberObfuscated: "+3938*******202",
+        vidHash: "Oe9c646a34cfe6da5687c61829",
+        paymentInstruments: [
+          {
+            defaultSend: true,
+            defaultReceive: true
+          }
+        ],
+        brandLogo: ""
+      }
+    }
+  ]
+};

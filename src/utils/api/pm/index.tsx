@@ -122,7 +122,11 @@ const addWalletsBPay = async (sessionToken: string, bpayItem: any) =>
         pipe(
           response,
           E.match(
-            () => O.none,
+            (_errors) => {
+              // eslint-disable-next-line
+              console.error(_errors);
+              return O.none;
+            },
             ({ status, value }) =>
               status === 200 ? O.some(value.data) : O.none
           )
