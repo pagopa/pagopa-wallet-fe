@@ -15,10 +15,11 @@ const path = require("path");
 const API_HOST = "http://localhost:8080";
 const API_WALLET_BASEPATH = process.env.WALLET_CONFIG_API_BASEPATH;
 const API_PM_BASEPATH = process.env.WALLET_CONFIG_API_PM_BASEPATH;
+const API_OUTCOME_BASEPATH = process.env.WALLET_OUTCOME_API_BASEPATH;
 
 module.exports = function (app) {
   app.use(
-    createProxyMiddleware([API_WALLET_BASEPATH, API_PM_BASEPATH], {
+    createProxyMiddleware([API_WALLET_BASEPATH, API_PM_BASEPATH, API_OUTCOME_BASEPATH], {
       target: API_HOST
     })
   );

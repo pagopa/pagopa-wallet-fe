@@ -20,6 +20,10 @@ parameters:
     type: string
     default: ''
 
+  - name: 'api_wallet_outcome_basepath'
+    type: string
+    default: ''
+
   - name: 'api_timeout'
     type: number
     default: 10000
@@ -40,6 +44,7 @@ steps:
       WALLET_CONFIG_WEBVIEW_PM_HOST=${{ parameters.api_webview_pm_hostname }} \
       WALLET_CONFIG_API_BASEPATH=${{ parameters.api_wallet_basepath }} \
       WALLET_CONFIG_API_PM_BASEPATH=${{ parameters.api_pm_basepath }} \
+      WALLET_OUTCOME_API_BASEPATH=${{ parameters.api_wallet_outcome_basepath }} \
       WALLET_CONFIG_API_TIMEOUT=${{ parameters.api_timeout }} \
       WALLET_CONFIG_API_ENV==${{ parameters.env }} \
       WALLET_NPG_SDK_URL=${{ parameters.npg_sdk_url }} \

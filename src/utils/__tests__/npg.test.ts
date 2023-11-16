@@ -3,6 +3,7 @@
 (window as any)._env_ = {
   WALLET_CONFIG_API_BASEPATH: "/webview-payment-wallet/v1",
   WALLET_CONFIG_API_PM_BASEPATH: "/pp-restapi-CD",
+  WALLET_OUTCOME_API_BASEPATH: "/payment-wallet",
   WALLET_CONFIG_API_TIMEOUT: "10000",
   WALLET_CONFIG_API_ENV: "DEV",
   WALLET_CONFIG_API_HOST: "https://api.dev.platform.pagopa.it",
