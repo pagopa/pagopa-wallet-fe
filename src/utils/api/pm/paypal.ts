@@ -12,6 +12,7 @@ import { PaypalPspListResponse } from "../../../../generated/definitions/payment
 
 const API_HOST = getConfigOrThrow().WALLET_CONFIG_WEBVIEW_PM_HOST;
 const API_PM_BASEPATH = getConfigOrThrow().WALLET_CONFIG_API_PM_BASEPATH;
+const WALLET_OUTCOME_BASEPATH = getConfigOrThrow().WALLET_OUTCOME_API_BASEPATH;
 
 /**
  * Api client for payment manager API
@@ -61,10 +62,12 @@ export const getPaypalPsps = async ({
                         value
                           ? onSuccess(value)
                           : onError(ErrorsType.GENERIC_ERROR),
-                      "4xx": () => onError(ErrorsType.GENERIC_ERROR)
-                      // window.location.replace(
-                      //   `${API_HOST}${API_PM_BASEPATH}/v3/webview/logout/bye?outcome=1`
-                      // )
+                      "4xx": () => {
+                        const outcome = status === 401 ? "14" : "1";
+                        return window.location.replace(
+                          `${API_HOST}${WALLET_OUTCOME_BASEPATH}/v1/wallets/outcomes?outcome=${outcome}`
+                        );
+                      }
                     },
                     () => onError(ErrorsType.GENERIC_ERROR)
                   )

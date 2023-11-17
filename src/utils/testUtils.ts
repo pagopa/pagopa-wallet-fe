@@ -155,3 +155,64 @@ export const walletItems: WalletV2ListResponse = {
     }
   ]
 };
+export const pspsResponse = {
+  data: [
+    {
+      idPsp: "IDPSPFNZ",
+      codiceAbi: "06220",
+      ragioneSociale: "Psp Ila",
+      maxFee: 102,
+      avgFee: 101,
+      privacyUrl: "http://example.com",
+      onboard: false
+    },
+    {
+      idPsp: "PAYTITM1",
+      codiceAbi: "36017",
+      ragioneSociale: "Paytipper Spa",
+      maxFee: 150,
+      avgFee: 150,
+      privacyUrl: "https://www.paytipper.com/srvs/AI/show_informative",
+      onboard: false
+    },
+    {
+      idPsp: "40000000001",
+      codiceAbi: "40001",
+      ragioneSociale:
+        "Cassa di Risparmio di Parma e Piacenza S.p.A. descrizione lunga",
+      maxFee: 603,
+      avgFee: 403,
+      privacyUrl: "test",
+      onboard: false
+    },
+    {
+      idPsp: "60000000001",
+      codiceAbi: "40001",
+      ragioneSociale: "PSP Paolo",
+      maxFee: 603,
+      avgFee: 403,
+      privacyUrl: "https://www.paytipper.com/srvs/AI/show_informative",
+      onboard: false
+    },
+    {
+      idPsp: "70000000001",
+      codiceAbi: "70001",
+      ragioneSociale: "Psp Salvo",
+      maxFee: 603,
+      avgFee: 403,
+      privacyUrl: "test",
+      onboard: false
+    },
+    {
+      idPsp: "50000000001",
+      codiceAbi: "50001",
+      ragioneSociale: "Psp Davide",
+      maxFee: 603,
+      avgFee: 403,
+      privacyUrl: "https://www.paytipper.com/srvs/AI/show_informative",
+      onboard: false
+    }
+  ]
+};
+
+export const pspsResponseBody = JSON.stringify(pspsResponse);
