@@ -24,6 +24,8 @@ import utils from "../utils";
 import { PaypalPspListResponse } from "../../generated/definitions/payment-manager-v1/PaypalPspListResponse";
 import { getConfigOrThrow } from "../config";
 import Verify, { VERIFY } from "../components/Verify";
+import { useOutcomeRedirect } from "../hooks/useOutcomeRedirect";
+import { OUTCOME_ROUTE } from "./models/routeModel";
 
 export default function PaypalPage() {
   const { t } = useTranslation();
@@ -39,29 +41,6 @@ export default function PaypalPage() {
     window.location.href,
     SessionItems.sessionToken
   );
-
-  const FAKE_PSP = {
-    data: [
-      {
-        avgFee: 0,
-        codiceAbi: "03069",
-        idPsp: "123",
-        maxFee: 0,
-        onboard: false,
-        privacyUrl: "string",
-        ragioneSociale: "string"
-      },
-      {
-        avgFee: 0,
-        codiceAbi: "03069",
-        idPsp: "111",
-        maxFee: 0,
-        onboard: false,
-        privacyUrl: "string",
-        ragioneSociale: "string"
-      }
-    ]
-  };
 
   const pspImagePath = (abi: string | undefined): string =>
     pipe(
@@ -87,17 +66,18 @@ export default function PaypalPage() {
     void pm.getPaypalPsps({
       bearer: sessionToken,
       onSuccess,
-      onError: () => onSuccess(FAKE_PSP)
+      onError
     });
   }, []);
 
   React.useEffect(getPsps, []);
 
-  // const onError = React.useCallback((m: string) => {
-  //   setLoading(false);
-  //   setError(m);
-  //   setErrorModalOpen(true);
-  // }, []);
+  const redirectWithError = useOutcomeRedirect(OUTCOME_ROUTE.ERROR);
+
+  const onError = React.useCallback(() => {
+    setLoading(false);
+    setErrorModalOpen(true);
+  }, []);
 
   const handleCloseErrorModal = React.useCallback(
     () => setErrorModalOpen(false),
@@ -152,25 +132,13 @@ export default function PaypalPage() {
                       key={psp.idPsp}
                       value={psp.idPsp}
                       control={<Radio />}
-                      sx={{
-                        ".MuiFormControlLabel-label": {
-                          width: "100%"
-                        }
-                      }}
+                      sx={styles.formControl}
                       label={
-                        <Stack
-                          alignItems="center"
-                          direction="row"
-                          justifyContent="space-between"
-                        >
+                        <Stack sx={styles.radioStack}>
                           <img
                             src={pspImagePath(psp.codiceAbi)}
                             alt="Logo gestore"
-                            style={{
-                              display: "flex",
-                              maxWidth: 200,
-                              maxHeight: 30
-                            }}
+                            style={styles.pspImg}
                           />
                           <InfoOutlinedIcon
                             sx={{ color: "primary.main", cursor: "pointer" }}
@@ -185,14 +153,13 @@ export default function PaypalPage() {
             </FormControl>
             <FormButtons
               type="submit"
-              handleSubmit={() => null}
+              handleCancel={redirectWithError}
               loadingSubmit={submitted}
               loadingCancel={cancelLoading}
               submitTitle={`${t("paypalPage.buttons.submit")}`}
               cancelTitle="paypalPage.buttons.cancel"
               disabledSubmit={loading}
               disabledCancel={loading}
-              handleCancel={() => null}
             />
           </form>
         </Box>
@@ -216,5 +183,21 @@ const styles = {
     alignItems: "center",
     pt: 3,
     pb: 2
+  },
+  formControl: {
+    ".MuiFormControlLabel-label": {
+      width: "100%"
+    }
+  },
+  radioStack: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    ml: 2
+  },
+  pspImg: {
+    display: "flex",
+    maxWidth: 200,
+    maxHeight: 30
   }
 };

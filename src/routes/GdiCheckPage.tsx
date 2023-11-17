@@ -2,16 +2,16 @@ import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import PageContainer from "../components/commons/PageContainer";
 import WalletLoader from "../components/commons/WalletLoader";
-import { useNpgOutcomeRedirect } from "../hooks/useNpgOutcomeRedirect";
+import { useOutcomeRedirect } from "../hooks/useOutcomeRedirect";
 import { getConfigOrThrow } from "../config";
-import { NPG_OUTCOME_ROUTE } from "./models/routeModel";
+import { OUTCOME_ROUTE } from "./models/routeModel";
 
 const GdiCheckPage = () => {
   const {
     state: { gdiIframeUrl }
   } = useLocation();
 
-  const outcomeErrorRedirect = useNpgOutcomeRedirect(NPG_OUTCOME_ROUTE.ERROR);
+  const outcomeErrorRedirect = useOutcomeRedirect(OUTCOME_ROUTE.ERROR);
   const gdiCheckTimeout = getConfigOrThrow().WALLET_GDI_CHECK_TIMEOUT;
 
   const decodedGdiIframeUrl = Buffer.from(gdiIframeUrl, "base64").toString(

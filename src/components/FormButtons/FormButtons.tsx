@@ -4,7 +4,7 @@ import { default as React } from "react";
 import { useTranslation } from "react-i18next";
 
 type SubmitButton = {
-  handleSubmit: (e: React.FormEvent) => void;
+  handleSubmit?: (e: React.FormEvent) => void;
   type?: "submit" | "button";
   disabledSubmit: boolean;
   loadingSubmit?: boolean;
@@ -13,7 +13,7 @@ type SubmitButton = {
 };
 
 type CancellableButtons = {
-  handleSubmit: (e: React.FormEvent) => void;
+  handleSubmit?: (e: React.FormEvent) => void;
   handleCancel: () => void;
   type?: "submit" | "button";
   disabledSubmit: boolean;
