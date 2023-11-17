@@ -9,7 +9,7 @@ import config from "../config";
 import { ErrorsType } from "../../errors/errorsModel";
 import { getConfigOrThrow } from "../../../config";
 import utils from "../../";
-import { RestBPayResponse } from "../../../../generated/definitions/payment-manager-v1/RestBPayResponse";
+import { IBpayAccountItems } from "../../../features/onboard/models";
 
 const NODE_ENV = getConfigOrThrow().WALLET_CONFIG_API_ENV;
 const API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
@@ -80,7 +80,7 @@ const addWalletCreditCard = async (
  */
 const getBpayList = async (
   sessionToken: string
-): Promise<O.Option<Exclude<RestBPayResponse["data"], undefined>>> =>
+): Promise<O.Option<IBpayAccountItems>> =>
   pipe(
     TE.tryCatch(
       () =>

@@ -1,11 +1,11 @@
 import React from "react";
 import PhoneInTalkOutlinedIcon from "@mui/icons-material/PhoneInTalkOutlined";
 import { Box, Typography, Stack } from "@mui/material";
-import { RestBPayResponse } from "../../../generated/definitions/payment-manager-v1/RestBPayResponse";
+import { IBpayAccountItems } from "../../features/onboard/models";
 
-type IBpayItem = NonNullable<Readonly<RestBPayResponse["data"]>>[number];
+type IBpayAccountItem = IBpayAccountItems[number];
 
-const BpayItem = (props: IBpayItem) => {
+const BpayAccountItem = (props: IBpayAccountItem) => {
   const { numberObfuscated, nameObfuscated, surnameObfuscated } = props;
   return (
     <Box
@@ -41,4 +41,4 @@ const BpayItem = (props: IBpayItem) => {
   );
 };
 
-export default BpayItem;
+export default BpayAccountItem;

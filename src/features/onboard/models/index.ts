@@ -1,3 +1,5 @@
+import { RestBPayResponse } from "../../../../generated/definitions/payment-manager-v1/RestBPayResponse";
+
 export interface InputCardFormFields {
   name: string;
   number: string;
@@ -56,3 +58,5 @@ export const SecureCodeLabels: {
     error: "inputCardPage.formErrors.cid"
   }
 };
+
+export type IBpayAccountItems = NonNullable<Readonly<RestBPayResponse["data"]>>;
