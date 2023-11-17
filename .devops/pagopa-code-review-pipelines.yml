@@ -84,7 +84,9 @@ stages:
             extraProperties: |
               sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
               sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
-        
+
+        - template: azure-templates/setup-env.yml
+
         - script: yarn generate
           displayName: 'Generate definitions'
 
