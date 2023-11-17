@@ -77,6 +77,7 @@ const addWalletCreditCard = async (
 
 /**
  * returns Bancomat Pay account items of the user idenfied by the sessionToken parameter
+ * returns an instance of O.none when no accounts are returned
  */
 const getBpayList = async (
   sessionToken: string
@@ -96,9 +97,11 @@ const getBpayList = async (
           pipe(
             resp,
             E.match(
-              () => O.none, // When errors, like decode errors
+              (_errors) => O.none, // When errors, like decode errors
               ({ status, value }) =>
-                status === 200 ? O.some(value.data || []) : O.none
+                status === 200 && value.data && value.data.length > 0
+                  ? O.some(value.data)
+                  : O.none
             )
           )
       )
@@ -120,16 +123,12 @@ const addWalletsBPay = async (sessionToken: string, bpayItem: any) =>
         () => toError
       ),
       TE.match(
-        () => O.none,
+        () => O.none, // When promise rejects
         (response) =>
           pipe(
             response,
             E.match(
-              (_errors) => {
-                // eslint-disable-next-line
-              console.error(_errors);
-                return O.none;
-              },
+              (_errors) => O.none, // When errors, like decode errors
               ({ status, value }) =>
                 status === 200 ? O.some(value.data) : O.none
             )

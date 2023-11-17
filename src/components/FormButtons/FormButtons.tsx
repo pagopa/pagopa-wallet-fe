@@ -2,7 +2,6 @@ import { LoadingButton } from "@mui/lab";
 import { Grid } from "@mui/material";
 import { default as React } from "react";
 import { useTranslation } from "react-i18next";
-import useMediaQuery from "@mui/material/useMediaQuery";
 
 type SubmitButton = {
   handleSubmit: (e: React.FormEvent) => void;
@@ -27,7 +26,6 @@ type CancellableButtons = {
 
 export function FormButtons(props: SubmitButton | CancellableButtons) {
   const { t } = useTranslation();
-  const useSmallDevice = useMediaQuery("(max-width: 599px)");
 
   return (
     <React.Fragment>
@@ -43,7 +41,7 @@ export function FormButtons(props: SubmitButton | CancellableButtons) {
         left={0}
         px={{ xs: "1rem", sm: 0 }}
       >
-        <Grid xs={props.disabledCancel ? 12 : 8} style={{ paddingTop: 0 }} item>
+        <Grid xs={props.disabledCancel ? 12 : 8} item>
           <LoadingButton
             type={props.type}
             onSubmit={props.handleSubmit}
@@ -68,7 +66,7 @@ export function FormButtons(props: SubmitButton | CancellableButtons) {
           </LoadingButton>
         </Grid>
         {!props?.disabledCancel && (
-          <Grid xs={4} style={useSmallDevice ? { paddingTop: 0 } : {}} item>
+          <Grid xs={4} item>
             <LoadingButton
               variant="outlined"
               onClick={props.handleCancel}
