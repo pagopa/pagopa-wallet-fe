@@ -37,8 +37,8 @@ export const TRANSLATIONS_IT = {
     }
   },
   bPayPage: {
-    title: "Vuoi Aggiungere questo account?",
-    description: "Account BANCOMAT PAY x di y",
+    title: "Vuoi aggiungere questo account?",
+    description: "Account BANCOMAT PAY {{nAccount}} di {{of}}",
     formButtons: {
       submit: "Aggiungi",
       annulla: "Salta"
