@@ -1,16 +1,4 @@
 /* eslint-disable functional/immutable-data */
-/* eslint-disable no-underscore-dangle */
-(window as any)._env_ = {
-  WALLET_CONFIG_API_BASEPATH: "/webview-payment-wallet/v1",
-  WALLET_CONFIG_API_PM_BASEPATH: "/pp-restapi-CD",
-  WALLET_OUTCOME_API_BASEPATH: "/payment-wallet",
-  WALLET_CONFIG_API_TIMEOUT: "10000",
-  WALLET_CONFIG_API_ENV: "DEV",
-  WALLET_CONFIG_API_HOST: "https://api.dev.platform.pagopa.it",
-  WALLET_CONFIG_WEBVIEW_PM_HOST: "https://api.dev.platform.pagopa.it",
-  WALLET_NPG_SDK_URL:
-    "https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js"
-};
 import * as O from "fp-ts/Option";
 import pm from "../api/pm";
 import { ErrorsType } from "../errors/errorsModel";
@@ -93,7 +81,12 @@ describe("Credit Card: add to the wallet", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
     const onSucces = jest.fn();
-    await pm.addWallet(sessionToken, walletRequest, onSucces, onError);
+    await pm.creditCard.addWallet(
+      sessionToken,
+      walletRequest,
+      onSucces,
+      onError
+    );
     expect(onSucces).not.toBeCalled();
     expect(onError).not.toBeCalled();
     expect(global.location.href).toContain("outcome=14");
