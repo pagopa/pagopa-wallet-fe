@@ -108,14 +108,17 @@ const getBpayList = async (
 /**
  * adds Bancomat Pay account items to the user wallet
  */
-const addWalletsBPay = async (sessionToken: string, bpayItem: any) =>
+const addWalletsBPay = async (
+  sessionToken: string,
+  bPayAccountItems: IBpayAccountItems
+) =>
   pipe(
     TE.tryCatch(
       () =>
         paymentManagerClient.addWalletsBPayUsingPOST({
           Bearer: "Bearer " + sessionToken,
           bPayRequest: {
-            data: bpayItem
+            data: bPayAccountItems
           }
         }),
       () => toError
