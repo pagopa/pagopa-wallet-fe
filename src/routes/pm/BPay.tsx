@@ -2,6 +2,7 @@ import { pipe } from "fp-ts/function";
 import * as O from "fp-ts/Option";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import PageContainer from "../../components/commons/PageContainer";
 import utils from "../../utils";
 import { SessionItems } from "../../utils/storage";
@@ -11,32 +12,12 @@ import BpayCardItem from "../../components/commons/BpayCardItem";
 
 type IBpayItem = NonNullable<Readonly<RestBPayResponse["data"]>>[number];
 
-const mock: Array<IBpayItem> = [
-  {
-    bankName: "string",
-    groupCode: "string",
-    instituteCode: "string",
-    nameObfuscated: "Pippo",
-    numberEncrypted: "test",
-    numberObfuscated: "+3932******50",
-    paymentInstruments: [
-      {
-        defaultReceive: true,
-        defaultSend: true,
-        ibanObfuscated: "string"
-      }
-    ],
-    serviceState: "string",
-    surnameObfuscated: "Baudo",
-    token: "string",
-    uid: "string",
-    uidHash: "string"
-  }
-];
-
 export default function BPAyPage() {
-  const [bpayCardItems, setBpayCardItems] = useState<Array<IBpayItem>>(mock);
+  const [bpayCardItems, setBpayCardItems] = useState<Array<IBpayItem>>([]);
   const { t } = useTranslation();
+  const { promiseInProgress: loading } = usePromiseTracker({
+    area: "sumbit-form-button"
+  });
 
   const sessionToken = utils.url.getFragmentParameter(
     window.location.href,
@@ -44,7 +25,7 @@ export default function BPAyPage() {
   );
 
   useEffect(() => {
-    void (async () => {
+    const start = async () => {
       pipe(
         await utils.api.bPay.getList(sessionToken),
         O.match(
@@ -53,7 +34,8 @@ export default function BPAyPage() {
           (items) => setBpayCardItems(items)
         )
       );
-    })();
+    };
+    void trackPromise(start(), "page-container");
   }, []);
 
   const continua = async () =>
@@ -78,8 +60,11 @@ export default function BPAyPage() {
       ))}
       <FormButtons
         handleCancel={() => utils.url.redirectWithOutcame(1)}
-        handleSubmit={() => continua()}
-        disabledSubmit={bpayCardItems.length === 0}
+        handleSubmit={() => trackPromise(continua(), "sumbit-form-button")}
+        type="button"
+        disabledCancel={loading}
+        disabledSubmit={bpayCardItems.length === 0 || loading}
+        loadingSubmit={loading}
         submitTitle="bPayPage.formButtons.submit"
         cancelTitle="bPayPage.formButtons.annulla"
       />

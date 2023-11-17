@@ -3,7 +3,6 @@ import * as E from "fp-ts/Either";
 import * as O from "fp-ts/Option";
 import * as TE from "fp-ts/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { trackPromise } from "react-promise-tracker";
 import { createClient as createPaymentManagerClient } from "../../../../generated/definitions/payment-manager-v1/client";
 import { WalletRequest } from "../../../../generated/definitions/payment-manager-v1/WalletRequest";
 import config from "../config";
@@ -82,61 +81,58 @@ const addWalletCreditCard = async (
 const getBpayList = async (
   sessionToken: string
 ): Promise<O.Option<Exclude<RestBPayResponse["data"], undefined>>> =>
-  await trackPromise(
-    pipe(
-      TE.tryCatch(
-        () =>
-          paymentManagerClient.getBpayListUsingGET({
-            Bearer: "Bearer " + sessionToken
-          }),
-        () => toError
-      ),
-      TE.match(
-        () => O.none, // When promise rejects
-        (resp) =>
-          pipe(
-            resp,
-            E.match(
-              (_errors) => O.none, // When errors, like decode errors
-              ({ status, value }) =>
-                status === 200 && value.data && value.data.length > 0
-                  ? O.some(value.data)
-                  : O.none
-            )
+  pipe(
+    TE.tryCatch(
+      () =>
+        paymentManagerClient.getBpayListUsingGET({
+          Bearer: "Bearer " + sessionToken
+        }),
+      () => toError
+    ),
+    TE.match(
+      () => O.none, // When promise rejects
+      (resp) =>
+        pipe(
+          resp,
+          E.match(
+            (_errors) => O.none, // When errors, like decode errors
+            ({ status, value }) =>
+              status === 200 && value.data && value.data.length > 0
+                ? O.some(value.data)
+                : O.none
           )
-      )
-    )(),
-    "page-container"
-  );
+        )
+    )
+  )();
 
+/**
+ * adds Bancomat Pay account items to the user wallet
+ */
 const addWalletsBPay = async (sessionToken: string, bpayItem: any) =>
-  await trackPromise(
-    pipe(
-      TE.tryCatch(
-        () =>
-          paymentManagerClient.addWalletsBPayUsingPOST({
-            Bearer: "Bearer " + sessionToken,
-            bPayRequest: {
-              data: bpayItem
-            }
-          }),
-        () => toError
-      ),
-      TE.match(
-        () => O.none, // When promise rejects
-        (response) =>
-          pipe(
-            response,
-            E.match(
-              (_errors) => O.none, // When errors, like decode errors
-              ({ status, value }) =>
-                status === 200 ? O.some(value.data) : O.none
-            )
+  pipe(
+    TE.tryCatch(
+      () =>
+        paymentManagerClient.addWalletsBPayUsingPOST({
+          Bearer: "Bearer " + sessionToken,
+          bPayRequest: {
+            data: bpayItem
+          }
+        }),
+      () => toError
+    ),
+    TE.match(
+      () => O.none, // When promise rejects
+      (response) =>
+        pipe(
+          response,
+          E.match(
+            (_errors) => O.none, // When errors, like decode errors
+            ({ status, value }) =>
+              status === 200 ? O.some(value.data) : O.none
           )
-      )
-    )(),
-    "page-container"
-  );
+        )
+    )
+  )();
 
 export default {
   creditCard: {
