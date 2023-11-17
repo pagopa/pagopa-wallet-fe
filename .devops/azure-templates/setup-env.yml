@@ -36,6 +36,10 @@ parameters:
     type: number
     default: 10000
 
+  - name: 'wallet_pagopa_logos_cdn'
+    type: string
+    default: ''
+
 steps:
 - bash: |
     chmod +x env.sh
@@ -49,6 +53,7 @@ steps:
       WALLET_CONFIG_API_ENV==${{ parameters.env }} \
       WALLET_NPG_SDK_URL=${{ parameters.npg_sdk_url }} \
       WALLET_GDI_CHECK_TIMEOUT=${{ parameters.wallet_gdi_check_timeout }} \
+      WALLET_PAGOPA_LOGOS_CDN=${{ parameters.wallet_pagopa_logos_cdn }} \
       bash env.sh
 
   displayName: 'Populate environment file'

@@ -44,6 +44,31 @@ export const TRANSLATIONS_IT = {
       annulla: "Salta"
     }
   },
+  paypalPage: {
+    title: "Con quale gestore vuoi usare il tuo conto PayPal",
+    description:
+      "Quando usi pagoPA, sei tu a decidere quale gestore della transazione ti conviene di più.\nPotrai modificare tale scelta ad ogni pagamento in base alla commissione proposta.\n",
+    helpLink: "Cos'è il gestore della transazione?",
+    formFields: {
+      billCode: "Codice Avviso",
+      cf: "Codice Fiscale Ente Creditore"
+    },
+    formErrors: {
+      required: "Campo obbligatorio",
+      minCode: "Inserisci 18 cifre",
+      minCf: "Inserisci 11 cifre"
+    },
+    psp: {
+      header: {
+        name: "Gestore",
+        info: "Info e costi"
+      }
+    },
+    buttons: {
+      cancel: "Annulla",
+      submit: "Continua"
+    }
+  },
   errorButton: {
     help: "Contatta l'assistenza",
     close: "Chiudi",

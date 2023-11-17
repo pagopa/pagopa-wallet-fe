@@ -10,6 +10,7 @@ export enum WalletRoutes {
   PM_CARTE = "pm-onboarding/creditcard",
   CARTE = "onboarding/creditcard",
   PM_BPAY = "pm-onboarding/bpay",
+  PM_PAYPAL = "pm-onboarding/paypal",
   BPAY = "onboarding/bpay",
   ROOT = ""
 }
