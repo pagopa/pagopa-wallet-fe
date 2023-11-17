@@ -1,7 +1,7 @@
 import { getConfigOrThrow } from "../config";
 
 const API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
-const API_PM_BASEPATH = getConfigOrThrow().WALLET_CONFIG_API_PM_BASEPATH;
+const WALLET_OUTCOME_BASEPATH = getConfigOrThrow().WALLET_OUTCOME_API_BASEPATH;
 
 /**
  * This function requires a valid URI with a querystrings as the fragment URI
@@ -29,7 +29,7 @@ export function getFragmentParameter(uri: string, name: string): string {
  */
 const redirectWithOutcame = (outcome: number) =>
   window.location.replace(
-    `${API_HOST}${API_PM_BASEPATH}/v3/webview/logout/bye?outcome=${outcome}`
+    `${API_HOST}${WALLET_OUTCOME_BASEPATH}/v1/wallets/outcomes?outcome=${outcome}`
   );
 
 export default {
