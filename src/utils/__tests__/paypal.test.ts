@@ -23,7 +23,7 @@ describe("get psp for paypal onboarding", () => {
     global.fetch = jest.fn(() => Promise.reject());
     const onError = jest.fn();
     const onSuccess = jest.fn();
-    await pm.getPaypalPsps({
+    await pm.paypal.getPaypalPsps({
       bearer: sessionToken,
       onSuccess,
       onError
@@ -37,7 +37,7 @@ describe("get psp for paypal onboarding", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
     const onSuccess = jest.fn();
-    await pm.getPaypalPsps({
+    await pm.paypal.getPaypalPsps({
       bearer: sessionToken,
       onSuccess,
       onError
@@ -53,7 +53,7 @@ describe("get psp for paypal onboarding", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
     const onSuccess = jest.fn();
-    await pm.getPaypalPsps({
+    await pm.paypal.getPaypalPsps({
       bearer: sessionToken,
       onSuccess,
       onError
@@ -70,7 +70,7 @@ describe("get psp for paypal onboarding", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const onError = jest.fn();
     const onSuccess = jest.fn();
-    await pm.getPaypalPsps({
+    await pm.paypal.getPaypalPsps({
       bearer: sessionToken,
       onSuccess,
       onError

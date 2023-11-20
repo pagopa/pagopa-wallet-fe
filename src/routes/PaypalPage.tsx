@@ -19,7 +19,6 @@ import { FormButtons } from "../components/FormButtons/FormButtons";
 import ErrorModal from "../components/commons/ErrorModal";
 import { ErrorsType } from "../utils/errors/errorsModel";
 import pm from "../utils/api/pm";
-import { SessionItems } from "../utils/storage";
 import utils from "../utils";
 import { PaypalPspListResponse } from "../../generated/definitions/payment-manager-v1/PaypalPspListResponse";
 import { getConfigOrThrow } from "../config";
@@ -39,7 +38,7 @@ export default function PaypalPage() {
 
   const sessionToken = utils.url.getFragmentParameter(
     window.location.href,
-    SessionItems.sessionToken
+    "sessioToken"
   );
 
   const pspImagePath = (abi: string | undefined): string =>
@@ -63,7 +62,7 @@ export default function PaypalPage() {
 
   const getPsps = React.useCallback(() => {
     setLoading(true);
-    void pm.getPaypalPsps({
+    void pm.paypal.getPaypalPsps({
       bearer: sessionToken,
       onSuccess,
       onError
