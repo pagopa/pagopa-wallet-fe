@@ -38,7 +38,7 @@ export default function PaypalPage() {
 
   const sessionToken = utils.url.getFragmentParameter(
     window.location.href,
-    "sessioToken"
+    "sessionToken"
   );
 
   const pspImagePath = (abi: string | undefined): string =>
