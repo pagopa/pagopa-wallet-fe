@@ -46,6 +46,23 @@ describe("get psp for paypal onboarding", () => {
     expect(onError).toHaveBeenCalled();
   });
 
+  it("should change the location and include outcome=1 on 401 type response", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 401
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const onError = jest.fn();
+    const onSuccess = jest.fn();
+    await pm.paypal.getPaypalPsps({
+      bearer: sessionToken,
+      onSuccess,
+      onError
+    });
+    expect(onSuccess).not.toBeCalled();
+    expect(onError).not.toBeCalled();
+    expect(global.location.href).toContain("outcome=14");
+  });
+
   it("should change the location and include outcome=1 on 4xx type response", async () => {
     const response = new Response(JSON.stringify({}), {
       status: 404
