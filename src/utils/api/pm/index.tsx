@@ -61,7 +61,7 @@ const addWalletCreditCard = async (
                       },
                       "4xx": () => {
                         const outcome = status === 401 ? 14 : 1;
-                        utils.url.redirectWithOutcame(outcome);
+                        utils.url.redirectWithOutcome(outcome);
                       }
                     },
                     () => onError(ErrorsType.GENERIC_ERROR)

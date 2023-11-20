@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import PageContainer from "../../components/commons/PageContainer";
 import { InputCardFormFields } from "../../features/onboard/models";
 import { InputCardForm } from "../../features/onboard/components/InputCardForm";
@@ -15,6 +16,8 @@ export default function InputCardPage() {
   const [data, setData] = React.useState<{ idWallet: number; cvv: number }>();
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
   const [error, setError] = React.useState<ErrorsType | "">("");
+
+  const { t } = useTranslation();
 
   const sessionToken = utils.url.getFragmentParameter(
     window.location.href,
@@ -63,7 +66,7 @@ export default function InputCardPage() {
   };
 
   return (
-    <PageContainer title="inputCardPage.title">
+    <PageContainer title={t("inputCardPage.title")}>
       <Box sx={{ mt: 4 }}>
         <InputCardForm onSubmit={onSubmit} loading={loading} />
         {data && sessionToken && (

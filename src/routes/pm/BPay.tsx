@@ -28,7 +28,7 @@ export default function BPAyPage() {
       pipe(
         await utils.api.bPay.getList(sessionToken),
         O.match(
-          () => utils.url.redirectWithOutcame(1),
+          () => utils.url.redirectWithOutcome(1),
           (items) => setBpayAccountItems(items)
         )
       );
@@ -40,8 +40,8 @@ export default function BPAyPage() {
     pipe(
       await utils.api.bPay.addWallet(sessionToken, bpayAccountItems),
       O.match(
-        () => utils.url.redirectWithOutcame(1),
-        () => utils.url.redirectWithOutcame(0)
+        () => utils.url.redirectWithOutcome(1),
+        () => utils.url.redirectWithOutcome(0)
       )
     );
 
@@ -57,7 +57,7 @@ export default function BPAyPage() {
         <BpayAccountItem {...item} key={item.token} />
       ))}
       <FormButtons
-        handleCancel={() => utils.url.redirectWithOutcame(1)}
+        handleCancel={() => utils.url.redirectWithOutcome(1)}
         handleSubmit={() =>
           trackPromise(addBpayAccountsToTheWallet(), "sumbit-form-button")
         }
