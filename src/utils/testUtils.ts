@@ -2,6 +2,10 @@ import { WalletRequest } from "../../generated/definitions/payment-manager-v1/Wa
 import { WalletResponse } from "../../generated/definitions/payment-manager-v1/WalletResponse";
 import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet";
 import { SessionWalletCreateResponse } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
+import { RestBPayResponse } from "../../generated/definitions/payment-manager-v1/RestBPayResponse";
+import { WalletTypeEnum } from "../../generated/definitions/payment-manager-v1/WalletV2";
+import { WalletV2ListResponse } from "../../generated/definitions/payment-manager-v1/WalletV2ListResponse";
+import { EnableableFunctionsEnum } from "../../generated/definitions/payment-manager-v1/EnableableFunctions";
 
 export const idWallet = 1222302;
 export const walletId = "1222302";
@@ -20,8 +24,7 @@ export const walletRequest: WalletRequest = {
   }
 };
 
-export const sessionToken =
-  "8s9Q5k9f6L7a1w8C8b4e9F3a4o6I7f9k9B7s2h9K8i8a3E9n3i4B4z5d2S5n9v6Q4t3n2H8i8y5A7k9j9N5y6p9C8r7r0G5c3o3N6w9c5H2f3p3C3v4v4Y6p1x5I5s4v";
+export const sessionToken = "tokenTest";
 
 const walletResponse: WalletResponse = {
   data: {
@@ -97,3 +100,58 @@ export const walletValidationsResponse = {
 export const walletValidationsResponseBody = JSON.stringify(
   walletValidationsResponse
 );
+
+export const bpayListItems: Exclude<RestBPayResponse["data"], undefined> = [
+  {
+    token: "testToken",
+    groupCode: "1234",
+    instituteCode: "1234",
+    bankName: "bank test name",
+    nameObfuscated: "Eg**",
+    surnameObfuscated: "Sgr***",
+    numberObfuscated: "+3938*******202",
+    numberEncrypted: "testEncrypted",
+    uid: "testUid",
+    uidHash: "testUidHash",
+    serviceState: "ATT",
+    paymentInstruments: [
+      {
+        ibanObfuscated: "IT**********2201",
+        defaultSend: true,
+        defaultReceive: true
+      }
+    ]
+  }
+];
+
+export const walletItems: WalletV2ListResponse = {
+  data: [
+    {
+      idWallet: 1302262,
+      walletType: WalletTypeEnum.BPay,
+      enableableFunctions: [
+        EnableableFunctionsEnum.pagoPA,
+        EnableableFunctionsEnum.BPD,
+        EnableableFunctionsEnum.FA
+      ],
+      pagoPA: true,
+      onboardingChannel: "IO",
+      favourite: false,
+      createDate: new Date("2023-11-16 10:16:09"),
+      info: {
+        type: "BPayInfo",
+        instituteCode: "1234",
+        bankName: "Bank test name",
+        numberObfuscated: "+3938*******202",
+        vidHash: "testVidHash",
+        paymentInstruments: [
+          {
+            defaultSend: true,
+            defaultReceive: true
+          }
+        ],
+        brandLogo: ""
+      }
+    }
+  ]
+};

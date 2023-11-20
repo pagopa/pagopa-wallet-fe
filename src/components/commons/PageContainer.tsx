@@ -1,7 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import { CSSProperties } from "@mui/material/styles/createTypography";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { usePromiseTracker } from "react-promise-tracker";
+import WalletLoader from "../../components/commons/WalletLoader";
 
 export default function PageContainer(props: {
   title?: string;
@@ -10,22 +11,32 @@ export default function PageContainer(props: {
   link?: React.ReactNode;
   childrenSx?: CSSProperties;
 }) {
-  const { t } = useTranslation();
+  const { promiseInProgress } = usePromiseTracker({
+    area: "page-container"
+  });
+  const { title, description, link, children, childrenSx } = props;
+
+  const Content = () => (
+    <>
+      {!!title && (
+        <Typography variant="h4" component={"div"} mb={2} color="text.primary">
+          {props.title}
+        </Typography>
+      )}
+      {!!description && (
+        <Typography variant="body2" sx={{ mb: 1 }} color="text.light">
+          {description}
+          {!!link && link}
+        </Typography>
+      )}
+      <Box sx={childrenSx}>{children}</Box>
+    </>
+  );
 
   return (
     <Box mb={4} aria-live="polite">
-      {!!props.title && (
-        <Typography variant="h4" component={"div"} mb={2} color="text.primary">
-          {t(props.title)}
-        </Typography>
-      )}
-      {!!props.description && (
-        <Typography variant="body2" sx={{ mb: 1 }} color="text.light">
-          {t(props.description)}
-          {!!props.link && props.link}
-        </Typography>
-      )}
-      <Box sx={props.childrenSx}>{props.children}</Box>
+      {promiseInProgress && <WalletLoader />}
+      <Content />
     </Box>
   );
 }

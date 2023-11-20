@@ -1,15 +1,15 @@
 import { Box } from "@mui/material";
 import React from "react";
-import PageContainer from "../components/commons/PageContainer";
-import { InputCardFormFields } from "../features/onboard/models";
-import { InputCardForm } from "../features/onboard/components/InputCardForm";
-import utils from "../utils";
-import { SessionItems } from "../utils/storage";
-import { WalletRequest } from "../../generated/definitions/payment-manager-v1/WalletRequest";
-import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet";
-import Verify from "../components/Verify";
-import { ErrorsType } from "../utils/errors/errorsModel";
-import ErrorModal from "../components/commons/ErrorModal";
+import { useTranslation } from "react-i18next";
+import PageContainer from "../../components/commons/PageContainer";
+import { InputCardFormFields } from "../../features/onboard/models";
+import { InputCardForm } from "../../features/onboard/components/InputCardForm";
+import utils from "../../utils";
+import { WalletRequest } from "../../../generated/definitions/payment-manager-v1/WalletRequest";
+import { TypeEnum } from "../../../generated/definitions/payment-manager-v1/Wallet";
+import Verify from "../../components/Verify";
+import { ErrorsType } from "../../utils/errors/errorsModel";
+import ErrorModal from "../../components/commons/ErrorModal";
 
 export default function InputCardPage() {
   const [loading, setLoading] = React.useState(false);
@@ -17,9 +17,11 @@ export default function InputCardPage() {
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
   const [error, setError] = React.useState<ErrorsType | "">("");
 
+  const { t } = useTranslation();
+
   const sessionToken = utils.url.getFragmentParameter(
     window.location.href,
-    SessionItems.sessionToken
+    "sessionToken"
   );
 
   const onError = (errroMessage: ErrorsType) => {
@@ -55,7 +57,7 @@ export default function InputCardPage() {
         type: TypeEnum.CREDIT_CARD
       }
     };
-    void utils.api.addWallet(
+    void utils.api.creditCard.addWallet(
       sessionToken,
       wallet,
       onSuccess(Number(securityCode)),
@@ -64,7 +66,7 @@ export default function InputCardPage() {
   };
 
   return (
-    <PageContainer title="inputCardPage.title">
+    <PageContainer title={t("inputCardPage.title")}>
       <Box sx={{ mt: 4 }}>
         <InputCardForm onSubmit={onSubmit} loading={loading} />
         {data && sessionToken && (
