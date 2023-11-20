@@ -34,7 +34,7 @@ export default function PaypalPage() {
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
   const [error] = React.useState("");
   const [pspList, setPspList] = React.useState<PaypalPspListResponse>();
-  const [pspId, setPspId] = React.useState<string>("");
+  const [idPsp, setIdPsp] = React.useState<string>("");
   const [submitted, setSubmitted] = React.useState(false);
 
   const sessionToken = utils.url.getFragmentParameter(
@@ -57,7 +57,7 @@ export default function PaypalPage() {
 
   const onSuccess = (response: PaypalPspListResponse) => {
     setLoading(false);
-    setPspId(response.data[0].idPsp);
+    setIdPsp(response.data[0].idPsp);
     setPspList(response);
   };
 
@@ -89,14 +89,14 @@ export default function PaypalPage() {
   const handleChangeSelection = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setPspId((event.target as HTMLInputElement).value);
+    setIdPsp((event.target as HTMLInputElement).value);
   };
 
   return (
     <>
       {loading && <WalletLoader />}
-      {pspId && sessionToken && submitted && (
-        <Verify {...{ sessionToken, pspId, path: VERIFY.PAYPAL }} />
+      {idPsp && sessionToken && submitted && (
+        <Verify {...{ sessionToken, idPsp, path: VERIFY.PAYPAL }} />
       )}
       <PageContainer
         title="paypalPage.title"
@@ -125,8 +125,8 @@ export default function PaypalPage() {
           </Box>
           <form onSubmit={() => setSubmitted(true)}>
             <FormControl sx={{ width: "100%" }}>
-              <RadioGroup onChange={handleChangeSelection} value={pspId}>
-                {pspId &&
+              <RadioGroup onChange={handleChangeSelection} value={idPsp}>
+                {idPsp &&
                   pspList?.data.map((psp) => (
                     <FormControlLabel
                       key={psp.idPsp}

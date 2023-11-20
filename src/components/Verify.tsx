@@ -38,7 +38,7 @@ const Verify = ({ cvv, idWallet, sessionToken, idPsp, path }: Props) => {
         <input type="number" name="securityCode" value={cvv} readOnly hidden />
       )}
       {idPsp && (
-        <input type="text" name="sessionToken" value={idPsp} readOnly hidden />
+        <input type="text" name="idPsp" value={idPsp} readOnly hidden />
       )}
       {idWallet && (
         <input type="number" name="idWallet" value={idWallet} readOnly hidden />
