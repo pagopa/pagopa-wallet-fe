@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import PageContainer from "../../components/commons/PageContainer";
 import utils from "../../utils";
-import { SessionItems } from "../../utils/storage";
 import { FormButtons } from "../../components/FormButtons/FormButtons";
 import BpayAccountItem from "../../components/commons/BpayAccountItem";
 import { IBpayAccountItems } from "../../features/onboard/models";
@@ -21,7 +20,7 @@ export default function BPAyPage() {
 
   const sessionToken = utils.url.getFragmentParameter(
     window.location.href,
-    SessionItems.sessionToken
+    "sessionToken"
   );
 
   useEffect(() => {

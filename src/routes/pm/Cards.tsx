@@ -4,7 +4,6 @@ import PageContainer from "../../components/commons/PageContainer";
 import { InputCardFormFields } from "../../features/onboard/models";
 import { InputCardForm } from "../../features/onboard/components/InputCardForm";
 import utils from "../../utils";
-import { SessionItems } from "../../utils/storage";
 import { WalletRequest } from "../../../generated/definitions/payment-manager-v1/WalletRequest";
 import { TypeEnum } from "../../../generated/definitions/payment-manager-v1/Wallet";
 import Verify from "../../components/Verify";
@@ -19,7 +18,7 @@ export default function InputCardPage() {
 
   const sessionToken = utils.url.getFragmentParameter(
     window.location.href,
-    SessionItems.sessionToken
+    "sessionToken"
   );
 
   const onError = (errroMessage: ErrorsType) => {

@@ -5,14 +5,11 @@ import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Layout from "./components/commons/Layout";
 import GdiCheckPage from "./routes/GdiCheckPage";
-import IFrameCardPage from "./routes/Carte";
-import InputCardPage from "./routes/pm/Carte";
+import IFrameCardPage from "./routes/Cards";
+import InputCardPage from "./routes/pm/Cards";
 import BpayPage from "./routes/pm/BPay";
 import { WalletRoutes } from "./routes/models/routeModel";
 import "./translations/i18n";
-import utils from "./utils";
-
-utils.app.init();
 
 const transactionsTheme = createTheme({
   ...theme,

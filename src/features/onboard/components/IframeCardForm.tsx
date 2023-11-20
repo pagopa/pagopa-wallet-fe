@@ -20,7 +20,6 @@ import { npg } from "../../../utils/api/npg";
 import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import { clearNavigationEvents } from "../../../utils/eventListener";
-import { SessionItems } from "../../../utils/storage";
 import { useNpgOutcomeRedirect } from "../../../hooks/useNpgOutcomeRedirect";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
@@ -66,12 +65,12 @@ export default function IframeCardForm() {
 
   const sessionToken = utils.url.getFragmentParameter(
     window.location.href,
-    SessionItems.sessionToken
+    "sessionToken"
   );
 
   const walletId = utils.url.getFragmentParameter(
     window.location.href,
-    SessionItems.walletId
+    "walletId"
   );
 
   const onValidation = ({
