@@ -35,10 +35,7 @@ export default function PaypalPage() {
   const [idPsp, setIdPsp] = React.useState<string>("");
   const [submitted, setSubmitted] = React.useState(false);
 
-  const sessionToken = utils.url.getFragmentParameter(
-    window.location.href,
-    ROUTE_FRAGMENT.SESSION_TOKEN
-  );
+  const { sessionToken } = utils.url.getFragments(ROUTE_FRAGMENT.SESSION_TOKEN);
 
   const pspImagePath = (abi: string | undefined): string =>
     pipe(

@@ -20,10 +20,7 @@ export default function InputCardPage() {
 
   const { t } = useTranslation();
 
-  const sessionToken = utils.url.getFragmentParameter(
-    window.location.href,
-    ROUTE_FRAGMENT.SESSION_TOKEN
-  );
+  const { sessionToken } = utils.url.getFragments(ROUTE_FRAGMENT.SESSION_TOKEN);
 
   const onError = (errorMessage: ErrorsType) => {
     setError(errorMessage);

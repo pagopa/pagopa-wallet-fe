@@ -19,10 +19,7 @@ export default function BPAyPage() {
     area: "sumbit-form-button"
   });
 
-  const sessionToken = utils.url.getFragmentParameter(
-    window.location.href,
-    ROUTE_FRAGMENT.SESSION_TOKEN
-  );
+  const { sessionToken } = utils.url.getFragments(ROUTE_FRAGMENT.SESSION_TOKEN);
 
   useEffect(() => {
     const getBpayAccountsItems = async () => {

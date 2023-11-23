@@ -5,15 +5,13 @@ const API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
 const WALLET_OUTCOME_BASEPATH = getConfigOrThrow().WALLET_OUTCOME_API_BASEPATH;
 
 /**
+ * @private
  * This function requires a valid URI with a querystrings as the fragment URI
  * example: http://dev.checkout.it/gdi-check#param1=value1&param2=value2.
  * The function return an empty string if the uri parameter is not valid
  * or the parameter can't be found
  */
-export function getFragmentParameter(
-  uri: string,
-  name: ROUTE_FRAGMENT
-): string {
+function getFragmentParameter(uri: string, name: ROUTE_FRAGMENT): string {
   try {
     const fragment = new URL(uri).hash.substring(1);
     const urlParams = new URLSearchParams(fragment);
@@ -56,7 +54,6 @@ const redirectWithOutcome = (outcome: OUTCOME_ROUTE) =>
   );
 
 export default {
-  getFragmentParameter,
   redirectWithOutcome,
   getFragments
 };
