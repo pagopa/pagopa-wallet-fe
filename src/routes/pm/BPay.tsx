@@ -8,6 +8,7 @@ import utils from "../../utils";
 import { FormButtons } from "../../components/FormButtons/FormButtons";
 import BpayAccountItem from "../../components/commons/BpayAccountItem";
 import { IBpayAccountItems } from "../../features/onboard/models";
+import { OUTCOME_ROUTE } from "../models/routeModel";
 
 export default function BPAyPage() {
   const [bpayAccountItems, setBpayAccountItems] = useState<IBpayAccountItems>(
@@ -28,7 +29,7 @@ export default function BPAyPage() {
       pipe(
         await utils.api.bPay.getList(sessionToken),
         O.match(
-          () => utils.url.redirectWithOutcome(1),
+          () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
           (items) => setBpayAccountItems(items)
         )
       );
@@ -40,8 +41,8 @@ export default function BPAyPage() {
     pipe(
       await utils.api.bPay.addWallet(sessionToken, bpayAccountItems),
       O.match(
-        () => utils.url.redirectWithOutcome(1),
-        () => utils.url.redirectWithOutcome(0)
+        () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
+        () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.SUCCESS)
       )
     );
 
@@ -57,7 +58,9 @@ export default function BPAyPage() {
         <BpayAccountItem {...item} key={item.token} />
       ))}
       <FormButtons
-        handleCancel={() => utils.url.redirectWithOutcome(1)}
+        handleCancel={() =>
+          utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR)
+        }
         handleSubmit={() =>
           trackPromise(addBpayAccountsToTheWallet(), "sumbit-form-button")
         }

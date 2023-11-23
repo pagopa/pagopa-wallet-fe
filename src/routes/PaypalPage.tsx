@@ -23,7 +23,6 @@ import utils from "../utils";
 import { PaypalPspListResponse } from "../../generated/definitions/payment-manager-v1/PaypalPspListResponse";
 import { getConfigOrThrow } from "../config";
 import Verify, { VERIFY } from "../components/Verify";
-import { useOutcomeRedirect } from "../hooks/useOutcomeRedirect";
 import { OUTCOME_ROUTE } from "./models/routeModel";
 
 export default function PaypalPage() {
@@ -71,7 +70,8 @@ export default function PaypalPage() {
 
   React.useEffect(getPsps, []);
 
-  const redirectWithError = useOutcomeRedirect(OUTCOME_ROUTE.ERROR);
+  const redirectWithError = () =>
+    utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR);
 
   const onError = React.useCallback(() => {
     setLoading(false);

@@ -17,7 +17,6 @@ import { npg } from "../../../utils/api/npg";
 import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import { clearNavigationEvents } from "../../../utils/eventListener";
-import { useOutcomeRedirect } from "../../../hooks/useOutcomeRedirect";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -49,8 +48,6 @@ export default function IframeCardForm() {
   const [buildInstance, setBuildInstance] = React.useState();
 
   const navigate = useNavigate();
-
-  const outcomeRedirect = useOutcomeRedirect();
 
   const formIsValid = (fieldFormStatus: FormStatus) =>
     Object.values(fieldFormStatus).every((el) => el.isValid);
@@ -126,7 +123,7 @@ export default function IframeCardForm() {
 
         const onPaymentComplete = () => {
           clearNavigationEvents();
-          outcomeRedirect(OUTCOME_ROUTE.SUCCESS);
+          utils.url.redirectWithOutcome(OUTCOME_ROUTE.SUCCESS);
         };
 
         const onPaymentRedirect = (redirect: string) => {
