@@ -24,8 +24,8 @@ export default function InputCardPage() {
     "sessionToken"
   );
 
-  const onError = (errroMessage: ErrorsType) => {
-    setError(errroMessage);
+  const onError = (errorMessage: ErrorsType) => {
+    setError(errorMessage);
     setErrorModalOpen(true);
     setLoading(false);
   };

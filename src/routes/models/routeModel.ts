@@ -1,8 +1,3 @@
-import { getConfigOrThrow } from "../../config";
-
-const { WALLET_CONFIG_API_HOST, WALLET_CONFIG_API_BASEPATH } =
-  getConfigOrThrow();
-
 export enum WalletRoutes {
   ERRORE = "errore",
   ESITO = "esito",
@@ -15,9 +10,9 @@ export enum WalletRoutes {
   ROOT = ""
 }
 
-export const EXTERNAL_OUTCOME = `${WALLET_CONFIG_API_HOST}${WALLET_CONFIG_API_BASEPATH}/v3/webview/logout/bye?outcome=`;
-
 export enum OUTCOME_ROUTE {
   ERROR = "1",
+  GENERIC_ERROR = "1",
+  AUTH_ERROR = "14",
   SUCCESS = "0"
 }

@@ -1,14 +1,14 @@
-import { pipe } from "fp-ts/function";
 import * as E from "fp-ts/Either";
 import * as O from "fp-ts/Option";
 import * as TE from "fp-ts/TaskEither";
+import { pipe } from "fp-ts/function";
 import { toError } from "fp-ts/lib/Either";
-import { createClient as createPaymentManagerClient } from "../../../../generated/definitions/payment-manager-v1/client";
-import config from "../config";
-import { ErrorsType } from "../../errors/errorsModel";
-import { getConfigOrThrow } from "../../../config";
-import utils from "../../";
 import { PaypalPspListResponse } from "../../../../generated/definitions/payment-manager-v1/PaypalPspListResponse";
+import { createClient as createPaymentManagerClient } from "../../../../generated/definitions/payment-manager-v1/client";
+import { getConfigOrThrow } from "../../../config";
+import { ErrorsType } from "../../errors/errorsModel";
+import config from "../config";
+import utils from "../..";
 
 const API_HOST = getConfigOrThrow().WALLET_CONFIG_WEBVIEW_PM_HOST;
 const API_PM_BASEPATH = getConfigOrThrow().WALLET_CONFIG_API_PM_BASEPATH;

@@ -1,15 +1,16 @@
-import { pipe } from "fp-ts/function";
 import * as E from "fp-ts/Either";
 import * as O from "fp-ts/Option";
 import * as TE from "fp-ts/TaskEither";
+import { pipe } from "fp-ts/function";
 import { toError } from "fp-ts/lib/Either";
-import { createClient as createPaymentManagerClient } from "../../../../generated/definitions/payment-manager-v1/client";
-import { WalletRequest } from "../../../../generated/definitions/payment-manager-v1/WalletRequest";
-import config from "../config";
-import { ErrorsType } from "../../errors/errorsModel";
-import { getConfigOrThrow } from "../../../config";
 import utils from "../../";
+import { WalletRequest } from "../../../../generated/definitions/payment-manager-v1/WalletRequest";
+import { createClient as createPaymentManagerClient } from "../../../../generated/definitions/payment-manager-v1/client";
+import { getConfigOrThrow } from "../../../config";
 import { IBpayAccountItems } from "../../../features/onboard/models";
+import { OUTCOME_ROUTE } from "../../../routes/models/routeModel";
+import { ErrorsType } from "../../errors/errorsModel";
+import config from "../config";
 import { getPaypalPsps } from "./paypal";
 
 const NODE_ENV = getConfigOrThrow().WALLET_CONFIG_API_ENV;
@@ -61,8 +62,11 @@ const addWalletCreditCard = async (
                           : onError(ErrorsType.GENERIC_ERROR);
                       },
                       "4xx": () => {
-                        const outcome = status === 401 ? 14 : 1;
-                        utils.url.redirectWithOutcome(outcome);
+                        utils.url.redirectWithOutcome(
+                          status === 401
+                            ? OUTCOME_ROUTE.AUTH_ERROR
+                            : OUTCOME_ROUTE.GENERIC_ERROR
+                        );
                       }
                     },
                     () => onError(ErrorsType.GENERIC_ERROR)

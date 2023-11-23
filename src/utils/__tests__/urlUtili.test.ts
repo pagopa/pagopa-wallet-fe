@@ -1,6 +1,8 @@
+import { OUTCOME_ROUTE } from "../../routes/models/routeModel";
+import "jest-location-mock";
 import urlUtils from "../../utils/urlUtilities";
 
-const { getFragmentParameter } = urlUtils;
+const { getFragmentParameter, redirectWithOutcome } = urlUtils;
 
 describe("getFragmentParameter function utility", () => {
   it("Should return the param value correctly", () => {
@@ -27,5 +29,14 @@ describe("getFragmentParameter function utility", () => {
     ).toEqual("");
 
     expect(getFragmentParameter("invalidUrl", "sessionToken")).toEqual("");
+  });
+});
+
+describe("redirectWithOutcome function utility", () => {
+  it("Should redirect to the correct url and correct outcome", () => {
+    redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR);
+    expect(global.location.href).toContain("outcome=1");
+    redirectWithOutcome(OUTCOME_ROUTE.AUTH_ERROR);
+    expect(global.location.href).toContain("outcome=14");
   });
 });

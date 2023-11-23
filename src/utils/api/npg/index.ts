@@ -10,7 +10,6 @@ import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/
 import { getConfigOrThrow } from "../../../config";
 import config from "../config";
 import utils from "../..";
-import { useOutcomeRedirect } from "../../../hooks/useOutcomeRedirect";
 import { OUTCOME_ROUTE } from "../../../routes/models/routeModel";
 
 const {
@@ -25,8 +24,6 @@ const apiWalletClient = createWalletClient({
   basePath: WALLET_CONFIG_API_BASEPATH,
   fetchApi: config.fetchWithTimeout
 });
-
-const errorRedirect = useOutcomeRedirect(OUTCOME_ROUTE.ERROR);
 
 const sessionsFields = async ({
   sessionToken: bearerAuth,
@@ -79,7 +76,8 @@ const sessionsFields = async ({
                         })
                       );
                     },
-                    "4xx": errorRedirect
+                    "4xx": () =>
+                      utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR)
                   },
                   onError
                 )
@@ -134,7 +132,8 @@ const validations = async ({
                         );
                       }
                     },
-                    "4xx": errorRedirect
+                    "4xx": () =>
+                      utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR)
                   },
                   onError
                 )
