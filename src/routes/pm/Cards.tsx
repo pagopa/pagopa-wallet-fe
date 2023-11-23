@@ -10,6 +10,7 @@ import { TypeEnum } from "../../../generated/definitions/payment-manager-v1/Wall
 import Verify, { VERIFY } from "../../components/Verify";
 import { ErrorsType } from "../../utils/errors/errorsModel";
 import ErrorModal from "../../components/commons/ErrorModal";
+import { ROUTE_FRAGMENT } from "../models/routeModel";
 
 export default function InputCardPage() {
   const [loading, setLoading] = React.useState(false);
@@ -19,10 +20,7 @@ export default function InputCardPage() {
 
   const { t } = useTranslation();
 
-  const sessionToken = utils.url.getFragmentParameter(
-    window.location.href,
-    "sessionToken"
-  );
+  const { sessionToken } = utils.url.getFragments(ROUTE_FRAGMENT.SESSION_TOKEN);
 
   const onError = (errorMessage: ErrorsType) => {
     setError(errorMessage);

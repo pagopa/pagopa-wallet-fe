@@ -8,7 +8,7 @@ import utils from "../../utils";
 import { FormButtons } from "../../components/FormButtons/FormButtons";
 import BpayAccountItem from "../../components/commons/BpayAccountItem";
 import { IBpayAccountItems } from "../../features/onboard/models";
-import { OUTCOME_ROUTE } from "../models/routeModel";
+import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "../models/routeModel";
 
 export default function BPAyPage() {
   const [bpayAccountItems, setBpayAccountItems] = useState<IBpayAccountItems>(
@@ -19,10 +19,7 @@ export default function BPAyPage() {
     area: "sumbit-form-button"
   });
 
-  const sessionToken = utils.url.getFragmentParameter(
-    window.location.href,
-    "sessionToken"
-  );
+  const { sessionToken } = utils.url.getFragments(ROUTE_FRAGMENT.SESSION_TOKEN);
 
   useEffect(() => {
     const getBpayAccountsItems = async () => {

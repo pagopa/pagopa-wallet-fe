@@ -16,3 +16,8 @@ export enum OUTCOME_ROUTE {
   AUTH_ERROR = "14",
   SUCCESS = "0"
 }
+
+export enum ROUTE_FRAGMENT {
+  SESSION_TOKEN = "sessionToken",
+  WALLET_ID = "walletId"
+}

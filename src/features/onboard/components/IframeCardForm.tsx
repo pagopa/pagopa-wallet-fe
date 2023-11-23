@@ -11,7 +11,11 @@ import { WalletVerifyRequestCardDetails } from "../../../../generated/definition
 import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import ErrorModal from "../../../components/commons/ErrorModal";
-import { OUTCOME_ROUTE, WalletRoutes } from "../../../routes/models/routeModel";
+import {
+  OUTCOME_ROUTE,
+  ROUTE_FRAGMENT,
+  WalletRoutes
+} from "../../../routes/models/routeModel";
 import utils from "../../../utils";
 import { npg } from "../../../utils/api/npg";
 import createBuildConfig from "../../../utils/buildConfig";
@@ -57,14 +61,9 @@ export default function IframeCardForm() {
     setErrorModalOpen(true);
   };
 
-  const sessionToken = utils.url.getFragmentParameter(
-    window.location.href,
-    "sessionToken"
-  );
-
-  const walletId = utils.url.getFragmentParameter(
-    window.location.href,
-    "walletId"
+  const { sessionToken, walletId } = utils.url.getFragments(
+    ROUTE_FRAGMENT.SESSION_TOKEN,
+    ROUTE_FRAGMENT.WALLET_ID
   );
 
   const onValidation = ({
