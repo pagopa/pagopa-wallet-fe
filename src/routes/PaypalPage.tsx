@@ -23,7 +23,7 @@ import utils from "../utils";
 import { PaypalPspListResponse } from "../../generated/definitions/payment-manager-v1/PaypalPspListResponse";
 import { getConfigOrThrow } from "../config";
 import Verify, { VERIFY } from "../components/Verify";
-import { OUTCOME_ROUTE } from "./models/routeModel";
+import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "./models/routeModel";
 
 export default function PaypalPage() {
   const { t } = useTranslation();
@@ -37,7 +37,7 @@ export default function PaypalPage() {
 
   const sessionToken = utils.url.getFragmentParameter(
     window.location.href,
-    "sessionToken"
+    ROUTE_FRAGMENT.SESSION_TOKEN
   );
 
   const pspImagePath = (abi: string | undefined): string =>
