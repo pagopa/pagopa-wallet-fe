@@ -95,8 +95,8 @@ export default function PaypalPage() {
         <Verify {...{ sessionToken, idPsp, path: VERIFY.PAYPAL }} />
       )}
       <PageContainer
-        title="paypalPage.title"
-        description="paypalPage.description"
+        title={t("paypalPage.title")}
+        description={t("paypalPage.description")}
         link={
           <Link
             href={``}
