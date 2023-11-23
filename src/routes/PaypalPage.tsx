@@ -1,8 +1,4 @@
-import React from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useTranslation } from "react-i18next";
-import { pipe } from "fp-ts/function";
-import * as O from "fp-ts/Option";
 import {
   Box,
   FormControl,
@@ -13,16 +9,21 @@ import {
   Stack,
   Typography
 } from "@mui/material";
-import WalletLoader from "../components/commons/WalletLoader";
-import PageContainer from "../components/commons/PageContainer";
-import { FormButtons } from "../components/FormButtons/FormButtons";
-import ErrorModal from "../components/commons/ErrorModal";
-import { ErrorsType } from "../utils/errors/errorsModel";
-import pm from "../utils/api/pm";
-import utils from "../utils";
+import * as E from "fp-ts/Either";
+import * as O from "fp-ts/Option";
+import { pipe } from "fp-ts/function";
+import React from "react";
+import { useTranslation } from "react-i18next";
 import { PaypalPspListResponse } from "../../generated/definitions/payment-manager-v1/PaypalPspListResponse";
-import { getConfigOrThrow } from "../config";
+import { FormButtons } from "../components/FormButtons/FormButtons";
 import Verify, { VERIFY } from "../components/Verify";
+import ErrorModal from "../components/commons/ErrorModal";
+import PageContainer from "../components/commons/PageContainer";
+import WalletLoader from "../components/commons/WalletLoader";
+import { getConfigOrThrow } from "../config";
+import utils from "../utils";
+import pm from "../utils/api/pm";
+import { ErrorsType } from "../utils/errors/errorsModel";
 import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "./models/routeModel";
 
 export default function PaypalPage() {
@@ -56,16 +57,17 @@ export default function PaypalPage() {
     setPspList(response);
   };
 
-  const getPsps = React.useCallback(() => {
+  const getPsps = React.useCallback(async () => {
     setLoading(true);
-    void pm.paypal.getPaypalPsps({
-      bearer: sessionToken,
-      onSuccess,
-      onError
-    });
+    pipe(
+      await pm.paypal.getPaypalPsps(sessionToken),
+      E.match(onError, onSuccess)
+    );
   }, []);
 
-  React.useEffect(getPsps, []);
+  React.useEffect(() => {
+    void getPsps();
+  }, []);
 
   const redirectWithError = () =>
     utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR);

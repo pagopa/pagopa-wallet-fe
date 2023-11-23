@@ -1,5 +1,5 @@
 /* eslint-disable functional/immutable-data */
-import * as O from "fp-ts/Option";
+import * as E from "fp-ts/Either";
 import pm from "../api/pm";
 import { ErrorsType } from "../errors/errorsModel";
 import {
@@ -14,91 +14,98 @@ import "whatwg-fetch";
 import "jest-location-mock";
 
 describe("Credit Card: add to the wallet", () => {
-  it("should call onError callback function passing a GENERIC_ERROR when the fetch promise rejects", async () => {
+  it("Returns a generic error when the promise reject", async () => {
     global.fetch = jest.fn(() => Promise.reject());
-    const onError = jest.fn();
-    const onSucces = jest.fn();
-    await pm.creditCard.addWallet(
-      sessionToken,
-      walletRequest,
-      onSucces,
-      onError
-    );
-    expect(onSucces).not.toBeCalled();
-    expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
+    const result = await pm.creditCard.addWallet(sessionToken, walletRequest);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should call onError callback function passing a GENERIC_ERROR on 5xx type response", async () => {
+  it("Returns a generic error on status code 5xx", async () => {
     const response = new Response(null, { status: 500 });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSucces = jest.fn();
-    await pm.creditCard.addWallet(
-      sessionToken,
-      walletRequest,
-      onSucces,
-      onError
-    );
-    expect(onSucces).not.toBeCalled();
-    expect(onError).toHaveBeenCalledWith(ErrorsType.GENERIC_ERROR);
+    const result = await pm.creditCard.addWallet(sessionToken, walletRequest);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should call onSucces callback function passing the idWallet parameter on 2xx type response", async () => {
+  it("Changes the location with outcome 1 on status code 4xx", async () => {
+    const response = new Response(null, { status: 404 });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.creditCard.addWallet(sessionToken, walletRequest);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+    expect(global.location.href).toContain("outcome=1");
+  });
+
+  it("Changes the location with outcome 14 on status code 401", async () => {
+    const response = new Response(null, { status: 401 });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.creditCard.addWallet(sessionToken, walletRequest);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+    expect(global.location.href).toContain("outcome=14");
+  });
+
+  it("Returns a generic error when the idWallet is missing", async () => {
+    const response = new Response(
+      JSON.stringify({ data: { idWallet: undefined } }),
+      {
+        status: 200
+      }
+    );
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.creditCard.addWallet(sessionToken, walletRequest);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+  });
+
+  it("Returns the idWallet on 2xx status code", async () => {
     const response = new Response(walletResponseBody, {
       status: 200
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSucces = jest.fn();
-    await pm.creditCard.addWallet(
-      sessionToken,
-      walletRequest,
-      onSucces,
-      onError
-    );
-    expect(onSucces).toHaveBeenCalledWith(idWallet);
-    expect(onError).not.toBeCalled();
-  });
-
-  it("should change the location and include outcome=1 on 4xx type response", async () => {
-    const response = new Response(null, { status: 404 });
-    global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSucces = jest.fn();
-    await pm.creditCard.addWallet(
-      sessionToken,
-      walletRequest,
-      onSucces,
-      onError
-    );
-    expect(onSucces).not.toBeCalled();
-    expect(onError).not.toBeCalled();
-    expect(global.location.href).toContain("outcome=1");
-  });
-
-  it("should change the location and include outcome=14 on 401 type response", async () => {
-    const response = new Response(null, { status: 401 });
-    global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSucces = jest.fn();
-    await pm.creditCard.addWallet(
-      sessionToken,
-      walletRequest,
-      onSucces,
-      onError
-    );
-    expect(onSucces).not.toBeCalled();
-    expect(onError).not.toBeCalled();
-    expect(global.location.href).toContain("outcome=14");
+    const result = await pm.creditCard.addWallet(sessionToken, walletRequest);
+    expect(result).toEqual(E.right(idWallet));
   });
 });
 
 describe("Bancomat Pay: getting the list", () => {
-  it("should fails when http !== 200", async () => {
-    const response = new Response(null, { status: 201 });
+  it("Returns a generic error when the promise reject", async () => {
+    global.fetch = jest.fn(() => Promise.reject());
+    const result = await pm.bPay.getList(sessionToken);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+  });
+
+  it("Returns a generic error on status code 5xx", async () => {
+    const response = new Response(null, { status: 500 });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.bPay.getList(sessionToken);
-    expect(result).toEqual(O.none);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+  });
+
+  it("Changes the location with outcome 14 on status code 401", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 401
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.getList(sessionToken);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+    expect(global.location.href).toContain("outcome=14");
+  });
+
+  it("Changes the location with outcome 1 on status code 4xx", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 404
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.getList(sessionToken);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+    expect(global.location.href).toContain("outcome=1");
+  });
+
+  it("should fails when http !== 200", async () => {
+    const response = new Response(JSON.stringify({ data: bpayListItems }), {
+      status: 201
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.getList(sessionToken);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
   it("should fails when http === 200 but no bpay item", async () => {
@@ -107,7 +114,7 @@ describe("Bancomat Pay: getting the list", () => {
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.bPay.getList(sessionToken);
-    expect(result).toEqual(O.none);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
   it("should fails when http === 200 but no data", async () => {
@@ -116,7 +123,7 @@ describe("Bancomat Pay: getting the list", () => {
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.bPay.getList(sessionToken);
-    expect(result).toEqual(O.none);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
   it("should success when http === 200 and data", async () => {
@@ -125,15 +132,57 @@ describe("Bancomat Pay: getting the list", () => {
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.bPay.getList(sessionToken);
-    expect(result).toEqual(O.some(bpayListItems));
+    expect(result).toEqual(E.right(bpayListItems));
   });
 });
 
 describe("Bancomat Pay: add wallet", () => {
+  it("Returns a generic error when the promise reject", async () => {
+    global.fetch = jest.fn(() => Promise.reject());
+    const result = await pm.bPay.addWallet(sessionToken, bpayListItems);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+  });
+
+  it("Returns a generic error on status code 5xx", async () => {
+    const response = new Response(null, { status: 500 });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.addWallet(sessionToken, bpayListItems);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+  });
+
+  it("Changes the location with outcome 14 on status code 401", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 401
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.addWallet(sessionToken, bpayListItems);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+    expect(global.location.href).toContain("outcome=14");
+  });
+
+  it("Changes the location with outcome 1 on status code 4xx", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 404
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.addWallet(sessionToken, bpayListItems);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+    expect(global.location.href).toContain("outcome=1");
+  });
+
+  it("should fails when http === 200 but no data", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 200
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.bPay.addWallet(sessionToken, bpayListItems);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+  });
+
   it("should success when http === 200", async () => {
     const response = new Response(JSON.stringify(walletItems), { status: 200 });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.bPay.addWallet(sessionToken, bpayListItems);
-    expect(result).toEqual(O.some(walletItems.data));
+    expect(result).toEqual(E.right(walletItems.data));
   });
 });

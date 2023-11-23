@@ -1,9 +1,15 @@
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import * as t from "io-ts";
+import { pipe } from "fp-ts/function";
 import * as O from "fp-ts/Option";
+import * as E from "fp-ts/Either";
 import { makeMatchers } from "ts-adt/MakeADT";
 import React from "react";
 import { SessionWalletCreateResponse } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { IdFields } from "../features/onboard/components/types";
+import { OUTCOME_ROUTE } from "../routes/models/routeModel";
+import { ErrorsType } from "./errors/errorsModel";
+import utils from ".";
 
 function cardNameValidation(name: string) {
   return /^[a-zA-Z]+[\s']+([a-zA-Z]+[\s']*){1,}$/.test(name);
@@ -46,12 +52,12 @@ function expirationDateChangeValidation(value: string) {
   );
 }
 
-type HTTPFamilyResponseStatusCode = {
+export type HTTPFamilyResponseStatusCode = {
   familyCode: "1xx" | "2xx" | "3xx" | "4xx" | "5xx";
   actualCode: number;
 };
 
-function evaluateHTTPfamilyStatusCode(
+function evaluateHTTPFamilyStatusCode(
   httpCode: number
 ): O.Option<HTTPFamilyResponseStatusCode> {
   const httpCodeToString = `${httpCode}`;
@@ -68,9 +74,48 @@ function evaluateHTTPfamilyStatusCode(
 
 const [, matchP] = makeMatchers("familyCode");
 
+const statusCodeValidator = (
+  status: number
+): E.Either<HTTPFamilyResponseStatusCode, HTTPFamilyResponseStatusCode> =>
+  pipe(
+    status,
+    evaluateHTTPFamilyStatusCode,
+    O.match(
+      () => E.left({ familyCode: "5xx", actualCode: status }),
+      (familyCode) =>
+        pipe(
+          familyCode,
+          matchP(
+            {
+              "2xx": () => E.right(familyCode)
+            },
+            () => E.left(familyCode)
+          )
+        )
+    )
+  );
+
+const badStatusHandler = (familyCode: HTTPFamilyResponseStatusCode) =>
+  pipe(
+    familyCode,
+    matchP(
+      {
+        "4xx": ({ actualCode }) => {
+          utils.url.redirectWithOutcome(
+            actualCode === 401
+              ? OUTCOME_ROUTE.AUTH_ERROR
+              : OUTCOME_ROUTE.GENERIC_ERROR
+          );
+          return ErrorsType.GENERIC_ERROR;
+        }
+      },
+      () => ErrorsType.GENERIC_ERROR
+    )
+  );
+
 /**
  * This function can be used to valuate the conformity of the cardFormFields
- * used to build the iframe payment form. It cheks every element of the list
+ * used to build the iframe payment form. It checks every element of the list
  * to make sure we have at least 4 element and that each has at least a property id of type FieldId
  * and one src one of type string.
  * returns an Option<SessionWalletCreateResponse["cardFormFields"]>
@@ -102,12 +147,26 @@ function validateSessionWalletCardFormFields(
   return O.none;
 }
 
+const Field = t.type({
+  type: t.string,
+  class: t.string,
+  id: t.string,
+  src: t.string
+});
+
+export const SessionWalletValidated = t.type({
+  orderId: t.string,
+  cardFormFields: t.readonlyArray(Field)
+});
+
 export default {
   expirationDateChangeValidation,
   getFormErrorIcon,
   cardNameValidation,
   digitValidation,
-  evaluateHTTPfamilyStatusCode,
+  evaluateHTTPFamilyStatusCode,
   matchHttpFamilyResponseStatusCode: matchP,
-  validateSessionWalletCardFormFields
+  validateSessionWalletCardFormFields,
+  statusCodeValidator,
+  badStatusHandler
 };

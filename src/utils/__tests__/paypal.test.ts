@@ -1,83 +1,69 @@
 /* eslint-disable functional/immutable-data */
-import { pspsResponse, pspsResponseBody, sessionToken } from "../testUtils";
-import "whatwg-fetch";
+import * as E from "fp-ts/Either";
 import "jest-location-mock";
+import "whatwg-fetch";
 import pm from "../api/pm";
+import { pspsResponse, pspsResponseBody, sessionToken } from "../testUtils";
+import { ErrorsType } from "../errors/errorsModel";
 
-describe("get psp for paypal onboarding", () => {
-  it("should call onError callback when the fetch rejects", async () => {
+describe.only("PayPal: get list of psp", () => {
+  it("Returns a generic error when the promise reject", async () => {
     global.fetch = jest.fn(() => Promise.reject());
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await pm.paypal.getPaypalPsps({
-      bearer: sessionToken,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).toHaveBeenCalled();
+    const result = await pm.paypal.getPaypalPsps(sessionToken);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should call onError callback on 500 status code", async () => {
+  it("Returns a generic error on status code 5xx", async () => {
     const response = new Response(null, { status: 500 });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await pm.paypal.getPaypalPsps({
-      bearer: sessionToken,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).toHaveBeenCalled();
+    const result = await pm.paypal.getPaypalPsps(sessionToken);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should change the location and include outcome=1 on 401 type response", async () => {
+  it("Changes the location with outcome 14 on status code 401", async () => {
     const response = new Response(JSON.stringify({}), {
       status: 401
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await pm.paypal.getPaypalPsps({
-      bearer: sessionToken,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).not.toBeCalled();
+    const result = await pm.paypal.getPaypalPsps(sessionToken);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
     expect(global.location.href).toContain("outcome=14");
   });
 
-  it("should change the location and include outcome=1 on 4xx type response", async () => {
+  it("Changes the location with outcome 1 on status code 4xx", async () => {
     const response = new Response(JSON.stringify({}), {
       status: 404
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await pm.paypal.getPaypalPsps({
-      bearer: sessionToken,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).not.toBeCalled();
+    const result = await pm.paypal.getPaypalPsps(sessionToken);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
     expect(global.location.href).toContain("outcome=1");
   });
 
-  it("should call onSuccess callback function passing the response data on 200 status code", async () => {
+  it("Returns a generic error when PspList is empty", async () => {
+    const response = new Response(JSON.stringify({ data: [] }), {
+      status: 200
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.paypal.getPaypalPsps(sessionToken);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+  });
+
+  it("Returns a generic error on missing data", async () => {
+    const response = new Response(JSON.stringify(null), {
+      status: 200
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await pm.paypal.getPaypalPsps(sessionToken);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+  });
+
+  it("Returns the pspsResponse on 2xx status code", async () => {
     const response = new Response(pspsResponseBody, {
       status: 200
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await pm.paypal.getPaypalPsps({
-      bearer: sessionToken,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).toHaveBeenCalledWith(pspsResponse);
+    const result = await pm.paypal.getPaypalPsps(sessionToken);
+    expect(result).toEqual(E.right(pspsResponse));
   });
 });
