@@ -93,7 +93,8 @@ stages:
             api_pm_basepath: '/pp-restapi-CD'
             npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
             api_wallet_outcome_basepath: '/payment-wallet'
-            api_webview_pm_hostname: https://api.dev.platform.pagopa.it
+            api_webview_pm_hostname: 'https://api.dev.platform.pagopa.it'
+            wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
 
         - script: yarn generate
           displayName: 'Generate definitions'

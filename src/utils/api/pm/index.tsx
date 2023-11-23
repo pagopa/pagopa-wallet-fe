@@ -10,6 +10,7 @@ import { ErrorsType } from "../../errors/errorsModel";
 import { getConfigOrThrow } from "../../../config";
 import utils from "../../";
 import { IBpayAccountItems } from "../../../features/onboard/models";
+import { getPaypalPsps } from "./paypal";
 
 const NODE_ENV = getConfigOrThrow().WALLET_CONFIG_API_ENV;
 const API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
@@ -144,5 +145,8 @@ export default {
   bPay: {
     getList: getBpayList,
     addWallet: addWalletsBPay
+  },
+  paypal: {
+    getPaypalPsps
   }
 };

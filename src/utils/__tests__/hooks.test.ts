@@ -1,18 +1,18 @@
 import "whatwg-fetch";
 import "jest-location-mock";
-import { useNpgOutcomeRedirect } from "../../hooks/useNpgOutcomeRedirect";
-import { NPG_OUTCOME_ROUTE } from "../../routes/models/routeModel";
+import { useOutcomeRedirect } from "../../hooks/useOutcomeRedirect";
+import { OUTCOME_ROUTE } from "../../routes/models/routeModel";
 
-describe("useNpgOutcomeRedirect hook", () => {
+describe("useOutcomeRedirect hook", () => {
   it("should redirect to curry input", () => {
-    const outcome = useNpgOutcomeRedirect();
-    outcome(NPG_OUTCOME_ROUTE.SUCCESS);
-    expect(global.location.href).toContain(NPG_OUTCOME_ROUTE.SUCCESS);
+    const outcome = useOutcomeRedirect();
+    outcome(OUTCOME_ROUTE.SUCCESS);
+    expect(global.location.href).toContain(OUTCOME_ROUTE.SUCCESS);
   });
 
   it("should redirect to initial input", () => {
-    const outcome = useNpgOutcomeRedirect(NPG_OUTCOME_ROUTE.SUCCESS);
+    const outcome = useOutcomeRedirect(OUTCOME_ROUTE.SUCCESS);
     outcome();
-    expect(global.location.href).toContain(NPG_OUTCOME_ROUTE.SUCCESS);
+    expect(global.location.href).toContain(OUTCOME_ROUTE.SUCCESS);
   });
 });

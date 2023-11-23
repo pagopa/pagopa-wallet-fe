@@ -10,8 +10,8 @@ import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/
 import { getConfigOrThrow } from "../../../config";
 import config from "../config";
 import utils from "../..";
-import { useNpgOutcomeRedirect } from "../../../hooks/useNpgOutcomeRedirect";
-import { NPG_OUTCOME_ROUTE } from "../../../routes/models/routeModel";
+import { useOutcomeRedirect } from "../../../hooks/useOutcomeRedirect";
+import { OUTCOME_ROUTE } from "../../../routes/models/routeModel";
 
 const {
   WALLET_CONFIG_API_ENV,
@@ -26,7 +26,7 @@ const apiWalletClient = createWalletClient({
   fetchApi: config.fetchWithTimeout
 });
 
-const errorRedirect = useNpgOutcomeRedirect(NPG_OUTCOME_ROUTE.ERROR);
+const errorRedirect = useOutcomeRedirect(OUTCOME_ROUTE.ERROR);
 
 const sessionsFields = async ({
   sessionToken: bearerAuth,

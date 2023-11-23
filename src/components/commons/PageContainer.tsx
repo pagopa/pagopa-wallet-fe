@@ -24,7 +24,12 @@ export default function PageContainer(props: {
         </Typography>
       )}
       {!!description && (
-        <Typography variant="body2" sx={{ mb: 1 }} color="text.light">
+        <Typography
+          variant="body2"
+          sx={{ mb: 1 }}
+          color="text.light"
+          whiteSpace="pre-line"
+        >
           {description}
           {!!link && link}
         </Typography>

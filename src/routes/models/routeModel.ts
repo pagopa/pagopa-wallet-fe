@@ -10,13 +10,14 @@ export enum WalletRoutes {
   PM_CARTE = "pm-onboarding/creditcard",
   CARTE = "onboarding/creditcard",
   PM_BPAY = "pm-onboarding/bpay",
+  PM_PAYPAL = "pm-onboarding/paypal",
   BPAY = "onboarding/bpay",
   ROOT = ""
 }
 
 export const EXTERNAL_OUTCOME = `${WALLET_CONFIG_API_HOST}${WALLET_CONFIG_API_BASEPATH}/v3/webview/logout/bye?outcome=`;
 
-export enum NPG_OUTCOME_ROUTE {
+export enum OUTCOME_ROUTE {
   ERROR = "1",
   SUCCESS = "0"
 }
