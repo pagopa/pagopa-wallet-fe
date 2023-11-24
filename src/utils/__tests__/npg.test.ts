@@ -1,5 +1,9 @@
 /* eslint-disable functional/immutable-data */
+import * as E from "fp-ts/Either";
+import "jest-location-mock";
+import "whatwg-fetch";
 import { npg } from "../api/npg";
+import { ErrorsType } from "../errors/errorsModel";
 import {
   npgSessionFieldsResponse,
   npgSessionFieldsResponseBody,
@@ -9,74 +13,52 @@ import {
   walletValidationsResponse,
   walletValidationsResponseBody
 } from "../testUtils";
-import "whatwg-fetch";
-import "jest-location-mock";
 
-describe("get card form fields", () => {
-  it("should call onError callback when the fetch rejects", async () => {
+describe("NPG: get form fields", () => {
+  it("Returns a generic error when the promise reject", async () => {
     global.fetch = jest.fn(() => Promise.reject());
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.sessionsFields({
-      sessionToken,
-      walletId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).toHaveBeenCalled();
+    const result = await npg.sessionsFields(sessionToken, walletId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should call onError callback on 500 status code", async () => {
+  it("Returns a generic error on status code 5xx", async () => {
     const response = new Response(null, { status: 500 });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.sessionsFields({
-      sessionToken,
-      walletId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).toHaveBeenCalled();
+    const result = await npg.sessionsFields(sessionToken, walletId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should change the location and include outcome=1 on 4xx type response", async () => {
+  it("Changes the location with outcome 1 on status code 4xx", async () => {
     const response = new Response(JSON.stringify({}), {
       status: 404
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.sessionsFields({
-      sessionToken,
-      walletId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).not.toBeCalled();
+    const result = await npg.sessionsFields(sessionToken, walletId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
     expect(global.location.href).toContain("outcome=1");
   });
 
-  it("should call onSuccess callback function passing the response data on 200 status code", async () => {
+  // This can't work for now. The api client should define 401 as a valid status code
+  it.skip("Changes the location with outcome 14 on status code 401", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 401
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await npg.sessionsFields(sessionToken, walletId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+    expect(global.location.href).toContain("outcome=14");
+  });
+
+  it("Return npgSessionFieldsResponse on status code 200", async () => {
     const response = new Response(npgSessionFieldsResponseBody, {
       status: 200
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.sessionsFields({
-      sessionToken,
-      walletId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).toHaveBeenCalledWith(npgSessionFieldsResponse);
+    const result = await npg.sessionsFields(sessionToken, walletId);
+    expect(result).toEqual(E.right(npgSessionFieldsResponse));
   });
 
-  it("should call onError when the response is not conform: test a", async () => {
+  it("Returns a generic error when the response is not conform: test 1", async () => {
     const response = new Response(
       JSON.stringify({
         orderId: "123"
@@ -86,19 +68,11 @@ describe("get card form fields", () => {
       }
     );
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.sessionsFields({
-      sessionToken,
-      walletId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).toHaveBeenCalled();
+    const result = await npg.sessionsFields(sessionToken, walletId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should call onError when the response is not conform: test b", async () => {
+  it("Returns a generic error when the response is not conform: test 2", async () => {
     const response = new Response(
       JSON.stringify({
         orderId: "123",
@@ -109,19 +83,11 @@ describe("get card form fields", () => {
       }
     );
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.sessionsFields({
-      sessionToken,
-      walletId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).toHaveBeenCalled();
+    const result = await npg.sessionsFields(sessionToken, walletId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should call onError when the response is not conform: test c", async () => {
+  it("Returns a generic error when the response is not conform: test 3", async () => {
     const response = new Response(
       JSON.stringify({
         orderId: "123",
@@ -139,19 +105,11 @@ describe("get card form fields", () => {
       }
     );
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.sessionsFields({
-      sessionToken,
-      walletId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).toHaveBeenCalled();
+    const result = await npg.sessionsFields(sessionToken, walletId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should call onError when the response is not conform: test d", async () => {
+  it("Returns a generic error when the response is not conform: test 4", async () => {
     const response = new Response(
       JSON.stringify({
         orderId: "123",
@@ -162,85 +120,52 @@ describe("get card form fields", () => {
       }
     );
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.sessionsFields({
-      sessionToken,
-      walletId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).toHaveBeenCalled();
+    const result = await npg.sessionsFields(sessionToken, walletId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 });
 
-describe("validate card data fields", () => {
-  it("should call onError callback when the fetch rejects", async () => {
+describe("NPG: validate card fields", () => {
+  it("Returns a generic error when the promise reject", async () => {
     global.fetch = jest.fn(() => Promise.reject());
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.validations({
-      sessionToken,
-      walletId,
-      orderId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).toHaveBeenCalled();
+    const result = await npg.validations(sessionToken, walletId, orderId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should call onError on 500 status code", async () => {
+  it("Returns a generic error on status code 5xx", async () => {
     const response = new Response(null, { status: 500 });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.validations({
-      sessionToken,
-      walletId,
-      orderId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).toHaveBeenCalled();
+    const result = await npg.validations(sessionToken, walletId, orderId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should change the location and include outcome=1 on 4xx type response", async () => {
+  it("Changes the location with outcome 1 on status code 4xx", async () => {
     const response = new Response(JSON.stringify({}), {
       status: 404
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.validations({
-      sessionToken,
-      walletId,
-      orderId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).not.toBeCalled();
-    expect(onError).not.toBeCalled();
+    const result = await npg.validations(sessionToken, walletId, orderId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
     expect(global.location.href).toContain("outcome=1");
   });
 
-  it("should call onSuccess callback function passing the response data on 200 status code", async () => {
+  // This can't work for now. The api client should define 401 as a valid status code
+  it.skip("Changes the location with outcome 1 on status code 4xx", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 401
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await npg.validations(sessionToken, walletId, orderId);
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+    expect(global.location.href).toContain("outcome=14");
+  });
+
+  it("Returns walletValidationsResponse on status code 200", async () => {
     const response = new Response(walletValidationsResponseBody, {
       status: 200
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const onError = jest.fn();
-    const onSuccess = jest.fn();
-    await npg.validations({
-      sessionToken,
-      walletId,
-      orderId,
-      onSuccess,
-      onError
-    });
-    expect(onSuccess).toHaveBeenCalledWith(walletValidationsResponse);
-    expect(onError).not.toBeCalled();
+    const result = await npg.validations(sessionToken, walletId, orderId);
+    expect(result).toEqual(E.right(walletValidationsResponse));
   });
 });

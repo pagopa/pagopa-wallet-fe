@@ -11,7 +11,6 @@ export enum WalletRoutes {
 }
 
 export enum OUTCOME_ROUTE {
-  ERROR = "1",
   GENERIC_ERROR = "1",
   AUTH_ERROR = "14",
   SUCCESS = "0"

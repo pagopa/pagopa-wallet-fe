@@ -26,7 +26,7 @@ export const walletRequest: WalletRequest = {
 
 export const sessionToken = "tokenTest";
 
-const walletResponse: WalletResponse = {
+export const walletResponse: WalletResponse = {
   data: {
     idWallet,
     type: TypeEnum.CREDIT_CARD,

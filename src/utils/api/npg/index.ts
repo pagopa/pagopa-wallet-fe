@@ -1,16 +1,16 @@
 import * as E from "fp-ts/Either";
 import * as O from "fp-ts/Option";
-import * as TE from "fp-ts/TaskEither";
 import { pipe } from "fp-ts/function";
-import { toError } from "fp-ts/lib/Either";
-import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
+import { IResponseType } from "@pagopa/ts-commons/lib/requests";
 import { createClient as createWalletClient } from "../../../../generated/definitions/webview-payment-wallet/client";
 import { WalletId } from "../../../../generated/definitions/webview-payment-wallet/WalletId";
-import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
 import { getConfigOrThrow } from "../../../config";
 import config from "../config";
+import { ErrorsType } from "../../errors/errorsModel";
+import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
+import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
+import api from "..";
 import utils from "../..";
-import { OUTCOME_ROUTE } from "../../../routes/models/routeModel";
 
 const {
   WALLET_CONFIG_API_ENV,
@@ -25,126 +25,67 @@ const apiWalletClient = createWalletClient({
   fetchApi: config.fetchWithTimeout
 });
 
-const sessionsFields = async ({
-  sessionToken: bearerAuth,
-  walletId,
-  onSuccess,
-  onError
-}: {
-  sessionToken: string;
-  walletId: WalletId;
-  onSuccess: (data: SessionWalletCreateResponse) => void;
-  onError: () => void;
-}) =>
-  await pipe(
-    TE.tryCatch(
-      () =>
-        apiWalletClient.createSessionWallet({
-          walletId,
-          bearerAuth
-        }),
-      toError
-    ),
-    TE.fold(
-      () => async () => onError(),
-      (resp) => async () =>
-        pipe(
-          resp,
-          E.fold(onError, ({ status, value }) => {
-            pipe(
-              status,
-              utils.validators.evaluateHTTPfamilyStatusCode,
-              O.match(
-                onError,
-                utils.validators.matchHttpFamilyResponseStatusCode(
-                  {
-                    "2xx": () => {
-                      pipe(
-                        SessionWalletCreateResponse.decode(value),
-                        E.fold(onError, (data) => {
-                          pipe(
-                            data.cardFormFields,
-                            utils.validators
-                              .validateSessionWalletCardFormFields,
-                            O.match(onError, (cardFormFields) =>
-                              onSuccess({
-                                orderId: data.orderId,
-                                cardFormFields
-                              })
-                            )
-                          );
-                        })
-                      );
-                    },
-                    "4xx": () =>
-                      utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR)
-                  },
-                  onError
+const sessionsFields = (
+  bearerAuth: string,
+  walletId: WalletId
+): Promise<E.Either<ErrorsType, SessionWalletCreateResponse>> =>
+  api.utils.validateApi(
+    () =>
+      apiWalletClient.createSessionWallet({
+        walletId,
+        bearerAuth
+      }),
+    (response) =>
+      api.utils.matchApiStatus(
+        response as IResponseType<number, SessionWalletCreateResponse, string>,
+        () =>
+          pipe(
+            response.value,
+            SessionWalletCreateResponse.decode,
+            E.match(
+              () => E.left(ErrorsType.GENERIC_ERROR),
+              (decoded) =>
+                pipe(
+                  decoded.cardFormFields,
+                  utils.validators.validateSessionWalletCardFormFields,
+                  O.match(
+                    () => E.left(ErrorsType.GENERIC_ERROR),
+                    () => E.right(response.value as SessionWalletCreateResponse)
+                  )
                 )
-              )
-            );
-          })
-        )
-    )
-  )();
+            )
+          )
+      )
+  );
 
-const validations = async ({
-  sessionToken: bearerAuth,
-  orderId,
-  walletId,
-  onSuccess,
-  onError
-}: {
-  sessionToken: string;
-  orderId: string;
-  walletId: WalletId;
-  onSuccess: (data: WalletVerifyRequestsResponse) => void;
-  onError: () => void;
-}) =>
-  await pipe(
-    TE.tryCatch(
-      () =>
-        apiWalletClient.postWalletValidations({
-          orderId,
-          bearerAuth,
-          walletId
-        }),
-      toError
-    ),
-    TE.fold(
-      () => async () => onError(),
-      (validation) => async () =>
-        pipe(
-          validation,
-          E.fold(onError, ({ status, value }) => {
-            pipe(
-              status,
-              utils.validators.evaluateHTTPfamilyStatusCode,
-              O.match(
-                onError,
-                utils.validators.matchHttpFamilyResponseStatusCode(
-                  {
-                    "2xx": () => {
-                      if (value) {
-                        pipe(
-                          WalletVerifyRequestsResponse.decode(value),
-                          E.fold(onError, onSuccess)
-                        );
-                      }
-                    },
-                    "4xx": () =>
-                      utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR)
-                  },
-                  onError
-                )
-              )
-            );
-          })
-        )
-    )
-  )();
+const validations = async (
+  bearerAuth: string,
+  orderId: string,
+  walletId: WalletId
+): Promise<E.Either<ErrorsType, WalletVerifyRequestsResponse>> =>
+  api.utils.validateApi(
+    () =>
+      apiWalletClient.postWalletValidations({
+        orderId,
+        bearerAuth,
+        walletId
+      }),
+    (response) =>
+      api.utils.matchApiStatus(
+        response as IResponseType<number, SessionWalletCreateResponse, string>,
+        () =>
+          pipe(
+            response.value,
+            WalletVerifyRequestsResponse.decode,
+            E.match(
+              () => E.left(ErrorsType.GENERIC_ERROR),
+              (decoded) => E.right(decoded)
+            )
+          )
+      )
+  );
 
 export const npg = {
-  validations,
-  sessionsFields
+  sessionsFields,
+  validations
 };

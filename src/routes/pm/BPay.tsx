@@ -1,5 +1,5 @@
 import { pipe } from "fp-ts/function";
-import * as O from "fp-ts/Option";
+import * as E from "fp-ts/Either";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
@@ -9,6 +9,7 @@ import { FormButtons } from "../../components/FormButtons/FormButtons";
 import BpayAccountItem from "../../components/commons/BpayAccountItem";
 import { IBpayAccountItems } from "../../features/onboard/models";
 import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "../models/routeModel";
+import api from "../../utils/api";
 
 export default function BPAyPage() {
   const [bpayAccountItems, setBpayAccountItems] = useState<IBpayAccountItems>(
@@ -16,7 +17,7 @@ export default function BPAyPage() {
   );
   const { t } = useTranslation();
   const { promiseInProgress: loading } = usePromiseTracker({
-    area: "sumbit-form-button"
+    area: "submit-form-button"
   });
 
   const { sessionToken } = utils.url.getFragments(ROUTE_FRAGMENT.SESSION_TOKEN);
@@ -24,8 +25,8 @@ export default function BPAyPage() {
   useEffect(() => {
     const getBpayAccountsItems = async () => {
       pipe(
-        await utils.api.bPay.getList(sessionToken),
-        O.match(
+        await api.bPay.getList(sessionToken),
+        E.match(
           () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
           (items) => setBpayAccountItems(items)
         )
@@ -36,8 +37,8 @@ export default function BPAyPage() {
 
   const addBpayAccountsToTheWallet = async () =>
     pipe(
-      await utils.api.bPay.addWallet(sessionToken, bpayAccountItems),
-      O.match(
+      await api.bPay.addWallet(sessionToken, bpayAccountItems),
+      E.match(
         () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
         () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.SUCCESS)
       )
@@ -59,7 +60,7 @@ export default function BPAyPage() {
           utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR)
         }
         handleSubmit={() =>
-          trackPromise(addBpayAccountsToTheWallet(), "sumbit-form-button")
+          trackPromise(addBpayAccountsToTheWallet(), "submit-form-button")
         }
         type="button"
         disabledCancel={loading}

@@ -1,4 +1,6 @@
 import { Box } from "@mui/material";
+import { pipe } from "fp-ts/function";
+import * as E from "fp-ts/Either";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import PageContainer from "../../components/commons/PageContainer";
@@ -11,6 +13,7 @@ import Verify, { VERIFY } from "../../components/Verify";
 import { ErrorsType } from "../../utils/errors/errorsModel";
 import ErrorModal from "../../components/commons/ErrorModal";
 import { ROUTE_FRAGMENT } from "../models/routeModel";
+import api from "../../utils/api";
 
 export default function InputCardPage() {
   const [loading, setLoading] = React.useState(false);
@@ -32,7 +35,7 @@ export default function InputCardPage() {
     setData({ idWallet, cvv });
   };
 
-  const onSubmit = (inputCardData: InputCardFormFields) => {
+  const onSubmit = async (inputCardData: InputCardFormFields) => {
     setLoading(true);
     if (!sessionToken) {
       return onError(ErrorsType.MISSING_SESSIONTOKEN);
@@ -55,11 +58,9 @@ export default function InputCardPage() {
         type: TypeEnum.CREDIT_CARD
       }
     };
-    void utils.api.creditCard.addWallet(
-      sessionToken,
-      wallet,
-      onSuccess(Number(securityCode)),
-      onError
+    pipe(
+      await api.creditCard.addWallet(sessionToken, wallet),
+      E.match(onError, onSuccess(Number(securityCode)))
     );
   };
 

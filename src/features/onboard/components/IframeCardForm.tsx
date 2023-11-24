@@ -95,13 +95,10 @@ export default function IframeCardForm() {
   };
 
   const validation = async ({ orderId }: SessionWalletCreateResponse) => {
-    void npg.validations({
-      orderId,
-      sessionToken,
-      walletId,
-      onSuccess: onValidation,
-      onError
-    });
+    pipe(
+      await npg.validations(sessionToken, orderId, walletId),
+      E.match(onError, onValidation)
+    );
   };
 
   const onChange = (id: FieldId, status: FieldStatus) => {
@@ -112,6 +109,18 @@ export default function IframeCardForm() {
         [id]: status
       }));
     }
+  };
+
+  const getSessionFields = async (
+    sessionToken: string,
+    walletId: string,
+    onSuccess: (body: SessionWalletCreateResponse) => void,
+    onError: () => void
+  ) => {
+    pipe(
+      await npg.sessionsFields(sessionToken, walletId),
+      E.match(onError, onSuccess)
+    );
   };
 
   React.useEffect(() => {
@@ -154,12 +163,7 @@ export default function IframeCardForm() {
         }
       };
 
-      void npg.sessionsFields({
-        sessionToken,
-        walletId,
-        onSuccess,
-        onError
-      });
+      void getSessionFields(sessionToken, walletId, onSuccess, onError);
     }
   }, [form?.orderId]);
 

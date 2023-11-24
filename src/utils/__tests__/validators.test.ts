@@ -1,69 +1,74 @@
 import * as O from "fp-ts/Option";
+import * as E from "fp-ts/Either";
 import validators from "../../utils/validators";
 import { npgSessionFieldsResponse } from "../testUtils";
+import "jest-location-mock";
+import { ErrorsType } from "../errors/errorsModel";
 
 const {
-  evaluateHTTPfamilyStatusCode,
+  evaluateHTTPFamilyStatusCode,
   cardNameValidation,
   digitValidation,
   expirationDateChangeValidation,
-  validateSessionWalletCardFormFields
+  validateSessionWalletCardFormFields,
+  statusCodeValidator,
+  badStatusHandler
 } = validators;
 
-describe("evaluateHTTPfamilyStatusCode function", () => {
+describe("evaluateHTTPFamilyStatusCode function", () => {
   it("Should evaluate the correct HTTP family code", () => {
-    expect(evaluateHTTPfamilyStatusCode(100)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(100)).toEqual(
       O.some({ actualCode: 100, familyCode: "1xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(101)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(101)).toEqual(
       O.some({ actualCode: 101, familyCode: "1xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(199)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(199)).toEqual(
       O.some({ actualCode: 199, familyCode: "1xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(200)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(200)).toEqual(
       O.some({ actualCode: 200, familyCode: "2xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(201)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(201)).toEqual(
       O.some({ actualCode: 201, familyCode: "2xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(299)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(299)).toEqual(
       O.some({ actualCode: 299, familyCode: "2xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(400)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(400)).toEqual(
       O.some({ actualCode: 400, familyCode: "4xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(401)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(401)).toEqual(
       O.some({ actualCode: 401, familyCode: "4xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(404)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(404)).toEqual(
       O.some({ actualCode: 404, familyCode: "4xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(499)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(499)).toEqual(
       O.some({ actualCode: 499, familyCode: "4xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(500)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(500)).toEqual(
       O.some({ actualCode: 500, familyCode: "5xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(501)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(501)).toEqual(
       O.some({ actualCode: 501, familyCode: "5xx" })
     );
-    expect(evaluateHTTPfamilyStatusCode(599)).toEqual(
+    expect(evaluateHTTPFamilyStatusCode(599)).toEqual(
       O.some({ actualCode: 599, familyCode: "5xx" })
     );
   });
-  it("Should return an istance of O.none with a wrong input", () => {
-    expect(evaluateHTTPfamilyStatusCode(-1)).toEqual(O.none);
-    expect(evaluateHTTPfamilyStatusCode(-0)).toEqual(O.none);
-    expect(evaluateHTTPfamilyStatusCode(0)).toEqual(O.none);
-    expect(evaluateHTTPfamilyStatusCode(99)).toEqual(O.none);
-    expect(evaluateHTTPfamilyStatusCode(600)).toEqual(O.none);
+  it("Should return an instance of O.none with a wrong input", () => {
+    expect(evaluateHTTPFamilyStatusCode(-1)).toEqual(O.none);
+    expect(evaluateHTTPFamilyStatusCode(-0)).toEqual(O.none);
+    expect(evaluateHTTPFamilyStatusCode(0)).toEqual(O.none);
+    expect(evaluateHTTPFamilyStatusCode(99)).toEqual(O.none);
+    expect(evaluateHTTPFamilyStatusCode(600)).toEqual(O.none);
   });
 });
 
 describe("cardNameValidation function", () => {
   it("Should test correctly a right input", () => {
-    expect(cardNameValidation("Pippo Baudo")).toEqual(true);
+    expect(cardNameValidation("Name Test")).toEqual(true);
   });
   it("Should test correctly a wrong input", () => {
     expect(cardNameValidation("")).toEqual(false);
@@ -97,6 +102,8 @@ describe("expirationDateChangeValidation function", () => {
     expect(expirationDateChangeValidation("11/23")).toEqual(true);
   });
   it("Should test correctly a wrong input", () => {
+    expect(expirationDateChangeValidation("a")).toEqual(false);
+    expect(expirationDateChangeValidation("0/")).toEqual(false);
     expect(expirationDateChangeValidation("1.1")).toEqual(false);
     expect(expirationDateChangeValidation("11.23")).toEqual(false);
     expect(expirationDateChangeValidation("11-23")).toEqual(false);
@@ -138,5 +145,51 @@ describe("validateSessionWalletCardFormFields function", () => {
         npgSessionFieldsResponse.cardFormFields
       )
     ).toEqual(O.some(npgSessionFieldsResponse.cardFormFields));
+  });
+});
+
+describe("statusCodeValidator", () => {
+  it("Returns a left familyCode on status code different from 200", () => {
+    const result = statusCodeValidator(500);
+    expect(result).toEqual(E.left({ familyCode: "5xx", actualCode: 500 }));
+  });
+
+  it("Returns a left 5xx familyCode on invalid status code", () => {
+    const result = statusCodeValidator(700);
+    expect(result).toEqual(E.left({ familyCode: "5xx", actualCode: 700 }));
+  });
+
+  it("Returns a right 2xx familyCode on 200 status code", () => {
+    const result = statusCodeValidator(200);
+    expect(result).toEqual(E.right({ familyCode: "2xx", actualCode: 200 }));
+  });
+});
+
+describe("badStatusHandler", () => {
+  it("Returns a generic error error on a 4xx status code", () => {
+    const result = badStatusHandler({ familyCode: "4xx", actualCode: 400 });
+    expect(result).toEqual(ErrorsType.GENERIC_ERROR);
+  });
+
+  it("Redirect with outcome 14 on a 401 status code", () => {
+    const result = badStatusHandler({ familyCode: "4xx", actualCode: 401 });
+    expect(result).toEqual(ErrorsType.GENERIC_ERROR);
+    expect(global.location.href).toContain("outcome=14");
+  });
+
+  it("Redirect with outcome 1 on a 4xx status code", () => {
+    badStatusHandler({ familyCode: "4xx", actualCode: 400 });
+    expect(global.location.href).toContain("outcome=1");
+    badStatusHandler({ familyCode: "4xx", actualCode: 405 });
+    expect(global.location.href).toContain("outcome=1");
+    badStatusHandler({ familyCode: "4xx", actualCode: 404 });
+    expect(global.location.href).toContain("outcome=1");
+    badStatusHandler({ familyCode: "4xx", actualCode: 401 });
+    expect(global.location.href).toContain("outcome=14");
+  });
+
+  it("Returns GENERIC_ERROR on any other status code", () => {
+    const result = badStatusHandler({ familyCode: "5xx", actualCode: 500 });
+    expect(result).toEqual(ErrorsType.GENERIC_ERROR);
   });
 });
