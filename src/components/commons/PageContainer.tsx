@@ -10,19 +10,11 @@ export default function PageContainer(props: {
   children?: React.ReactNode;
   link?: React.ReactNode;
   childrenSx?: CSSProperties;
-  showLoadingSpinner?: boolean;
 }) {
   const { promiseInProgress } = usePromiseTracker({
     area: "page-container"
   });
-  const {
-    title,
-    description,
-    link,
-    children,
-    childrenSx,
-    showLoadingSpinner = false
-  } = props;
+  const { title, description, link, children, childrenSx } = props;
 
   const Content = () => (
     <>
@@ -48,7 +40,7 @@ export default function PageContainer(props: {
 
   return (
     <Box mb={4} aria-live="polite">
-      {(promiseInProgress || showLoadingSpinner) && <WalletLoader />}
+      {promiseInProgress && <WalletLoader />}
       <Content />
     </Box>
   );
