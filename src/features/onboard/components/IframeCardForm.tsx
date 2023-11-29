@@ -5,7 +5,6 @@ import { pipe } from "fp-ts/function";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { redirect } from "react-router-dom";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { WalletVerifyRequestAPMDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestAPMDetails";
 import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
@@ -146,7 +145,7 @@ export default function IframeCardForm() {
         // payment/onboarding without 3ds challenge phase
         const onPaymentComplete = () => {
           clearNavigationEvents();
-          redirect(`/${WalletRoutes.ESITO}`);
+          navigate(`/${WalletRoutes.ESITO}`);
         };
 
         // payment/onboarding with 3ds challenge phase
