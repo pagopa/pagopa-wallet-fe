@@ -5,6 +5,7 @@ import { pipe } from "fp-ts/function";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { redirect } from "react-router-dom";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { WalletVerifyRequestAPMDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestAPMDetails";
 import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
@@ -64,8 +65,12 @@ export default function IframeCardForm() {
     ROUTE_FRAGMENT.WALLET_ID
   );
 
-  sessionStorage.setItem("sessionToken", sessionToken);
-  sessionStorage.setItem("walletId", sessionToken);
+  utils.storage.setSessionItem(
+    utils.storage.SessionItems.sessionToken,
+    sessionToken
+  );
+
+  utils.storage.setSessionItem(utils.storage.SessionItems.walletId, walletId);
 
   const onValidation = ({
     details
@@ -132,14 +137,19 @@ export default function IframeCardForm() {
     if (!form) {
       const onSuccess = (body: SessionWalletCreateResponse) => {
         setForm(body);
-        sessionStorage.setItem("orderId", body.orderId);
+        utils.storage.setSessionItem(
+          utils.storage.SessionItems.orderId,
+          body.orderId
+        );
         const onReadyForPayment = () => void validation(body);
 
+        // payment/onboarding without 3ds challenge phase
         const onPaymentComplete = () => {
           clearNavigationEvents();
-          // utils.url.redirectWithOutcome(OUTCOME_ROUTE.SUCCESS);
+          redirect(`/${WalletRoutes.ESITO}`);
         };
 
+        // payment/onboarding with 3ds challenge phase
         const onPaymentRedirect = (redirect: string) => {
           clearNavigationEvents();
           window.location.replace(redirect);
