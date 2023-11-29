@@ -6,6 +6,7 @@ import { toError } from "fp-ts/lib/Either";
 import * as TE from "fp-ts/TaskEither";
 import { createClient as createWalletClient } from "../../../../generated/definitions/webview-payment-wallet/client";
 import { WalletId } from "../../../../generated/definitions/webview-payment-wallet/WalletId";
+import { OrderId } from "../../../../generated/definitions/webview-payment-wallet/OrderId";
 import { getConfigOrThrow } from "../../../config";
 import config from "../config";
 import { ErrorsType } from "../../errors/errorsModel";
@@ -87,13 +88,18 @@ const validations = async (
       )
   );
 
-const getSessionWallet = async (bearerAuth: string, walletId: WalletId) =>
+const getSessionWallet = async (
+  bearerAuth: string,
+  walletId: WalletId,
+  orderId: OrderId
+) =>
   pipe(
     TE.tryCatch(
       () =>
         apiWalletClient.getWalletOutcomesById({
           bearerAuth,
-          walletId
+          walletId,
+          orderId
         }),
       toError
     ),

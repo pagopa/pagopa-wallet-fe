@@ -12,7 +12,6 @@ import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import ErrorModal from "../../../components/commons/ErrorModal";
 import {
-  OUTCOME_ROUTE,
   ROUTE_FRAGMENT,
   WalletRoutes
 } from "../../../routes/models/routeModel";
@@ -65,7 +64,8 @@ export default function IframeCardForm() {
     ROUTE_FRAGMENT.WALLET_ID
   );
 
-  sessionStorage.setItem(ROUTE_FRAGMENT.SESSION_TOKEN, sessionToken);
+  sessionStorage.setItem("sessionToken", sessionToken);
+  sessionStorage.setItem("walletId", sessionToken);
 
   const onValidation = ({
     details
@@ -132,11 +132,12 @@ export default function IframeCardForm() {
     if (!form) {
       const onSuccess = (body: SessionWalletCreateResponse) => {
         setForm(body);
+        sessionStorage.setItem("orderId", body.orderId);
         const onReadyForPayment = () => void validation(body);
 
         const onPaymentComplete = () => {
           clearNavigationEvents();
-          utils.url.redirectWithOutcome(OUTCOME_ROUTE.SUCCESS);
+          // utils.url.redirectWithOutcome(OUTCOME_ROUTE.SUCCESS);
         };
 
         const onPaymentRedirect = (redirect: string) => {
