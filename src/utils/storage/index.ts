@@ -1,11 +1,10 @@
 import * as O from "fp-ts/Option";
 import { OrderId } from "../../../generated/definitions/webview-payment-wallet/OrderId";
 import { WalletId } from "../../../generated/definitions/webview-payment-wallet/WalletId";
-import { ROUTE_FRAGMENT } from "../../routes/models/routeModel";
 
 enum SessionItems {
-  walletId = ROUTE_FRAGMENT.WALLET_ID,
-  sessionToken = ROUTE_FRAGMENT.SESSION_TOKEN,
+  walletId = "walletId",
+  sessionToken = "sessionToken",
   orderId = "orderId"
 }
 
@@ -14,7 +13,7 @@ enum SessionItems {
  * or empty string if the given key does not exist.
  */
 const getSessionItem = (item: SessionItems) => {
-  const sessionItem = sessionStorage.getItem(item);
+  const sessionItem = sessionStorage.getItem(item as string);
   if (!sessionItem) {
     return O.none;
   }
@@ -28,7 +27,7 @@ const getSessionItem = (item: SessionItems) => {
  */
 function setSessionItem(key: SessionItems, value: string | OrderId | WalletId) {
   try {
-    sessionStorage.setItem(key, value);
+    sessionStorage.setItem(key as string, value);
     return O.some({ key, value });
   } catch {
     return O.none;
