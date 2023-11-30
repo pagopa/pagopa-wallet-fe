@@ -10,7 +10,6 @@ import {
   bpayListItems,
   walletItems
 } from "../testUtils";
-import "whatwg-fetch";
 import "jest-location-mock";
 
 describe("Credit Card: add to the wallet", () => {

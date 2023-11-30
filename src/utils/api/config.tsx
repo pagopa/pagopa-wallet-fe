@@ -14,6 +14,7 @@ import {
 } from "@pagopa/ts-commons/lib/tasks";
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import { getConfigOrThrow } from "../../config";
+import "whatwg-fetch";
 
 const API_TIMEOUT = getConfigOrThrow().WALLET_CONFIG_API_TIMEOUT as Millisecond;
 
@@ -67,7 +68,7 @@ export function retryingFetch(
   maxRetries: number = 20
 ): typeof fetch {
   // a fetch that can be aborted and that gets cancelled after fetchTimeoutMs
-  const abortableFetch = AbortableFetch((global as any).fetch);
+  const abortableFetch = AbortableFetch(fetch);
   const timeoutFetch = toFetch(setFetchTimeout(timeout, abortableFetch));
 
   // use a constant backoff
