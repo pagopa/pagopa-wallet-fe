@@ -11,7 +11,7 @@ import BpayPage from "./routes/pm/BPay";
 import { WalletRoutes } from "./routes/models/routeModel";
 import "./translations/i18n";
 import PaypalPage from "./routes/PaypalPage";
-import Esito from "./routes/Esito";
+import Outcome from "./routes/Outcome";
 
 const transactionsTheme = createTheme({
   ...theme,
@@ -49,7 +49,7 @@ export function App() {
             <Route path={WalletRoutes.PM_BPAY} element={<BpayPage />} />
             <Route path={WalletRoutes.GDI_CHECK} element={<GdiCheckPage />} />
             <Route path={WalletRoutes.PM_PAYPAL} element={<PaypalPage />} />
-            <Route path={WalletRoutes.ESITO} element={<Esito />} />
+            <Route path={WalletRoutes.ESITO} element={<Outcome />} />
           </Routes>
         </Router>
       </Layout>

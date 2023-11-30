@@ -8,7 +8,7 @@ import WalletLoader from "../components/commons/WalletLoader";
 import utils from "../utils";
 import { OUTCOME_ROUTE } from "./models/routeModel";
 
-const Esito = () => {
+const Outcome = () => {
   const { getSessionItem, SessionItems } = utils.storage;
 
   useEffect(() => {
@@ -48,4 +48,4 @@ const Esito = () => {
   );
 };
 
-export default Esito;
+export default Outcome;
