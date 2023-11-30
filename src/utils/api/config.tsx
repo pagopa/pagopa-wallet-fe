@@ -48,12 +48,18 @@ function retryLogicOnPromisePredicate(
     );
 }
 
+/**
+ * returns a fetch that aborts after a specific timeout
+ */
 const fetchWithTimeout: typeof fetch = (input, init) =>
   toFetch(setFetchTimeout(API_TIMEOUT as Millisecond, AbortableFetch(fetch)))(
     input as RequestInfo,
     init
   );
 
+/**
+ * Returns a fetch wrapped with timeout and retry logic
+ */
 export function retryingFetch(
   condition: (r: Response) => Promise<boolean>,
   delay: number = 1000,
