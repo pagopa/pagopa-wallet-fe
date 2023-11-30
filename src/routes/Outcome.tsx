@@ -22,8 +22,8 @@ const Outcome = () => {
           async ({ walletId, orderId }) =>
             pipe(
               await utils.api.npg.creditCard.getSessionWallet(
-                walletId,
-                orderId
+                walletId.value,
+                orderId.value
               ),
               E.match(
                 () =>

@@ -115,9 +115,7 @@
       "generated"
     ],
     "coverageDirectory": "<rootDir>/coverage/",
-    "setupFiles": [
-      "<rootDir>/src/env-config.js"
-    ]
+    "setupFiles": ["<rootDir>/src/env-config.js"]
   },
   "jestSonar": {
     "sonar56x": true,

@@ -17,7 +17,7 @@ const getSessionItem = (item: SessionItems) => {
   if (!sessionItem) {
     return O.none;
   }
-  return O.some(sessionItem);
+  return O.some({ key: item, value: sessionItem });
 };
 
 /**
@@ -34,7 +34,7 @@ function setSessionItem(key: SessionItems, value: string | OrderId | WalletId) {
   }
 }
 
-const isStateEmpty = (item: SessionItems) => !getSessionItem(item);
+const isStateEmpty = (item: SessionItems) => O.isNone(getSessionItem(item));
 
 const clearStorage = () => sessionStorage.clear();
 
