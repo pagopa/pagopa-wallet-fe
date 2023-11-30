@@ -48,7 +48,7 @@ function getFragments(
  * This function executes a window.location.replace on a particular url with a numeric outcome
  * from the outcome parameter. The IO APP will use the url and the outcome to give a feedback to the user
  */
-const redirectWithOutcome = (outcome: OUTCOME_ROUTE) =>
+const redirectWithOutcome = (outcome: OUTCOME_ROUTE | number) =>
   window.location.replace(
     `${API_HOST}${WALLET_OUTCOME_BASEPATH}/v1/wallets/outcomes?outcome=${outcome}`
   );

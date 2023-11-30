@@ -56,7 +56,7 @@ const fetchWithTimeout: typeof fetch = (input, init) =>
 
 export function retryingFetch(
   condition: (r: Response) => Promise<boolean>,
-  delay: number = 2000,
+  delay: number = 1000,
   timeout: Millisecond = API_TIMEOUT,
   maxRetries: number = 20
 ): typeof fetch {

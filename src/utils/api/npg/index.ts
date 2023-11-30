@@ -131,13 +131,21 @@ const getSessionWallet =
         pipe(
           response,
           TE.match(
-            (errors) => console.log(errors),
+            () => E.left(ErrorsType.GENERIC_ERROR),
             (otherwise) =>
               pipe(
                 otherwise,
                 E.match(
-                  (errors) => console.log(errors),
-                  (resp) => resp
+                  () => E.left(ErrorsType.GENERIC_ERROR),
+                  (resp) =>
+                    pipe(
+                      resp.value,
+                      SessionWalletRetrieveResponse.decode,
+                      E.match(
+                        () => E.left(ErrorsType.GENERIC_ERROR),
+                        (decoded) => E.right(decoded)
+                      )
+                    )
                 )
               )
           )
@@ -150,8 +158,9 @@ export default {
     validations: validations(apiWalletClientWithoutPolling()),
     getSessionWallet: getSessionWallet(
       apiWalletClientWithPolling(async (r: Response): Promise<boolean> => {
-        const { isFinalOutcome } =
-          (await r.json()) as SessionWalletRetrieveResponse;
+        const { isFinalOutcome } = (await r
+          .clone() // this is becuase you only can consume Response.json() once
+          .json()) as SessionWalletRetrieveResponse;
         return r.status !== 200 || !isFinalOutcome;
       })
     )
