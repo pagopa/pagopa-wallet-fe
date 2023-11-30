@@ -12,19 +12,14 @@ const Esito = () => {
 
   useEffect(() => {
     void (async () => {
-      const sessionToken = getSessionItem(SessionItems.sessionToken);
       const walletId = getSessionItem(SessionItems.walletId);
       const orderId = getSessionItem(SessionItems.orderId);
       pipe(
-        sequenceS(O.option)({ sessionToken, walletId, orderId }),
+        sequenceS(O.option)({ walletId, orderId }),
         O.match(
           () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
-          ({ sessionToken, walletId, orderId }) =>
-            utils.api.npg.creditCard.getSessionWallet(
-              sessionToken,
-              walletId,
-              orderId
-            )
+          ({ walletId, orderId }) =>
+            utils.api.npg.creditCard.getSessionWallet(walletId, orderId)
         )
       );
     })();
