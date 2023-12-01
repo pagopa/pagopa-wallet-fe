@@ -64,6 +64,10 @@ export default function IframeCardForm() {
     ROUTE_FRAGMENT.WALLET_ID
   );
 
+  utils.storage.setSessionItem(
+    utils.storage.SessionItems.sessionToken,
+    sessionToken
+  );
   utils.storage.setSessionItem(utils.storage.SessionItems.walletId, walletId);
 
   const onValidation = ({

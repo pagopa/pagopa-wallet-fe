@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "generate": "npm-run-all generate:*",
-    "generate:webview-payment-wallet-api": "rimraf generated/definitions/webview-payment-wallet && shx mkdir -p generated/definitions/webview-payment-wallet && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/pagopa-infra/main/src/domains/wallet-app/api/webview-payment-wallet/v1/_openapi.json.tpl --no-strict --out-dir ./generated/definitions/webview-payment-wallet --request-types --response-decoders --client",
+    "generate:webview-payment-wallet-api": "rimraf generated/definitions/webview-payment-wallet && shx mkdir -p generated/definitions/webview-payment-wallet && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/pagopa-infra/72bde6390a8f66ce645437fb98aa5c9be1235219/src/domains/wallet-app/api/webview-payment-wallet/v1/_openapi.json.tpl --no-strict --out-dir ./generated/definitions/webview-payment-wallet --request-types --response-decoders --client",
     "generate:payment-manager-api-v1": "rimraf generated/definitions/payment-manager-v1 && shx mkdir -p generated/definitions/payment-manager-v1 && gen-api-models --api-spec ./api-spec/pm-spec.json --no-strict --out-dir ./generated/definitions/payment-manager-v1 --request-types --response-decoders --client",
     "type-check": "tsc",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx",

@@ -15,15 +15,17 @@ const Outcome = () => {
     void (async () => {
       const walletId = getSessionItem(SessionItems.walletId);
       const orderId = getSessionItem(SessionItems.orderId);
+      const sessionToken = getSessionItem(SessionItems.sessionToken);
       pipe(
-        sequenceS(O.option)({ walletId, orderId }),
+        sequenceS(O.option)({ walletId, orderId, sessionToken }),
         O.match(
           () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
-          async ({ walletId, orderId }) =>
+          async ({ walletId, orderId, sessionToken }) =>
             pipe(
               await utils.api.npg.creditCard.getSessionWallet(
                 walletId.value,
-                orderId.value
+                orderId.value,
+                sessionToken.value
               ),
               E.match(
                 () =>

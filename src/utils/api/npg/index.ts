@@ -117,11 +117,13 @@ const validations =
     );
 
 const getSessionWallet =
-  (client: WalletClient) => async (walletId: WalletId, orderId: OrderId) =>
+  (client: WalletClient) =>
+  async (walletId: WalletId, orderId: OrderId, bearerAuth: string) =>
     pipe(
       TE.tryCatch(
         () =>
           client.getSessionWallet({
+            bearerAuth,
             walletId,
             orderId
           }),
