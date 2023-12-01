@@ -2,8 +2,6 @@ import * as E from "fp-ts/Either";
 import * as O from "fp-ts/Option";
 import { pipe } from "fp-ts/function";
 import { IResponseType } from "@pagopa/ts-commons/lib/requests";
-import { toError } from "fp-ts/lib/Either";
-import * as TE from "fp-ts/TaskEither";
 import {
   Client as WalletClient,
   createClient as createWalletClient
@@ -118,48 +116,43 @@ const validations =
 
 const getSessionWallet =
   (client: WalletClient) =>
-  async (walletId: WalletId, orderId: OrderId, bearerAuth: string) =>
-    pipe(
-      TE.tryCatch(
-        () =>
-          client.getSessionWallet({
-            bearerAuth,
-            walletId,
-            orderId
-          }),
-        toError
-      ),
+  async (
+    walletId: WalletId,
+    orderId: OrderId,
+    bearerAuth: string
+  ): Promise<E.Either<ErrorsType, SessionWalletRetrieveResponse>> =>
+    api.utils.validateApi(
+      () =>
+        client.getSessionWallet({
+          bearerAuth,
+          walletId,
+          orderId
+        }),
       (response) =>
-        pipe(
-          response,
-          TE.match(
-            () => E.left(ErrorsType.GENERIC_ERROR),
-            (otherwise) =>
-              pipe(
-                otherwise,
-                E.match(
-                  () => E.left(ErrorsType.GENERIC_ERROR),
-                  (resp) =>
-                    pipe(
-                      resp.value,
-                      SessionWalletRetrieveResponse.decode,
-                      E.match(
-                        () => E.left(ErrorsType.GENERIC_ERROR),
-                        (decoded) => E.right(decoded)
-                      )
-                    )
-                )
+        api.utils.matchApiStatus(
+          response as IResponseType<
+            number,
+            SessionWalletRetrieveResponse,
+            string
+          >,
+          () =>
+            pipe(
+              response.value,
+              SessionWalletRetrieveResponse.decode,
+              E.match(
+                () => E.left(ErrorsType.GENERIC_ERROR),
+                (decoded) => E.right(decoded)
               )
-          )
+            )
         )
-    )();
+    );
 
 export default {
   creditCard: {
     sessionsFields: sessionsFields(apiWalletClientWithoutPolling()),
     validations: validations(apiWalletClientWithoutPolling()),
     getSessionWallet: getSessionWallet(
-      apiWalletClientWithPolling(async (r: Response): Promise<boolean> => {
+      apiWalletClientWithPolling(async (r) => {
         const { isFinalOutcome } = (await r
           .clone() // this is becuase you only can consume Response.json() once
           .json()) as SessionWalletRetrieveResponse;

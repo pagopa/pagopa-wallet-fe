@@ -1,6 +1,7 @@
 /* eslint-disable functional/immutable-data */
 import * as E from "fp-ts/Either";
 import pm from "../api/pm";
+import npg from "../api/npg";
 import { ErrorsType } from "../errors/errorsModel";
 import {
   walletRequest,
@@ -8,9 +9,27 @@ import {
   idWallet,
   walletResponseBody,
   bpayListItems,
-  walletItems
+  walletItems,
+  getSessionWalletResponseBody,
+  orderId,
+  walletId,
+  getSessionWalletResponse
 } from "../testUtils";
 import "jest-location-mock";
+import "whatwg-fetch";
+
+// This is because I want testing without the retry fucntionality
+jest.mock("../api/config", () => {
+  const originalModule = jest.requireActual("../api/config");
+  return {
+    __esModule: true,
+    ...originalModule,
+    default: {
+      ...originalModule.default,
+      retryingFetch: jest.fn(originalModule.fetchWithTimeout)
+    }
+  };
+});
 
 describe("Credit Card: add to the wallet", () => {
   it("Returns a generic error when the promise reject", async () => {
@@ -183,5 +202,47 @@ describe("Bancomat Pay: add wallet", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.bPay.addWallet(sessionToken, bpayListItems);
     expect(result).toEqual(E.right(walletItems.data));
+  });
+});
+
+describe("NPG Credit Card: getSessionWallet", () => {
+  it("Return an instance of Task.right cointaing the response", async () => {
+    const response = new Response(getSessionWalletResponseBody, {
+      status: 200
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await npg.creditCard.getSessionWallet(
+      walletId,
+      orderId,
+      "1234"
+    );
+
+    expect(result).toEqual(E.right(getSessionWalletResponse));
+  });
+
+  it("Return an instance of Task.left with the error", async () => {
+    global.fetch = jest.fn(() => Promise.reject());
+    const result = await npg.creditCard.getSessionWallet(
+      walletId,
+      orderId,
+      "1234"
+    );
+
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+  });
+
+  it("Redirect an 401", async () => {
+    const response = new Response(JSON.stringify({}), {
+      status: 401
+    });
+
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await npg.creditCard.getSessionWallet(
+      walletId,
+      orderId,
+      "1234"
+    );
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
+    expect(global.location.href).toContain("outcome=14");
   });
 });
