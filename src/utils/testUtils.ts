@@ -6,6 +6,7 @@ import { RestBPayResponse } from "../../generated/definitions/payment-manager-v1
 import { WalletTypeEnum } from "../../generated/definitions/payment-manager-v1/WalletV2";
 import { WalletV2ListResponse } from "../../generated/definitions/payment-manager-v1/WalletV2ListResponse";
 import { EnableableFunctionsEnum } from "../../generated/definitions/payment-manager-v1/EnableableFunctions";
+import { SessionWalletRetrieveResponse } from "../../generated/definitions/webview-payment-wallet/SessionWalletRetrieveResponse";
 
 export const idWallet = 1222302;
 export const walletId = "1222302";
@@ -99,6 +100,17 @@ export const walletValidationsResponse = {
 
 export const walletValidationsResponseBody = JSON.stringify(
   walletValidationsResponse
+);
+
+export const getSessionWalletResponse: SessionWalletRetrieveResponse = {
+  orderId,
+  walletId,
+  isFinalOutcome: true,
+  outcome: 2
+};
+
+export const getSessionWalletResponseBody = JSON.stringify(
+  getSessionWalletResponse
 );
 
 export const bpayListItems: Exclude<RestBPayResponse["data"], undefined> = [
