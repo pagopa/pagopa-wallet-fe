@@ -12,12 +12,10 @@ import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import ErrorModal from "../../../components/commons/ErrorModal";
 import {
-  OUTCOME_ROUTE,
   ROUTE_FRAGMENT,
   WalletRoutes
 } from "../../../routes/models/routeModel";
 import utils from "../../../utils";
-import { npg } from "../../../utils/api/npg";
 import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import { clearNavigationEvents } from "../../../utils/eventListener";
@@ -66,6 +64,12 @@ export default function IframeCardForm() {
     ROUTE_FRAGMENT.WALLET_ID
   );
 
+  utils.storage.setSessionItem(
+    utils.storage.SessionItems.sessionToken,
+    sessionToken
+  );
+  utils.storage.setSessionItem(utils.storage.SessionItems.walletId, walletId);
+
   const onValidation = ({
     details
   }: WalletVerifyRequestsResponse & {
@@ -96,7 +100,11 @@ export default function IframeCardForm() {
 
   const validation = async ({ orderId }: SessionWalletCreateResponse) => {
     pipe(
-      await npg.validations(sessionToken, orderId, walletId),
+      await utils.api.npg.creditCard.validations(
+        sessionToken,
+        orderId,
+        walletId
+      ),
       E.match(onError, onValidation)
     );
   };
@@ -118,7 +126,7 @@ export default function IframeCardForm() {
     onError: () => void
   ) => {
     pipe(
-      await npg.sessionsFields(sessionToken, walletId),
+      await utils.api.npg.creditCard.sessionsFields(sessionToken, walletId),
       E.match(onError, onSuccess)
     );
   };
@@ -127,13 +135,19 @@ export default function IframeCardForm() {
     if (!form) {
       const onSuccess = (body: SessionWalletCreateResponse) => {
         setForm(body);
+        utils.storage.setSessionItem(
+          utils.storage.SessionItems.orderId,
+          body.orderId
+        );
         const onReadyForPayment = () => void validation(body);
 
+        // payment/onboarding without 3ds challenge phase
         const onPaymentComplete = () => {
           clearNavigationEvents();
-          utils.url.redirectWithOutcome(OUTCOME_ROUTE.SUCCESS);
+          navigate(`/${WalletRoutes.ESITO}`);
         };
 
+        // payment/onboarding with 3ds challenge phase
         const onPaymentRedirect = (redirect: string) => {
           clearNavigationEvents();
           window.location.replace(redirect);

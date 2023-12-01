@@ -9,7 +9,6 @@ import { FormButtons } from "../../components/FormButtons/FormButtons";
 import BpayAccountItem from "../../components/commons/BpayAccountItem";
 import { IBpayAccountItems } from "../../features/onboard/models";
 import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "../models/routeModel";
-import api from "../../utils/api";
 
 export default function BPAyPage() {
   const [bpayAccountItems, setBpayAccountItems] = useState<IBpayAccountItems>(
@@ -25,7 +24,7 @@ export default function BPAyPage() {
   useEffect(() => {
     const getBpayAccountsItems = async () => {
       pipe(
-        await api.bPay.getList(sessionToken),
+        await utils.api.pm.bPay.getList(sessionToken),
         E.match(
           () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
           (items) => setBpayAccountItems(items)
@@ -37,7 +36,7 @@ export default function BPAyPage() {
 
   const addBpayAccountsToTheWallet = async () =>
     pipe(
-      await api.bPay.addWallet(sessionToken, bpayAccountItems),
+      await utils.api.pm.bPay.addWallet(sessionToken, bpayAccountItems),
       E.match(
         () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
         () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.SUCCESS)

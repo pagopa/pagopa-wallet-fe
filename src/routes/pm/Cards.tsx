@@ -13,7 +13,6 @@ import Verify, { VERIFY } from "../../components/Verify";
 import { ErrorsType } from "../../utils/errors/errorsModel";
 import ErrorModal from "../../components/commons/ErrorModal";
 import { ROUTE_FRAGMENT } from "../models/routeModel";
-import api from "../../utils/api";
 
 export default function InputCardPage() {
   const [loading, setLoading] = React.useState(false);
@@ -59,7 +58,7 @@ export default function InputCardPage() {
       }
     };
     pipe(
-      await api.creditCard.addWallet(sessionToken, wallet),
+      await utils.api.pm.creditCard.addWallet(sessionToken, wallet),
       E.match(onError, onSuccess(Number(securityCode)))
     );
   };
