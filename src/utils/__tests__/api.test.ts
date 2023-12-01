@@ -18,7 +18,7 @@ import {
 import "jest-location-mock";
 import "whatwg-fetch";
 
-// This is because I want testing without the retry fucntionality
+// This is because I want test without the retry functionality
 jest.mock("../api/config", () => {
   const originalModule = jest.requireActual("../api/config");
   return {
@@ -26,7 +26,10 @@ jest.mock("../api/config", () => {
     ...originalModule,
     default: {
       ...originalModule.default,
-      retryingFetch: jest.fn(originalModule.fetchWithTimeout)
+      retryingFetch: jest.fn(
+        () => (input: RequestInfo | URL, init?: RequestInit) =>
+          fetch(input, init)
+      )
     }
   };
 });

@@ -186,8 +186,8 @@ const getPspsForPaymentMethod =
 
 export default {
   creditCard: {
-    sessionsFields: sessionsFields(apiWalletClientWithoutPolling()),
-    validations: validations(apiWalletClientWithoutPolling()),
+    sessionsFields: sessionsFields(apiWalletClientWithoutPolling),
+    validations: validations(apiWalletClientWithoutPolling),
     getSessionWallet: getSessionWallet(
       apiWalletClientWithPolling(async (r) => {
         const { isFinalOutcome } = (await r
