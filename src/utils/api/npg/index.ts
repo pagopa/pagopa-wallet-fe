@@ -23,13 +23,12 @@ const {
   WALLET_CONFIG_API_BASEPATH
 } = getConfigOrThrow();
 
-const apiWalletClientWithoutPolling = (): WalletClient =>
-  createWalletClient({
-    baseUrl:
-      WALLET_CONFIG_API_ENV === "development" ? "" : WALLET_CONFIG_API_HOST,
-    basePath: WALLET_CONFIG_API_BASEPATH,
-    fetchApi: config.fetchWithTimeout
-  });
+const apiWalletClientWithoutPolling: WalletClient = createWalletClient({
+  baseUrl:
+    WALLET_CONFIG_API_ENV === "development" ? "" : WALLET_CONFIG_API_HOST,
+  basePath: WALLET_CONFIG_API_BASEPATH,
+  fetchApi: config.fetchWithTimeout
+});
 
 const apiWalletClientWithPolling = (
   condition: (r: Response) => Promise<boolean>
@@ -149,8 +148,8 @@ const getSessionWallet =
 
 export default {
   creditCard: {
-    sessionsFields: sessionsFields(apiWalletClientWithoutPolling()),
-    validations: validations(apiWalletClientWithoutPolling()),
+    sessionsFields: sessionsFields(apiWalletClientWithoutPolling),
+    validations: validations(apiWalletClientWithoutPolling),
     getSessionWallet: getSessionWallet(
       apiWalletClientWithPolling(async (r) => {
         const { isFinalOutcome } = (await r
