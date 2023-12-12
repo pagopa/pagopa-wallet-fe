@@ -14,17 +14,17 @@ import * as O from "fp-ts/Option";
 import { pipe } from "fp-ts/function";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { PaypalPspListResponse } from "../../generated/definitions/payment-manager-v1/PaypalPspListResponse";
-import { FormButtons } from "../components/FormButtons/FormButtons";
-import Verify, { VERIFY } from "../components/Verify";
-import ErrorModal from "../components/commons/ErrorModal";
-import PageContainer from "../components/commons/PageContainer";
-import WalletLoader from "../components/commons/WalletLoader";
-import { getConfigOrThrow } from "../config";
-import utils from "../utils";
-import pm from "../utils/api/pm";
-import { ErrorsType } from "../utils/errors/errorsModel";
-import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "./models/routeModel";
+import { PaypalPspListResponse } from "../../../generated/definitions/payment-manager-v1/PaypalPspListResponse";
+import { FormButtons } from "../../components/FormButtons/FormButtons";
+import Verify, { VERIFY } from "../../components/Verify";
+import ErrorModal from "../../components/commons/ErrorModal";
+import PageContainer from "../../components/commons/PageContainer";
+import WalletLoader from "../../components/commons/WalletLoader";
+import { getConfigOrThrow } from "../../config";
+import utils from "../../utils";
+import pm from "../../utils/api/pm";
+import { ErrorsType } from "../../utils/errors/errorsModel";
+import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "../models/routeModel";
 
 export default function PaypalPage() {
   const { t } = useTranslation();
