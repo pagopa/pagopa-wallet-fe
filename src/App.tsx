@@ -4,14 +4,19 @@ import { theme } from "@pagopa/mui-italia";
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Layout from "./components/commons/Layout";
-import GdiCheckPage from "./routes/GdiCheckPage";
-import IFrameCardPage from "./routes/Cards";
-import InputCardPage from "./routes/pm/Cards";
-import BpayPage from "./routes/pm/BPay";
 import { WalletRoutes } from "./routes/models/routeModel";
+// PM
+import InputCardPage from "./routes/pm/Cards";
+import PaypalPage from "./routes/pm/Paypal";
+import BpayPage from "./routes/pm/BPay";
+// NPG
+import IFrameCardPage from "./routes/Cards";
+import ApmCardPage from "./routes/Apm";
+
+import GdiCheckPage from "./routes/GdiCheck";
+import OutcomePage from "./routes/Outcome";
+
 import "./translations/i18n";
-import PaypalPage from "./routes/PaypalPage";
-import Outcome from "./routes/Outcome";
 
 const transactionsTheme = createTheme({
   ...theme,
@@ -45,11 +50,14 @@ export function App() {
         <Router>
           <Routes>
             <Route path={WalletRoutes.PM_CARTE} element={<InputCardPage />} />
-            <Route path={WalletRoutes.CARTE} element={<IFrameCardPage />} />
-            <Route path={WalletRoutes.PM_BPAY} element={<BpayPage />} />
-            <Route path={WalletRoutes.GDI_CHECK} element={<GdiCheckPage />} />
             <Route path={WalletRoutes.PM_PAYPAL} element={<PaypalPage />} />
-            <Route path={WalletRoutes.ESITO} element={<Outcome />} />
+            <Route path={WalletRoutes.PM_BPAY} element={<BpayPage />} />
+
+            <Route path={WalletRoutes.CARTE} element={<IFrameCardPage />} />
+            <Route path={WalletRoutes.APM} element={<ApmCardPage />} />
+
+            <Route path={WalletRoutes.GDI_CHECK} element={<GdiCheckPage />} />
+            <Route path={WalletRoutes.ESITO} element={<OutcomePage />} />
           </Routes>
         </Router>
       </Layout>

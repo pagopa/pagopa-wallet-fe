@@ -1,13 +1,13 @@
 export enum WalletRoutes {
-  ERRORE = "errore",
-  ESITO = "esito",
-  GDI_CHECK = "gdi-check",
+  ROOT = "",
   PM_CARTE = "pm-onboarding/creditcard",
-  CARTE = "onboarding/creditcard",
-  PM_BPAY = "pm-onboarding/bpay",
   PM_PAYPAL = "pm-onboarding/paypal",
-  BPAY = "onboarding/bpay",
-  ROOT = ""
+  PM_BPAY = "pm-onboarding/bpay",
+  CARTE = "onboarding/creditcard",
+  APM = "onboarding/apm",
+  GDI_CHECK = "gdi-check",
+  ESITO = "esito",
+  ERRORE = "errore"
 }
 
 export enum OUTCOME_ROUTE {
