@@ -18,6 +18,7 @@ import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/
 import api from "..";
 import utils from "../..";
 import { SessionWalletRetrieveResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletRetrieveResponse";
+import { BundleOption } from "../../../../generated/definitions/webview-payment-wallet/BundleOption";
 
 const {
   WALLET_CONFIG_API_ENV,
@@ -154,6 +155,38 @@ const getSessionWallet =
         )
     )();
 
+const getPspsForPaymentMethod =
+  (client: WalletClient) => async (paymentMethodId: string) =>
+    pipe(
+      TE.tryCatch(
+        () => client.getPspsForPaymentMethod({ paymentMethodId }),
+        toError
+      ),
+      (response) =>
+        pipe(
+          response,
+          TE.match(
+            () => E.left(ErrorsType.GENERIC_ERROR),
+            (otherwise) =>
+              pipe(
+                otherwise,
+                E.match(
+                  () => E.left(ErrorsType.GENERIC_ERROR),
+                  (resp) =>
+                    pipe(
+                      resp.value,
+                      BundleOption.decode,
+                      E.match(
+                        () => E.left(ErrorsType.GENERIC_ERROR),
+                        (decoded) => E.right(decoded)
+                      )
+                    )
+                )
+              )
+          )
+        )
+    )();
+
 export default {
   creditCard: {
     sessionsFields: sessionsFields(apiWalletClientWithoutPolling()),
@@ -165,6 +198,11 @@ export default {
           .json()) as SessionWalletRetrieveResponse;
         return r.status !== 200 || !isFinalOutcome;
       })
+    )
+  },
+  apm: {
+    getPspsForPaymentMethod: getPspsForPaymentMethod(
+      apiWalletClientWithoutPolling()
     )
   }
 };
