@@ -54,10 +54,7 @@ const Apm = () => {
   const getPsps = React.useCallback(async () => {
     setLoading(true);
     pipe(
-      await utils.api.npg.apm.getPspsForPaymentMethod(
-        paymentMethodId,
-        sessionToken
-      ),
+      await utils.api.npg.apm.getPspsForPaymentMethod(paymentMethodId),
       E.match(redirectWithError, setList),
       () => setLoading(false)
     );

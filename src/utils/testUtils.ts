@@ -7,10 +7,12 @@ import { WalletTypeEnum } from "../../generated/definitions/payment-manager-v1/W
 import { WalletV2ListResponse } from "../../generated/definitions/payment-manager-v1/WalletV2ListResponse";
 import { EnableableFunctionsEnum } from "../../generated/definitions/payment-manager-v1/EnableableFunctions";
 import { SessionWalletRetrieveResponse } from "../../generated/definitions/webview-payment-wallet/SessionWalletRetrieveResponse";
+import { BundleOption } from "../../generated/definitions/webview-payment-wallet/BundleOption";
 
 export const idWallet = 1222302;
 export const walletId = "1222302";
 export const orderId = "1222302";
+export const paymentMethodId = "9d735400-9450-4f7e-9431-8c1e7fa2a339";
 
 export const walletRequest: WalletRequest = {
   data: {
@@ -167,6 +169,7 @@ export const walletItems: WalletV2ListResponse = {
     }
   ]
 };
+
 export const pspsResponse = {
   data: [
     {
@@ -228,3 +231,45 @@ export const pspsResponse = {
 };
 
 export const pspsResponseBody = JSON.stringify(pspsResponse);
+
+export const getPspsForPaymentMethodResponse: BundleOption = {
+  belowThreshold: false,
+  bundleOptions: [
+    {
+      taxPayerFee: 45,
+      primaryCiIncurredFee: 0,
+      paymentMethod: "PPAL",
+      touchpoint: "IO",
+      idBundle: "123eret-1234-4372",
+      bundleName: "bundleName Italia S.p.A.",
+      bundleDescription: "Pagamenti con carte",
+      idCiBundle: null,
+      idPsp: "IDPSP",
+      idChannel: "2342342_01",
+      idBrokerPsp: "2342342",
+      onUs: false,
+      abi: "123456",
+      pspBusinessName: "pspBusinessName Italia S.p.A."
+    },
+    {
+      taxPayerFee: 45,
+      primaryCiIncurredFee: 0,
+      paymentMethod: "PPAL",
+      touchpoint: "IO",
+      idBundle: "456eret-1234-2345",
+      bundleName: "bundleName2 Italia S.p.A.",
+      bundleDescription: "Pagamenti con carte",
+      idCiBundle: null,
+      idPsp: "IDPSP2",
+      idChannel: "2342342_02",
+      idBrokerPsp: "2342343",
+      onUs: false,
+      abi: "123433",
+      pspBusinessName: "pspBusinessName2 Italia S.p.A."
+    }
+  ]
+};
+
+export const getPspsForPaymentMethodBody = JSON.stringify(
+  getPspsForPaymentMethodResponse
+);

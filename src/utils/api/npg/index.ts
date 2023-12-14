@@ -29,12 +29,11 @@ const {
  */
 const baseUrl = WALLET_CONFIG_API_ENV === "DEV" ? "" : WALLET_CONFIG_API_HOST;
 
-const apiWalletClientWithoutPolling = (): WalletClient =>
-  createWalletClient({
-    baseUrl,
-    basePath: WALLET_CONFIG_API_BASEPATH,
-    fetchApi: config.fetchWithTimeout
-  });
+const apiWalletClientWithoutPolling: WalletClient = createWalletClient({
+  baseUrl,
+  basePath: WALLET_CONFIG_API_BASEPATH,
+  fetchApi: config.fetchWithTimeout
+});
 
 const apiWalletClientWithPolling = (
   condition: (r: Response) => Promise<boolean>
@@ -152,37 +151,21 @@ const getSessionWallet =
     );
 
 const getPspsForPaymentMethod =
-  (client: WalletClient) =>
-  async (paymentMethodId: string, bearerAuth: string) =>
-    pipe(
-      TE.tryCatch(
-        () => client.getPspsForPaymentMethod({ paymentMethodId, bearerAuth }),
-        toError
-      ),
-      (response) =>
-        pipe(
-          response,
-          TE.match(
-            () => E.left(ErrorsType.GENERIC_ERROR),
-            (otherwise) =>
-              pipe(
-                otherwise,
-                E.match(
-                  () => E.left(ErrorsType.GENERIC_ERROR),
-                  (resp) =>
-                    pipe(
-                      resp.value,
-                      BundleOption.decode,
-                      E.match(
-                        () => E.left(ErrorsType.GENERIC_ERROR),
-                        (decoded) => E.right(decoded)
-                      )
-                    )
-                )
-              )
+  (client: WalletClient) => async (paymentMethodId: string) =>
+    api.utils.validateApi(
+      () => client.getPspsForPaymentMethod({ paymentMethodId }),
+      (resposne) =>
+        api.utils.matchApiStatus(resposne, () =>
+          pipe(
+            resposne.value,
+            BundleOption.decode,
+            E.match(
+              () => E.left(ErrorsType.GENERIC_ERROR),
+              (decoded) => E.right(decoded)
+            )
           )
         )
-    )();
+    );
 
 export default {
   creditCard: {
@@ -199,7 +182,7 @@ export default {
   },
   apm: {
     getPspsForPaymentMethod: getPspsForPaymentMethod(
-      apiWalletClientWithoutPolling()
+      apiWalletClientWithoutPolling
     )
   }
 };

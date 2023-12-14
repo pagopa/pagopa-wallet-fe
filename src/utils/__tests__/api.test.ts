@@ -13,7 +13,10 @@ import {
   getSessionWalletResponseBody,
   orderId,
   walletId,
-  getSessionWalletResponse
+  getSessionWalletResponse,
+  paymentMethodId,
+  getPspsForPaymentMethodBody,
+  getPspsForPaymentMethodResponse
 } from "../testUtils";
 import "jest-location-mock";
 import "whatwg-fetch";
@@ -247,5 +250,24 @@ describe("NPG Credit Card: getSessionWallet", () => {
     );
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
     expect(global.location.href).toContain("outcome=14");
+  });
+});
+
+describe("NPG apm: getPspsForPaymentMethod", () => {
+  it("Return an instance of Task.right cointaing the response", async () => {
+    const response = new Response(getPspsForPaymentMethodBody, {
+      status: 200
+    });
+    global.fetch = jest.fn(() => Promise.resolve(response));
+    const result = await npg.apm.getPspsForPaymentMethod(paymentMethodId);
+
+    expect(result).toEqual(E.right(getPspsForPaymentMethodResponse));
+  });
+
+  it("Return an instance of Task.left with the error", async () => {
+    global.fetch = jest.fn(() => Promise.reject());
+    const result = await npg.apm.getPspsForPaymentMethod(paymentMethodId);
+
+    expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 });
