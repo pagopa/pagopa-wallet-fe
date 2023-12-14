@@ -18,5 +18,6 @@ export enum OUTCOME_ROUTE {
 
 export enum ROUTE_FRAGMENT {
   SESSION_TOKEN = "sessionToken",
-  WALLET_ID = "walletId"
+  WALLET_ID = "walletId",
+  PAYMENT_METHOD_ID = "paymentMethodId"
 }

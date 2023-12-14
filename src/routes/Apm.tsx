@@ -16,7 +16,7 @@ import PageContainer from "../components/commons/PageContainer";
 import utils from "../utils";
 import { FormButtons } from "../components/FormButtons/FormButtons";
 import { BundleOption } from "../../generated/definitions/webview-payment-wallet/BundleOption";
-import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "./models/routeModel";
+import { ROUTE_FRAGMENT, OUTCOME_ROUTE } from "./models/routeModel";
 
 const Apm = () => {
   const { t } = useTranslation();
@@ -26,9 +26,10 @@ const Apm = () => {
   const redirectWithError = () =>
     utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR);
 
-  const { sessionToken, walletId } = utils.url.getFragments(
+  const { sessionToken, walletId, paymentMethodId } = utils.url.getFragments(
     ROUTE_FRAGMENT.SESSION_TOKEN,
-    ROUTE_FRAGMENT.WALLET_ID
+    ROUTE_FRAGMENT.WALLET_ID,
+    ROUTE_FRAGMENT.PAYMENT_METHOD_ID
   );
 
   utils.storage.setSessionItem(
@@ -53,11 +54,11 @@ const Apm = () => {
   const getPsps = React.useCallback(async () => {
     setLoading(true);
     pipe(
-      await utils.api.npg.apm.getPspsForPaymentMethod("PAYPAL"),
-      E.match(
-        () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
-        (list) => setList(list)
+      await utils.api.npg.apm.getPspsForPaymentMethod(
+        paymentMethodId,
+        sessionToken
       ),
+      E.match(redirectWithError, setList),
       () => setLoading(false)
     );
   }, []);

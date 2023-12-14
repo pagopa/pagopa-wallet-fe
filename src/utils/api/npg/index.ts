@@ -26,10 +26,14 @@ const {
   WALLET_CONFIG_API_BASEPATH
 } = getConfigOrThrow();
 
+/** this works in conjunction with the proxy server for the local development environment
+ *  see the .proxyrc.js file
+ */
+const baseUrl = WALLET_CONFIG_API_ENV === "DEV" ? "" : WALLET_CONFIG_API_HOST;
+
 const apiWalletClientWithoutPolling = (): WalletClient =>
   createWalletClient({
-    baseUrl:
-      WALLET_CONFIG_API_ENV === "development" ? "" : WALLET_CONFIG_API_HOST,
+    baseUrl,
     basePath: WALLET_CONFIG_API_BASEPATH,
     fetchApi: config.fetchWithTimeout
   });
@@ -38,8 +42,7 @@ const apiWalletClientWithPolling = (
   condition: (r: Response) => Promise<boolean>
 ): WalletClient =>
   createWalletClient({
-    baseUrl:
-      WALLET_CONFIG_API_ENV === "development" ? "" : WALLET_CONFIG_API_HOST,
+    baseUrl,
     fetchApi: config.retryingFetch(condition),
     basePath: WALLET_CONFIG_API_BASEPATH
   });
@@ -156,10 +159,11 @@ const getSessionWallet =
     )();
 
 const getPspsForPaymentMethod =
-  (client: WalletClient) => async (paymentMethodId: string) =>
+  (client: WalletClient) =>
+  async (paymentMethodId: string, bearerAuth: string) =>
     pipe(
       TE.tryCatch(
-        () => client.getPspsForPaymentMethod({ paymentMethodId }),
+        () => client.getPspsForPaymentMethod({ paymentMethodId, bearerAuth }),
         toError
       ),
       (response) =>
