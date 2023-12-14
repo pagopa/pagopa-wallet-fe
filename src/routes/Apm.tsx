@@ -3,26 +3,25 @@ import { useTranslation } from "react-i18next";
 import { pipe } from "fp-ts/function";
 import * as E from "fp-ts/Either";
 import * as O from "fp-ts/Option";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
   FormControl,
   FormControlLabel,
   Radio,
-  RadioGroup,
-  Stack
+  RadioGroup
 } from "@mui/material";
 import { getConfigOrThrow } from "../config";
 import PageContainer from "../components/commons/PageContainer";
 import utils from "../utils";
 import { FormButtons } from "../components/FormButtons/FormButtons";
 import { BundleOption } from "../../generated/definitions/webview-payment-wallet/BundleOption";
+import WalletLoader from "../components/commons/WalletLoader";
 import { ROUTE_FRAGMENT, OUTCOME_ROUTE } from "./models/routeModel";
 
 const Apm = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [list, setList] = React.useState<BundleOption>([]);
-
+  const [selectedIdPsp, setSelectedIdPsp] = React.useState<string>("");
   const redirectWithError = () =>
     utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR);
 
@@ -70,7 +69,11 @@ const Apm = () => {
       description={t("paypalPage.description")}
     >
       <FormControl sx={{ width: "100%" }}>
-        <RadioGroup>
+        {loading && <WalletLoader />}
+        <RadioGroup
+          onChange={(_, value) => setSelectedIdPsp(value)}
+          value={selectedIdPsp}
+        >
           {list.bundleOptions?.map((bundle) => (
             <FormControlLabel
               key={bundle.idPsp}
@@ -78,18 +81,11 @@ const Apm = () => {
               control={<Radio />}
               sx={styles.formControl}
               label={
-                <Stack sx={styles.radioStack}>
-                  <img
-                    src={pspImagePath(bundle.abi)}
-                    alt="Logo gestore"
-                    style={styles.pspImg}
-                  />
-                  <InfoOutlinedIcon
-                    sx={{ color: "primary.main", cursor: "pointer" }}
-                    fontSize="medium"
-                    aria-hidden="true"
-                  />
-                </Stack>
+                <img
+                  src={pspImagePath(bundle.abi)}
+                  alt="Logo gestore"
+                  style={styles.pspImg}
+                />
               }
             />
           ))}
@@ -100,7 +96,7 @@ const Apm = () => {
         handleCancel={redirectWithError}
         submitTitle={`${t("paypalPage.buttons.submit")}`}
         cancelTitle="paypalPage.buttons.cancel"
-        disabledSubmit={loading}
+        disabledSubmit={loading || !selectedIdPsp}
         disabledCancel={loading}
       />
     </PageContainer>
@@ -110,23 +106,10 @@ const Apm = () => {
 export default Apm;
 
 const styles = {
-  defaultStyle: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    pt: 3,
-    pb: 2
-  },
   formControl: {
     ".MuiFormControlLabel-label": {
       width: "100%"
     }
-  },
-  radioStack: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    ml: 2
   },
   pspImg: {
     display: "flex",
