@@ -77,6 +77,10 @@ const Apm = () => {
       E.match(console.error, (response) => {
         const sessionData =
           response.sessionData as SessionWalletCreateResponseData2;
+        utils.storage.setSessionItem(
+          utils.storage.SessionItems.orderId,
+          response.orderId
+        );
         window.location.replace(sessionData?.redirectUrl || "/errore");
       })
     );
