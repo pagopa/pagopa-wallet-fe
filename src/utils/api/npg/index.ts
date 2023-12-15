@@ -27,7 +27,10 @@ const {
 /** this works in conjunction with the proxy server for the local development environment
  *  see the .proxyrc.js file
  */
-const baseUrl = WALLET_CONFIG_API_ENV === "DEV" ? "" : WALLET_CONFIG_API_HOST;
+const baseUrl =
+  WALLET_CONFIG_API_ENV === "DEV"
+    ? "https://api.dev.platform.pagopa.it"
+    : WALLET_CONFIG_API_HOST;
 
 const apiWalletClientWithoutPolling: WalletClient = createWalletClient({
   baseUrl,
@@ -45,19 +48,21 @@ const apiWalletClientWithPolling = (
   });
 
 /**
- *  returns fields when the method is credit cards, return a redirect url when the method is of type apm
+ *  returns fields when the method is credit cards
  */
 const createSessionWallet =
   (client: WalletClient) =>
   (
     bearerAuth: string,
-    walletId: WalletId
+    walletId: WalletId,
+    body?: any
   ): Promise<E.Either<ErrorsType, SessionWalletCreateResponse>> =>
     api.utils.validateApi(
       () =>
         client.createSessionWallet({
           walletId,
-          bearerAuth
+          bearerAuth,
+          body
         }),
       (response) =>
         api.utils.matchApiStatus(

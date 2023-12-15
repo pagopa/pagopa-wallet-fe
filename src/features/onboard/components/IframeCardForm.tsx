@@ -124,7 +124,9 @@ export default function IframeCardForm() {
     onError: () => void
   ) => {
     pipe(
-      await utils.api.npg.createSessionWallet(sessionToken, walletId),
+      await utils.api.npg.createSessionWallet(sessionToken, walletId, {
+        paymentMethodType: "cards"
+      }),
       E.match(onError, onSuccess)
     );
   };

@@ -63,6 +63,23 @@ const Apm = () => {
     void getPsps();
   }, []);
 
+  /**
+   *  return a redirect url when the method is of type apm
+   */
+  const createSessionWallet = async () => {
+    pipe(
+      await utils.api.npg.createSessionWallet(sessionToken, walletId, {
+        paymentMethodType: "paypal",
+        pspId: selectedIdPsp
+      }),
+      // eslint-disable-next-line no-console
+      E.match(console.error, (response) => {
+        // @ts-ignore
+        window.location.replace(response.sessionData.redirectUrl);
+      })
+    );
+  };
+
   return (
     <PageContainer
       title={t("paypalPage.title")}
@@ -98,6 +115,7 @@ const Apm = () => {
         cancelTitle="paypalPage.buttons.cancel"
         disabledSubmit={loading || !selectedIdPsp}
         disabledCancel={loading}
+        handleSubmit={() => createSessionWallet()}
       />
     </PageContainer>
   );
