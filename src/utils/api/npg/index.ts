@@ -1,5 +1,5 @@
 import * as E from "fp-ts/Either";
-import * as O from "fp-ts/Option";
+// import * as O from "fp-ts/Option";
 import { pipe } from "fp-ts/function";
 import { IResponseType } from "@pagopa/ts-commons/lib/requests";
 import {
@@ -14,7 +14,7 @@ import { ErrorsType } from "../../errors/errorsModel";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
 import api from "..";
-import utils from "../..";
+// import utils from "../..";
 import { SessionWalletRetrieveResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletRetrieveResponse";
 import { BundleOption } from "../../../../generated/definitions/webview-payment-wallet/BundleOption";
 
@@ -44,7 +44,10 @@ const apiWalletClientWithPolling = (
     basePath: WALLET_CONFIG_API_BASEPATH
   });
 
-const sessionsFields =
+/**
+ *  returns fields when the method is credit cards, return a redirect url when the method is of type apm
+ */
+const createSessionWallet =
   (client: WalletClient) =>
   (
     bearerAuth: string,
@@ -69,16 +72,16 @@ const sessionsFields =
               SessionWalletCreateResponse.decode,
               E.match(
                 () => E.left(ErrorsType.GENERIC_ERROR),
-                (decoded) =>
-                  pipe(
-                    decoded.cardFormFields,
-                    utils.validators.validateSessionWalletCardFormFields,
-                    O.match(
-                      () => E.left(ErrorsType.GENERIC_ERROR),
-                      () =>
-                        E.right(response.value as SessionWalletCreateResponse)
-                    )
-                  )
+                (decoded) => E.right(decoded)
+                // pipe(
+                //   decoded.sessionData,
+                //   utils.validators.validateSessionWalletCardFormFields,
+                //   O.match(
+                //     () => E.left(ErrorsType.GENERIC_ERROR),
+                //     () =>
+                //       E.right(response.value as SessionWalletCreateResponse)
+                //   )
+                // )
               )
             )
         )
@@ -168,21 +171,17 @@ const getPspsForPaymentMethod =
     );
 
 export default {
-  creditCard: {
-    sessionsFields: sessionsFields(apiWalletClientWithoutPolling),
-    validations: validations(apiWalletClientWithoutPolling),
-    getSessionWallet: getSessionWallet(
-      apiWalletClientWithPolling(async (r) => {
-        const { isFinalOutcome } = (await r
-          .clone() // this is becuase you only can consume Response.json() once
-          .json()) as SessionWalletRetrieveResponse;
-        return r.status !== 200 || !isFinalOutcome;
-      })
-    )
-  },
-  apm: {
-    getPspsForPaymentMethod: getPspsForPaymentMethod(
-      apiWalletClientWithoutPolling
-    )
-  }
+  createSessionWallet: createSessionWallet(apiWalletClientWithoutPolling),
+  validations: validations(apiWalletClientWithoutPolling),
+  getSessionWallet: getSessionWallet(
+    apiWalletClientWithPolling(async (r) => {
+      const { isFinalOutcome } = (await r
+        .clone() // this is becuase you only can consume Response.json() once
+        .json()) as SessionWalletRetrieveResponse;
+      return r.status !== 200 || !isFinalOutcome;
+    })
+  ),
+  getPspsForPaymentMethod: getPspsForPaymentMethod(
+    apiWalletClientWithoutPolling
+  )
 };

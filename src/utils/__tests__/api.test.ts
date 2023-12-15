@@ -217,22 +217,14 @@ describe("NPG Credit Card: getSessionWallet", () => {
       status: 200
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const result = await npg.creditCard.getSessionWallet(
-      walletId,
-      orderId,
-      "1234"
-    );
+    const result = await npg.getSessionWallet(walletId, orderId, "1234");
 
     expect(result).toEqual(E.right(getSessionWalletResponse));
   });
 
   it("Return an instance of Task.left with the error", async () => {
     global.fetch = jest.fn(() => Promise.reject());
-    const result = await npg.creditCard.getSessionWallet(
-      walletId,
-      orderId,
-      "1234"
-    );
+    const result = await npg.getSessionWallet(walletId, orderId, "1234");
 
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
@@ -243,11 +235,7 @@ describe("NPG Credit Card: getSessionWallet", () => {
     });
 
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const result = await npg.creditCard.getSessionWallet(
-      walletId,
-      orderId,
-      "1234"
-    );
+    const result = await npg.getSessionWallet(walletId, orderId, "1234");
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
     expect(global.location.href).toContain("outcome=14");
   });
@@ -259,14 +247,14 @@ describe("NPG apm: getPspsForPaymentMethod", () => {
       status: 200
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const result = await npg.apm.getPspsForPaymentMethod(paymentMethodId);
+    const result = await npg.getPspsForPaymentMethod(paymentMethodId);
 
     expect(result).toEqual(E.right(getPspsForPaymentMethodResponse));
   });
 
   it("Return an instance of Task.left with the error", async () => {
     global.fetch = jest.fn(() => Promise.reject());
-    const result = await npg.apm.getPspsForPaymentMethod(paymentMethodId);
+    const result = await npg.getPspsForPaymentMethod(paymentMethodId);
 
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });

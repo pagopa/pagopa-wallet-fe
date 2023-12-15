@@ -1,13 +1,13 @@
 import { WalletRequest } from "../../generated/definitions/payment-manager-v1/WalletRequest";
 import { WalletResponse } from "../../generated/definitions/payment-manager-v1/WalletResponse";
 import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet";
-import { SessionWalletCreateResponse } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { RestBPayResponse } from "../../generated/definitions/payment-manager-v1/RestBPayResponse";
 import { WalletTypeEnum } from "../../generated/definitions/payment-manager-v1/WalletV2";
 import { WalletV2ListResponse } from "../../generated/definitions/payment-manager-v1/WalletV2ListResponse";
 import { EnableableFunctionsEnum } from "../../generated/definitions/payment-manager-v1/EnableableFunctions";
 import { SessionWalletRetrieveResponse } from "../../generated/definitions/webview-payment-wallet/SessionWalletRetrieveResponse";
 import { BundleOption } from "../../generated/definitions/webview-payment-wallet/BundleOption";
+import { SessionWalletCreateResponseData1 } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
 
 export const idWallet = 1222302;
 export const walletId = "1222302";
@@ -57,7 +57,10 @@ export const walletResponse: WalletResponse = {
 
 export const walletResponseBody = JSON.stringify(walletResponse);
 
-export const npgSessionFieldsResponse: SessionWalletCreateResponse = {
+export const npgSessionFieldsResponse: {
+  orderId: string;
+  cardFormFields: SessionWalletCreateResponseData1["cardFormFields"];
+} = {
   orderId,
   cardFormFields: [
     {

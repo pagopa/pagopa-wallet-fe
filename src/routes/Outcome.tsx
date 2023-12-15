@@ -22,7 +22,7 @@ const Outcome = () => {
           () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
           async ({ walletId, orderId, sessionToken }) =>
             pipe(
-              await utils.api.npg.creditCard.getSessionWallet(
+              await utils.api.npg.getSessionWallet(
                 walletId.value,
                 orderId.value,
                 sessionToken.value

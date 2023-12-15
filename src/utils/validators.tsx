@@ -5,9 +5,9 @@ import * as O from "fp-ts/Option";
 import * as E from "fp-ts/Either";
 import { makeMatchers } from "ts-adt/MakeADT";
 import React from "react";
-import { SessionWalletCreateResponse } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { IdFields } from "../features/onboard/components/types";
 import { OUTCOME_ROUTE } from "../routes/models/routeModel";
+import { SessionWalletCreateResponseData1 } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
 import { ErrorsType } from "./errors/errorsModel";
 import utils from ".";
 
@@ -121,8 +121,8 @@ const badStatusHandler = (familyCode: HTTPFamilyResponseStatusCode) =>
  * returns an Option<SessionWalletCreateResponse["cardFormFields"]>
  */
 function validateSessionWalletCardFormFields(
-  cardFormFields: SessionWalletCreateResponse["cardFormFields"]
-): O.Option<SessionWalletCreateResponse["cardFormFields"]> {
+  cardFormFields: SessionWalletCreateResponseData1["cardFormFields"]
+): O.Option<SessionWalletCreateResponseData1["cardFormFields"]> {
   const inputIDs = new Set();
   inputIDs.add(IdFields.CARDHOLDER_NAME);
   inputIDs.add(IdFields.SECURITY_CODE);
