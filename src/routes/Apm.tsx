@@ -15,6 +15,7 @@ import utils from "../utils";
 import { FormButtons } from "../components/FormButtons/FormButtons";
 import { BundleOption } from "../../generated/definitions/webview-payment-wallet/BundleOption";
 import WalletLoader from "../components/commons/WalletLoader";
+import { SessionWalletCreateResponseData2 } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
 import { ROUTE_FRAGMENT, OUTCOME_ROUTE } from "./models/routeModel";
 
 const Apm = () => {
@@ -74,8 +75,9 @@ const Apm = () => {
       }),
       // eslint-disable-next-line no-console
       E.match(console.error, (response) => {
-        // @ts-ignore
-        window.location.replace(response.sessionData.redirectUrl);
+        const sessionData =
+          response.sessionData as SessionWalletCreateResponseData2;
+        window.location.replace(sessionData?.redirectUrl || "/errore");
       })
     );
   };
