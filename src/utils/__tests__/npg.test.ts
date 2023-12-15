@@ -68,7 +68,10 @@ describe("NPG: get form fields", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await utils.api.npg.createSessionWallet(
       sessionToken,
-      walletId
+      walletId,
+      {
+        paymentMethodType: "cards"
+      }
     );
     expect(result).toEqual(E.right(npgSessionFieldsResponse));
   });

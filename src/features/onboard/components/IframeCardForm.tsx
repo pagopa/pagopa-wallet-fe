@@ -134,9 +134,9 @@ export default function IframeCardForm() {
   React.useEffect(() => {
     if (!cardFormFields) {
       const onSuccess = (body: SessionWalletCreateResponse) => {
-        setCardFormFields(
-          body.sessionData as SessionWalletCreateResponseData1["cardFormFields"]
-        );
+        const sessionData =
+          body.sessionData as SessionWalletCreateResponseData1;
+        setCardFormFields(sessionData.cardFormFields);
         utils.storage.setSessionItem(
           utils.storage.SessionItems.orderId,
           body.orderId

@@ -123,18 +123,18 @@ describe("validateSessionWalletCardFormFields function", () => {
 
     expect(
       validateSessionWalletCardFormFields([
-        npgSessionFieldsResponse.cardFormFields[1],
-        npgSessionFieldsResponse.cardFormFields[2],
-        npgSessionFieldsResponse.cardFormFields[3]
+        npgSessionFieldsResponse.sessionData.cardFormFields[1],
+        npgSessionFieldsResponse.sessionData.cardFormFields[2],
+        npgSessionFieldsResponse.sessionData.cardFormFields[3]
       ])
     ).toEqual(O.none);
 
     expect(
       validateSessionWalletCardFormFields([
-        npgSessionFieldsResponse.cardFormFields[1],
-        npgSessionFieldsResponse.cardFormFields[2],
-        npgSessionFieldsResponse.cardFormFields[3],
-        npgSessionFieldsResponse.cardFormFields[3]
+        npgSessionFieldsResponse.sessionData.cardFormFields[1],
+        npgSessionFieldsResponse.sessionData.cardFormFields[2],
+        npgSessionFieldsResponse.sessionData.cardFormFields[3],
+        npgSessionFieldsResponse.sessionData.cardFormFields[3]
       ])
     ).toEqual(O.none);
   });
@@ -142,9 +142,9 @@ describe("validateSessionWalletCardFormFields function", () => {
   it("Should validate correctly a good input", () => {
     expect(
       validateSessionWalletCardFormFields(
-        npgSessionFieldsResponse.cardFormFields
+        npgSessionFieldsResponse.sessionData.cardFormFields
       )
-    ).toEqual(O.some(npgSessionFieldsResponse.cardFormFields));
+    ).toEqual(O.some(npgSessionFieldsResponse.sessionData.cardFormFields));
   });
 });
 
