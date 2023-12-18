@@ -1,13 +1,13 @@
 import { WalletRequest } from "../../generated/definitions/payment-manager-v1/WalletRequest";
 import { WalletResponse } from "../../generated/definitions/payment-manager-v1/WalletResponse";
 import { TypeEnum } from "../../generated/definitions/payment-manager-v1/Wallet";
-import { SessionWalletCreateResponse } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { RestBPayResponse } from "../../generated/definitions/payment-manager-v1/RestBPayResponse";
 import { WalletTypeEnum } from "../../generated/definitions/payment-manager-v1/WalletV2";
 import { WalletV2ListResponse } from "../../generated/definitions/payment-manager-v1/WalletV2ListResponse";
 import { EnableableFunctionsEnum } from "../../generated/definitions/payment-manager-v1/EnableableFunctions";
 import { SessionWalletRetrieveResponse } from "../../generated/definitions/webview-payment-wallet/SessionWalletRetrieveResponse";
 import { BundleOption } from "../../generated/definitions/webview-payment-wallet/BundleOption";
+import { SessionWalletCreateResponseData1 } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
 
 export const idWallet = 1222302;
 export const walletId = "1222302";
@@ -57,34 +57,43 @@ export const walletResponse: WalletResponse = {
 
 export const walletResponseBody = JSON.stringify(walletResponse);
 
-export const npgSessionFieldsResponse: SessionWalletCreateResponse = {
+export const npgSessionFieldsResponse: {
+  orderId: string;
+  sessionData: {
+    paymentMethodType: "cards";
+    cardFormFields: SessionWalletCreateResponseData1["cardFormFields"];
+  };
+} = {
   orderId,
-  cardFormFields: [
-    {
-      type: "TEXT",
-      class: "CARD_FIELD",
-      id: "CARD_NUMBER",
-      src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=CARD_NUMBER&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
-    },
-    {
-      type: "TEXT",
-      class: "CARD_FIELD",
-      id: "EXPIRATION_DATE",
-      src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=EXPIRATION_DATE&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
-    },
-    {
-      type: "TEXT",
-      class: "CARD_FIELD",
-      id: "SECURITY_CODE",
-      src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=SECURITY_CODE&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
-    },
-    {
-      type: "TEXT",
-      class: "CARD_FIELD",
-      id: "CARDHOLDER_NAME",
-      src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=CARDHOLDER_NAME&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
-    }
-  ]
+  sessionData: {
+    paymentMethodType: "cards",
+    cardFormFields: [
+      {
+        type: "TEXT",
+        class: "CARD_FIELD",
+        id: "CARD_NUMBER",
+        src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=CARD_NUMBER&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
+      },
+      {
+        type: "TEXT",
+        class: "CARD_FIELD",
+        id: "EXPIRATION_DATE",
+        src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=EXPIRATION_DATE&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
+      },
+      {
+        type: "TEXT",
+        class: "CARD_FIELD",
+        id: "SECURITY_CODE",
+        src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=SECURITY_CODE&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
+      },
+      {
+        type: "TEXT",
+        class: "CARD_FIELD",
+        id: "CARDHOLDER_NAME",
+        src: "https://stg-ta.nexigroup.com/phoenix-0.0/v3/?id=CARDHOLDER_NAME&lang=ITA&correlationid=2ebf3248-2967-4c26-aeb6-4ed8e044ae84&sessionid=iMPAbSadjGtfiSLLiQ77qg%3D%3D&placeholder=Y"
+      }
+    ]
+  }
 };
 
 export const npgSessionFieldsResponseBody = JSON.stringify(
@@ -232,7 +241,7 @@ export const pspsResponse = {
 
 export const pspsResponseBody = JSON.stringify(pspsResponse);
 
-export const getPspsForPaymentMethodResponse: BundleOption = {
+export const getPspsForWalletResponse: BundleOption = {
   belowThreshold: false,
   bundleOptions: [
     {
@@ -268,6 +277,6 @@ export const getPspsForPaymentMethodResponse: BundleOption = {
   ]
 };
 
-export const getPspsForPaymentMethodBody = JSON.stringify(
-  getPspsForPaymentMethodResponse
+export const getPspsForWalletResponseBody = JSON.stringify(
+  getPspsForWalletResponse
 );

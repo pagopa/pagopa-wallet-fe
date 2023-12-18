@@ -19,6 +19,8 @@ import utils from "../../../utils";
 import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import { clearNavigationEvents } from "../../../utils/eventListener";
+import { SessionWalletCreateResponseData1 } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
+import { SessionInputDataTypeCardsEnum } from "../../../../generated/definitions/webview-payment-wallet/SessionInputDataTypeCards";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -40,7 +42,8 @@ const initialFieldsState: FormStatus = Object.values(
 export default function IframeCardForm() {
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [form, setForm] = React.useState<SessionWalletCreateResponse>();
+  const [cardFormFields, setCardFormFields] =
+    React.useState<SessionWalletCreateResponseData1["cardFormFields"]>();
   const [activeField, setActiveField] = React.useState<FieldId | undefined>(
     undefined
   );
@@ -100,11 +103,7 @@ export default function IframeCardForm() {
 
   const validation = async ({ orderId }: SessionWalletCreateResponse) => {
     pipe(
-      await utils.api.npg.creditCard.validations(
-        sessionToken,
-        orderId,
-        walletId
-      ),
+      await utils.api.npg.validations(sessionToken, orderId, walletId),
       E.match(onError, onValidation)
     );
   };
@@ -126,15 +125,19 @@ export default function IframeCardForm() {
     onError: () => void
   ) => {
     pipe(
-      await utils.api.npg.creditCard.sessionsFields(sessionToken, walletId),
+      await utils.api.npg.createSessionWallet(sessionToken, walletId, {
+        paymentMethodType: SessionInputDataTypeCardsEnum.cards
+      }),
       E.match(onError, onSuccess)
     );
   };
 
   React.useEffect(() => {
-    if (!form) {
+    if (!cardFormFields) {
       const onSuccess = (body: SessionWalletCreateResponse) => {
-        setForm(body);
+        const sessionData =
+          body.sessionData as SessionWalletCreateResponseData1;
+        setCardFormFields(sessionData.cardFormFields);
         utils.storage.setSessionItem(
           utils.storage.SessionItems.orderId,
           body.orderId
@@ -179,7 +182,7 @@ export default function IframeCardForm() {
 
       void getSessionFields(sessionToken, walletId, onSuccess, onError);
     }
-  }, [form?.orderId]);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     try {
@@ -201,7 +204,7 @@ export default function IframeCardForm() {
           <Box>
             <IframeCardField
               label={t("inputCardPage.formFields.number")}
-              fields={form?.cardFormFields}
+              fields={cardFormFields}
               id={"CARD_NUMBER"}
               errorCode={formStatus.CARD_NUMBER?.errorCode}
               errorMessage={formStatus.CARD_NUMBER?.errorMessage}
@@ -217,7 +220,7 @@ export default function IframeCardForm() {
             <Box sx={{ flex: "1 1 0" }}>
               <IframeCardField
                 label={t("inputCardPage.formFields.expirationDate")}
-                fields={form?.cardFormFields}
+                fields={cardFormFields}
                 id={"EXPIRATION_DATE"}
                 errorCode={formStatus.EXPIRATION_DATE?.errorCode}
                 errorMessage={formStatus.EXPIRATION_DATE?.errorMessage}
@@ -228,7 +231,7 @@ export default function IframeCardForm() {
             <Box width="50%">
               <IframeCardField
                 label={t("inputCardPage.formFields.cvv")}
-                fields={form?.cardFormFields}
+                fields={cardFormFields}
                 id={"SECURITY_CODE"}
                 errorCode={formStatus.SECURITY_CODE?.errorCode}
                 errorMessage={formStatus.SECURITY_CODE?.errorMessage}
@@ -240,7 +243,7 @@ export default function IframeCardForm() {
           <Box>
             <IframeCardField
               label={t("inputCardPage.formFields.name")}
-              fields={form?.cardFormFields}
+              fields={cardFormFields}
               id={"CARDHOLDER_NAME"}
               errorCode={formStatus.CARDHOLDER_NAME?.errorCode}
               errorMessage={formStatus.CARDHOLDER_NAME?.errorMessage}

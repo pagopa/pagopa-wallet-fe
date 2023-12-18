@@ -15,6 +15,8 @@ import utils from "../utils";
 import { FormButtons } from "../components/FormButtons/FormButtons";
 import { BundleOption } from "../../generated/definitions/webview-payment-wallet/BundleOption";
 import WalletLoader from "../components/commons/WalletLoader";
+import { SessionWalletCreateResponseData2 } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
+import { SessionInputDataTypePaypalEnum } from "../../generated/definitions/webview-payment-wallet/SessionInputDataTypePaypal";
 import { ROUTE_FRAGMENT, OUTCOME_ROUTE } from "./models/routeModel";
 
 const Apm = () => {
@@ -22,10 +24,11 @@ const Apm = () => {
   const [loading, setLoading] = React.useState(false);
   const [list, setList] = React.useState<BundleOption>([]);
   const [selectedIdPsp, setSelectedIdPsp] = React.useState<string>("");
+
   const redirectWithError = () =>
     utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR);
 
-  const { sessionToken, walletId, paymentMethodId } = utils.url.getFragments(
+  const { sessionToken, walletId } = utils.url.getFragments(
     ROUTE_FRAGMENT.SESSION_TOKEN,
     ROUTE_FRAGMENT.WALLET_ID,
     ROUTE_FRAGMENT.PAYMENT_METHOD_ID
@@ -53,7 +56,7 @@ const Apm = () => {
   const getPsps = React.useCallback(async () => {
     setLoading(true);
     pipe(
-      await utils.api.npg.apm.getPspsForPaymentMethod(paymentMethodId),
+      await utils.api.npg.getPspsForWallet(walletId, sessionToken),
       E.match(redirectWithError, setList),
       () => setLoading(false)
     );
@@ -62,6 +65,31 @@ const Apm = () => {
   React.useEffect(() => {
     void getPsps();
   }, []);
+
+  /**
+   *  return a redirect url when the method is of type apm
+   */
+  const onSubmit = async () => {
+    pipe(
+      await utils.api.npg.createSessionWallet(sessionToken, walletId, {
+        paymentMethodType: SessionInputDataTypePaypalEnum.paypal,
+        pspId: selectedIdPsp
+      }),
+      E.match(redirectWithError, (response) => {
+        const sessionData =
+          response.sessionData as SessionWalletCreateResponseData2;
+        utils.storage.setSessionItem(
+          utils.storage.SessionItems.orderId,
+          response.orderId
+        );
+        pipe(
+          O.fromNullable(sessionData.redirectUrl),
+          O.map((url) => window.location.replace(url)),
+          O.getOrElse(redirectWithError)
+        );
+      })
+    );
+  };
 
   return (
     <PageContainer
@@ -98,6 +126,7 @@ const Apm = () => {
         cancelTitle="paypalPage.buttons.cancel"
         disabledSubmit={loading || !selectedIdPsp}
         disabledCancel={loading}
+        handleSubmit={onSubmit}
       />
     </PageContainer>
   );
