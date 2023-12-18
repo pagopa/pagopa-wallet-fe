@@ -13,13 +13,17 @@ import {
   walletValidationsResponseBody
 } from "../testUtils";
 import utils from "../";
+import { SessionInputDataTypeCardsEnum } from "../../../generated/definitions/webview-payment-wallet/SessionInputDataTypeCards";
 
 describe("NPG: get form fields", () => {
   it("Returns a generic error when the promise reject", async () => {
     global.fetch = jest.fn(() => Promise.reject());
     const result = await utils.api.npg.createSessionWallet(
       sessionToken,
-      walletId
+      walletId,
+      {
+        paymentMethodType: SessionInputDataTypeCardsEnum.cards
+      }
     );
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
@@ -29,7 +33,10 @@ describe("NPG: get form fields", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await utils.api.npg.createSessionWallet(
       sessionToken,
-      walletId
+      walletId,
+      {
+        paymentMethodType: SessionInputDataTypeCardsEnum.cards
+      }
     );
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
@@ -41,7 +48,10 @@ describe("NPG: get form fields", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await utils.api.npg.createSessionWallet(
       sessionToken,
-      walletId
+      walletId,
+      {
+        paymentMethodType: SessionInputDataTypeCardsEnum.cards
+      }
     );
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
     expect(global.location.href).toContain("outcome=1");
@@ -55,7 +65,10 @@ describe("NPG: get form fields", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await utils.api.npg.createSessionWallet(
       sessionToken,
-      walletId
+      walletId,
+      {
+        paymentMethodType: SessionInputDataTypeCardsEnum.cards
+      }
     );
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
     expect(global.location.href).toContain("outcome=14");
@@ -70,7 +83,7 @@ describe("NPG: get form fields", () => {
       sessionToken,
       walletId,
       {
-        paymentMethodType: "cards"
+        paymentMethodType: SessionInputDataTypeCardsEnum.cards
       }
     );
     expect(result).toEqual(E.right(npgSessionFieldsResponse));
@@ -88,7 +101,10 @@ describe("NPG: get form fields", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await utils.api.npg.createSessionWallet(
       sessionToken,
-      walletId
+      walletId,
+      {
+        paymentMethodType: SessionInputDataTypeCardsEnum.cards
+      }
     );
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
@@ -106,7 +122,10 @@ describe("NPG: get form fields", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await utils.api.npg.createSessionWallet(
       sessionToken,
-      walletId
+      walletId,
+      {
+        paymentMethodType: SessionInputDataTypeCardsEnum.cards
+      }
     );
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
@@ -131,7 +150,10 @@ describe("NPG: get form fields", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await utils.api.npg.createSessionWallet(
       sessionToken,
-      walletId
+      walletId,
+      {
+        paymentMethodType: SessionInputDataTypeCardsEnum.cards
+      }
     );
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
@@ -149,7 +171,10 @@ describe("NPG: get form fields", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await utils.api.npg.createSessionWallet(
       sessionToken,
-      walletId
+      walletId,
+      {
+        paymentMethodType: SessionInputDataTypeCardsEnum.cards
+      }
     );
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });

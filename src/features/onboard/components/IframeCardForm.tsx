@@ -20,6 +20,7 @@ import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import { clearNavigationEvents } from "../../../utils/eventListener";
 import { SessionWalletCreateResponseData1 } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
+import { SessionInputDataTypeCardsEnum } from "../../../../generated/definitions/webview-payment-wallet/SessionInputDataTypeCards";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -125,7 +126,7 @@ export default function IframeCardForm() {
   ) => {
     pipe(
       await utils.api.npg.createSessionWallet(sessionToken, walletId, {
-        paymentMethodType: "cards"
+        paymentMethodType: SessionInputDataTypeCardsEnum.cards
       }),
       E.match(onError, onSuccess)
     );

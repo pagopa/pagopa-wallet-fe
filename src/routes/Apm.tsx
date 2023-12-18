@@ -16,6 +16,7 @@ import { FormButtons } from "../components/FormButtons/FormButtons";
 import { BundleOption } from "../../generated/definitions/webview-payment-wallet/BundleOption";
 import WalletLoader from "../components/commons/WalletLoader";
 import { SessionWalletCreateResponseData2 } from "../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
+import { SessionInputDataTypePaypalEnum } from "../../generated/definitions/webview-payment-wallet/SessionInputDataTypePaypal";
 import { ROUTE_FRAGMENT, OUTCOME_ROUTE } from "./models/routeModel";
 
 const Apm = () => {
@@ -23,10 +24,11 @@ const Apm = () => {
   const [loading, setLoading] = React.useState(false);
   const [list, setList] = React.useState<BundleOption>([]);
   const [selectedIdPsp, setSelectedIdPsp] = React.useState<string>("");
+
   const redirectWithError = () =>
     utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR);
 
-  const { sessionToken, walletId, paymentMethodId } = utils.url.getFragments(
+  const { sessionToken, walletId } = utils.url.getFragments(
     ROUTE_FRAGMENT.SESSION_TOKEN,
     ROUTE_FRAGMENT.WALLET_ID,
     ROUTE_FRAGMENT.PAYMENT_METHOD_ID
@@ -54,7 +56,7 @@ const Apm = () => {
   const getPsps = React.useCallback(async () => {
     setLoading(true);
     pipe(
-      await utils.api.npg.getPspsForPaymentMethod(paymentMethodId),
+      await utils.api.npg.getPspsForWallet(walletId, sessionToken),
       E.match(redirectWithError, setList),
       () => setLoading(false)
     );
@@ -70,18 +72,21 @@ const Apm = () => {
   const createSessionWallet = async () => {
     pipe(
       await utils.api.npg.createSessionWallet(sessionToken, walletId, {
-        paymentMethodType: "paypal",
+        paymentMethodType: SessionInputDataTypePaypalEnum.paypal,
         pspId: selectedIdPsp
       }),
-      // eslint-disable-next-line no-console
-      E.match(console.error, (response) => {
+      E.match(redirectWithError, (response) => {
         const sessionData =
           response.sessionData as SessionWalletCreateResponseData2;
         utils.storage.setSessionItem(
           utils.storage.SessionItems.orderId,
           response.orderId
         );
-        window.location.replace(sessionData?.redirectUrl || "/errore");
+        pipe(
+          O.fromNullable(sessionData.redirectUrl),
+          O.map(window.location.replace),
+          O.getOrElse(redirectWithError)
+        );
       })
     );
   };

@@ -14,9 +14,9 @@ import { ErrorsType } from "../../errors/errorsModel";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
 import api from "..";
-// import utils from "../..";
 import { SessionWalletRetrieveResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletRetrieveResponse";
 import { BundleOption } from "../../../../generated/definitions/webview-payment-wallet/BundleOption";
+import { SessionInputData } from "../../../../generated/definitions/webview-payment-wallet/SessionInputData";
 
 const {
   WALLET_CONFIG_API_ENV,
@@ -47,15 +47,12 @@ const apiWalletClientWithPolling = (
     basePath: WALLET_CONFIG_API_BASEPATH
   });
 
-/**
- *  returns fields when the method is credit cards
- */
 const createSessionWallet =
   (client: WalletClient) =>
   (
     bearerAuth: string,
     walletId: WalletId,
-    body?: any
+    body: SessionInputData
   ): Promise<E.Either<ErrorsType, SessionWalletCreateResponse>> =>
     api.utils.validateApi(
       () =>
@@ -75,19 +72,7 @@ const createSessionWallet =
             pipe(
               response.value,
               SessionWalletCreateResponse.decode,
-              E.match(
-                () => E.left(ErrorsType.GENERIC_ERROR),
-                (decoded) => E.right(decoded)
-                // pipe(
-                //   decoded.sessionData,
-                //   utils.validators.validateSessionWalletCardFormFields,
-                //   O.match(
-                //     () => E.left(ErrorsType.GENERIC_ERROR),
-                //     () =>
-                //       E.right(response.value as SessionWalletCreateResponse)
-                //   )
-                // )
-              )
+              E.match(() => E.left(ErrorsType.GENERIC_ERROR), E.right)
             )
         )
     );
@@ -158,10 +143,10 @@ const getSessionWallet =
         )
     );
 
-const getPspsForPaymentMethod =
-  (client: WalletClient) => async (paymentMethodId: string) =>
+const getPspsForWallet =
+  (client: WalletClient) => async (walletId: string, walletToken: string) =>
     api.utils.validateApi(
-      () => client.getPspsForPaymentMethod({ paymentMethodId }),
+      () => client.getPspsForWallet({ walletId, bearerAuth: walletToken }),
       (resposne) =>
         api.utils.matchApiStatus(resposne, () =>
           pipe(
@@ -176,6 +161,10 @@ const getPspsForPaymentMethod =
     );
 
 export default {
+  /**
+   *  returns fields when the method is credit cards
+   *  returns redirect url when method is apm
+   */
   createSessionWallet: createSessionWallet(apiWalletClientWithoutPolling),
   validations: validations(apiWalletClientWithoutPolling),
   getSessionWallet: getSessionWallet(
@@ -186,7 +175,5 @@ export default {
       return r.status !== 200 || !isFinalOutcome;
     })
   ),
-  getPspsForPaymentMethod: getPspsForPaymentMethod(
-    apiWalletClientWithoutPolling
-  )
+  getPspsForWallet: getPspsForWallet(apiWalletClientWithoutPolling)
 };

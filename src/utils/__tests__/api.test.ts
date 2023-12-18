@@ -14,7 +14,6 @@ import {
   orderId,
   walletId,
   getSessionWalletResponse,
-  paymentMethodId,
   getPspsForPaymentMethodBody,
   getPspsForPaymentMethodResponse
 } from "../testUtils";
@@ -247,14 +246,14 @@ describe("NPG apm: getPspsForPaymentMethod", () => {
       status: 200
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
-    const result = await npg.getPspsForPaymentMethod(paymentMethodId);
+    const result = await npg.getPspsForWallet(walletId, sessionToken);
 
     expect(result).toEqual(E.right(getPspsForPaymentMethodResponse));
   });
 
   it("Return an instance of Task.left with the error", async () => {
     global.fetch = jest.fn(() => Promise.reject());
-    const result = await npg.getPspsForPaymentMethod(paymentMethodId);
+    const result = await npg.getPspsForWallet(walletId, sessionToken);
 
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
