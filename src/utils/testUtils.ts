@@ -241,7 +241,7 @@ export const pspsResponse = {
 
 export const pspsResponseBody = JSON.stringify(pspsResponse);
 
-export const getPspsForPaymentMethodResponse: BundleOption = {
+export const getPspsForWalletResponse: BundleOption = {
   belowThreshold: false,
   bundleOptions: [
     {
@@ -277,6 +277,6 @@ export const getPspsForPaymentMethodResponse: BundleOption = {
   ]
 };
 
-export const getPspsForPaymentMethodBody = JSON.stringify(
-  getPspsForPaymentMethodResponse
+export const getPspsForWalletResponseBody = JSON.stringify(
+  getPspsForWalletResponse
 );

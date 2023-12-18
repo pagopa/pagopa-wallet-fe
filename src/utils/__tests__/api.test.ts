@@ -14,8 +14,8 @@ import {
   orderId,
   walletId,
   getSessionWalletResponse,
-  getPspsForPaymentMethodBody,
-  getPspsForPaymentMethodResponse
+  getPspsForWalletResponse,
+  getPspsForWalletResponseBody
 } from "../testUtils";
 import "jest-location-mock";
 import "whatwg-fetch";
@@ -242,13 +242,13 @@ describe("NPG Credit Card: getSessionWallet", () => {
 
 describe("NPG apm: getPspsForPaymentMethod", () => {
   it("Return an instance of Task.right cointaing the response", async () => {
-    const response = new Response(getPspsForPaymentMethodBody, {
+    const response = new Response(getPspsForWalletResponseBody, {
       status: 200
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await npg.getPspsForWallet(walletId, sessionToken);
 
-    expect(result).toEqual(E.right(getPspsForPaymentMethodResponse));
+    expect(result).toEqual(E.right(getPspsForWalletResponse));
   });
 
   it("Return an instance of Task.left with the error", async () => {
