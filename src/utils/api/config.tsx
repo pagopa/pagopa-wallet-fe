@@ -61,7 +61,7 @@ const fetchWithTimeout: typeof fetch = (input, init) =>
 /**
  * Returns a fetch wrapped with timeout and retry logic
  */
-export function retryingFetch(
+function retryingFetch(
   condition: (r: Response) => Promise<boolean>,
   delay: number = 1000,
   timeout: Millisecond = API_TIMEOUT,
