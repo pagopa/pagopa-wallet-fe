@@ -27,10 +27,7 @@ const {
 /** this works in conjunction with the proxy server for the local development environment
  *  see the .proxyrc.js file
  */
-const baseUrl =
-  WALLET_CONFIG_API_ENV === "DEV"
-    ? "https://api.dev.platform.pagopa.it"
-    : WALLET_CONFIG_API_HOST;
+const baseUrl = WALLET_CONFIG_API_ENV === "DEV" ? "" : WALLET_CONFIG_API_HOST;
 
 const apiWalletClientWithoutPolling: WalletClient = createWalletClient({
   baseUrl,

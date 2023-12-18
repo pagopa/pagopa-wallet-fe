@@ -69,7 +69,7 @@ const Apm = () => {
   /**
    *  return a redirect url when the method is of type apm
    */
-  const createSessionWallet = async () => {
+  const onSubmit = async () => {
     pipe(
       await utils.api.npg.createSessionWallet(sessionToken, walletId, {
         paymentMethodType: SessionInputDataTypePaypalEnum.paypal,
@@ -84,7 +84,7 @@ const Apm = () => {
         );
         pipe(
           O.fromNullable(sessionData.redirectUrl),
-          O.map(window.location.replace),
+          O.map((url) => window.location.replace(url)),
           O.getOrElse(redirectWithError)
         );
       })
@@ -126,7 +126,7 @@ const Apm = () => {
         cancelTitle="paypalPage.buttons.cancel"
         disabledSubmit={loading || !selectedIdPsp}
         disabledCancel={loading}
-        handleSubmit={() => createSessionWallet()}
+        handleSubmit={onSubmit}
       />
     </PageContainer>
   );
