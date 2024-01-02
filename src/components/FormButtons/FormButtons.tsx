@@ -36,10 +36,10 @@ export function FormButtons(props: SubmitButton | CancellableButtons) {
         container
         spacing={2}
         my={{ xs: 2, sm: 6 }}
-        position={{ xs: "fixed", sm: "relative" }}
+        position={{ xs: "relative" }}
         bottom={0}
         left={0}
-        px={{ xs: "1rem", sm: 0 }}
+        px={{ xs: 0 }}
       >
         <Grid xs={props.disabledCancel ? 12 : 8} item>
           <LoadingButton
