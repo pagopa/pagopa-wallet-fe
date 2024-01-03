@@ -21,9 +21,8 @@ export default function Layout({ sx, children }: LayoutProps) {
       <Container
         sx={{
           ...sx,
-          pb: 0,
+          py: 0,
           px: { xs: 3, sm: 6, md: 0 },
-          pt: 4,
           flexGrow: 1
         }}
         maxWidth={"sm"}
