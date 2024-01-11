@@ -1,3 +1,4 @@
+wallet pipeline test
 # pagoPA Wallet frontend
 
 ## Configuration
