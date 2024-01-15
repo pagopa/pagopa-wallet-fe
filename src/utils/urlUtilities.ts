@@ -48,9 +48,8 @@ function getFragments(
  * from the outcome parameter. The IO APP will use the url and the outcome to give a feedback to the user
  */
 const redirectWithOutcome = (outcome: OUTCOME_ROUTE | number) =>
-  window.location.replace(
-    `iowallet://${WALLET_OUTCOME_BASEPATH}/v1/wallets/outcomes?outcome=${outcome}`
-  );
+  // eslint-disable-next-line functional/immutable-data
+  (window.location.href = `iowallet://${WALLET_OUTCOME_BASEPATH}/v1/wallets/outcomes?outcome=${outcome}`);
 
 export default {
   redirectWithOutcome,
