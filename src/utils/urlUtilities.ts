@@ -1,7 +1,6 @@
 import { getConfigOrThrow } from "../config";
 import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "../routes/models/routeModel";
 
-const API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
 const WALLET_OUTCOME_BASEPATH = getConfigOrThrow().WALLET_OUTCOME_API_BASEPATH;
 
 /**
@@ -50,7 +49,7 @@ function getFragments(
  */
 const redirectWithOutcome = (outcome: OUTCOME_ROUTE | number) =>
   window.location.replace(
-    `${API_HOST}${WALLET_OUTCOME_BASEPATH}/v1/wallets/outcomes?outcome=${outcome}`
+    `iowallet://${WALLET_OUTCOME_BASEPATH}/v1/wallets/outcomes?outcome=${outcome}`
   );
 
 export default {
