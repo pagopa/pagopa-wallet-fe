@@ -28,5 +28,7 @@ describe("redirectWithOutcome function utility", () => {
     expect(global.location.href).toContain("outcome=1");
     redirectWithOutcome(OUTCOME_ROUTE.AUTH_ERROR);
     expect(global.location.href).toContain("outcome=14");
+    redirectWithOutcome(OUTCOME_ROUTE.CONFLICT);
+    expect(global.location.href).toContain("outcome=15");
   });
 });
