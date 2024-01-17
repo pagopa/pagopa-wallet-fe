@@ -104,6 +104,8 @@ const badStatusHandler = (familyCode: HTTPFamilyResponseStatusCode) =>
           utils.url.redirectWithOutcome(
             actualCode === 401
               ? OUTCOME_ROUTE.AUTH_ERROR
+              : actualCode === 422
+              ? OUTCOME_ROUTE.ALREADY_ONBOARDED
               : OUTCOME_ROUTE.GENERIC_ERROR
           );
           return ErrorsType.GENERIC_ERROR;
