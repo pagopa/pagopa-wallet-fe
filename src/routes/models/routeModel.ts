@@ -13,7 +13,7 @@ export enum WalletRoutes {
 export enum OUTCOME_ROUTE {
   GENERIC_ERROR = "1",
   AUTH_ERROR = "14",
-  ALREADY_ONBOARDED = "15",
+  CONFLICT = "15",
   SUCCESS = "0"
 }
 
