@@ -95,17 +95,23 @@ const statusCodeValidator = (
     )
   );
 
+const getOutcome = (actualCode: number): number | OUTCOME_ROUTE => {
+  if (actualCode === 401) {
+    return OUTCOME_ROUTE.AUTH_ERROR;
+  }
+  if (actualCode === 422) {
+    return OUTCOME_ROUTE.CONFLICT;
+  }
+  return OUTCOME_ROUTE.GENERIC_ERROR;
+};
+
 const badStatusHandler = (familyCode: HTTPFamilyResponseStatusCode) =>
   pipe(
     familyCode,
     matchP(
       {
         "4xx": ({ actualCode }) => {
-          utils.url.redirectWithOutcome(
-            actualCode === 401
-              ? OUTCOME_ROUTE.AUTH_ERROR
-              : OUTCOME_ROUTE.GENERIC_ERROR
-          );
+          utils.url.redirectWithOutcome(getOutcome(actualCode));
           return ErrorsType.GENERIC_ERROR;
         }
       },
