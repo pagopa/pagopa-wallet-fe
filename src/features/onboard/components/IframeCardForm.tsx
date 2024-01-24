@@ -205,6 +205,9 @@ export default function IframeCardForm(props: IframeCardForm) {
   const { isPayment } = props;
   const { WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE } = getConfigOrThrow();
 
+  const showSaveMethodToggle =
+    isPayment && WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE;
+
   return (
     <>
       <form id="iframe-card-form" onSubmit={handleSubmit}>
@@ -260,10 +263,11 @@ export default function IframeCardForm(props: IframeCardForm) {
             />
           </Box>
           <Box>
-            {isPayment && WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE ? (
+            {showSaveMethodToggle ? (
               <FormControlLabel
                 control={
                   <CustomSwitch
+                    disabled={!cardFormFields}
                     checked={saveMethodToWallet}
                     onChange={(_e, checked) => setSaveMethodToWallet(checked)}
                     inputProps={{ "aria-label": "controlled" }}
