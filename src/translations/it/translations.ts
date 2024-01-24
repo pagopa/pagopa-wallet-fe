@@ -21,6 +21,7 @@ export const TRANSLATIONS_IT = {
       cvv: "Inserisci 3 cifre",
       cid: "Inserisci 4 cifre"
     },
+    saveMethod: "Salva nel Portafoglio",
     formButtons: {
       submit: "Continua"
     },
