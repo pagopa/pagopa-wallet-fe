@@ -50,7 +50,7 @@ function getFragments(
  */
 const redirectWithOutcome = (outcome: OUTCOME_ROUTE | number) =>
   window.location.replace(
-    `${API_HOST}${WALLET_OUTCOME_BASEPATH}/v1/wallets/outcomes?outcome=${outcome}`
+    `${API_HOST}${WALLET_OUTCOME_BASEPATH}/wallets/outcomes?outcome=${outcome}`
   );
 
 export default {
