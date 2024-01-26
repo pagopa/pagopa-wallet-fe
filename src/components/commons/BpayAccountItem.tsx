@@ -2,8 +2,13 @@ import React from "react";
 import PhoneInTalkOutlinedIcon from "@mui/icons-material/PhoneInTalkOutlined";
 import { Box, Typography, Stack } from "@mui/material";
 import { IBpayAccountItems } from "../../features/onboard/models";
+import { getConfigOrThrow } from "../../config";
 
 type IBpayAccountItem = IBpayAccountItems[number];
+
+const URL_LOGO_BPAY = `${
+  getConfigOrThrow().WALLET_CONFIG_API_HOST
+}/wallet/assets/img/externalps/bpay.png`;
 
 const BpayAccountItem = (props: IBpayAccountItem) => {
   const { numberObfuscated, nameObfuscated, surnameObfuscated } = props;
@@ -32,7 +37,7 @@ const BpayAccountItem = (props: IBpayAccountItem) => {
           >{`${nameObfuscated} ${surnameObfuscated}`}</Typography>
           <img
             style={{ mixBlendMode: "multiply" }}
-            src="https://api.dev.platform.pagopa.it/wallet/assets/img/externalps/bpay.png"
+            src={URL_LOGO_BPAY}
             alt="bancomat pay logo"
           />
         </Stack>
