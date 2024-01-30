@@ -40,6 +40,10 @@ parameters:
     type: string
     default: ''
 
+  - name: 'wallet_onboard_switch_on_payment_page'
+    type: number
+    default: 1
+
 steps:
 - bash: |
     chmod +x env.sh
@@ -54,6 +58,7 @@ steps:
       WALLET_NPG_SDK_URL=${{ parameters.npg_sdk_url }} \
       WALLET_GDI_CHECK_TIMEOUT=${{ parameters.wallet_gdi_check_timeout }} \
       WALLET_PAGOPA_LOGOS_CDN=${{ parameters.wallet_pagopa_logos_cdn }} \
+      WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE=${{ parameters.wallet_onboard_switch_on_payment_page }} \
       bash env.sh
 
   displayName: 'Populate environment file'

@@ -3,8 +3,9 @@ export enum WalletRoutes {
   PM_CARTE = "pm-onboarding/creditcard",
   PM_PAYPAL = "pm-onboarding/paypal",
   PM_BPAY = "pm-onboarding/bpay",
-  CARTE = "onboarding/creditcard",
-  APM = "onboarding/apm",
+  ONBOARD_CARTE = "onboarding/creditcard",
+  PAYMENT_CARTE = "payment/creditcard",
+  ONBOARD_APM = "onboarding/apm",
   GDI_CHECK = "gdi-check",
   ESITO = "esito",
   ERRORE = "errore"

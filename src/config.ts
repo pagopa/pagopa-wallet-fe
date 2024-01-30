@@ -22,7 +22,8 @@ export const IConfig = t.interface({
   WALLET_GDI_CHECK_TIMEOUT: t.number,
   WALLET_NPG_SDK_URL: NonEmptyString,
   WALLET_OUTCOME_API_BASEPATH: NonEmptyString,
-  WALLET_PAGOPA_LOGOS_CDN: NonEmptyString
+  WALLET_PAGOPA_LOGOS_CDN: NonEmptyString,
+  WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE: t.boolean
 });
 
 // No need to re-evaluate this object for each call
@@ -38,6 +39,10 @@ const errorOrConfig: t.Validation<IConfig> = IConfig.decode({
     // eslint-disable-next-line no-underscore-dangle
     (window as any)._env_.WALLET_GDI_CHECK_TIMEOUT,
     10
+  ),
+  WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE: Boolean(
+    // eslint-disable-next-line no-underscore-dangle
+    parseInt((window as any)._env_.WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE, 10)
   )
 });
 

@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, FormControlLabel } from "@mui/material";
 import * as E from "fp-ts/Either";
 import * as O from "fp-ts/Option";
 import { pipe } from "fp-ts/function";
@@ -21,9 +21,11 @@ import { ErrorsType } from "../../../utils/errors/errorsModel";
 import { clearNavigationEvents } from "../../../utils/eventListener";
 import { SessionWalletCreateResponseData1 } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
 import { SessionInputDataTypeCardsEnum } from "../../../../generated/definitions/webview-payment-wallet/SessionInputDataTypeCards";
+import { getConfigOrThrow } from "../../../config";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
+import CustomSwitch from "./CustomSwitch";
 
 const initialFieldStatus: FieldStatus = {
   isValid: undefined,
@@ -38,8 +40,13 @@ const initialFieldsState: FormStatus = Object.values(
   {} as FormStatus
 );
 
+interface IframeCardForm {
+  isPayment?: boolean;
+}
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export default function IframeCardForm() {
+export default function IframeCardForm(props: IframeCardForm) {
+  const [saveMethodToWallet, setSaveMethodToWallet] = React.useState(true);
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [cardFormFields, setCardFormFields] =
@@ -179,7 +186,6 @@ export default function IframeCardForm() {
           onBuildError();
         }
       };
-
       void getSessionFields(sessionToken, walletId, onSuccess, onError);
     }
   }, []);
@@ -196,6 +202,11 @@ export default function IframeCardForm() {
   };
 
   const { t } = useTranslation();
+  const { isPayment } = props;
+  const { WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE } = getConfigOrThrow();
+
+  const showSaveMethodToggle =
+    isPayment && WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE;
 
   return (
     <>
@@ -250,6 +261,27 @@ export default function IframeCardForm() {
               isValid={formStatus.CARDHOLDER_NAME?.isValid}
               activeField={activeField}
             />
+          </Box>
+          <Box>
+            {showSaveMethodToggle ? (
+              <FormControlLabel
+                control={
+                  <CustomSwitch
+                    disabled={!cardFormFields}
+                    checked={saveMethodToWallet}
+                    onChange={(_e, checked) => setSaveMethodToWallet(checked)}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                }
+                label={t("inputCardPage.saveMethod")}
+                labelPlacement="start"
+                sx={{
+                  justifyContent: "space-between",
+                  marginLeft: 0,
+                  width: "100%"
+                }}
+              />
+            ) : null}
           </Box>
         </Box>
         <FormButtons

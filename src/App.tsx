@@ -53,8 +53,15 @@ export function App() {
             <Route path={WalletRoutes.PM_PAYPAL} element={<PaypalPage />} />
             <Route path={WalletRoutes.PM_BPAY} element={<BpayPage />} />
 
-            <Route path={WalletRoutes.CARTE} element={<IFrameCardPage />} />
-            <Route path={WalletRoutes.APM} element={<ApmCardPage />} />
+            <Route
+              path={WalletRoutes.ONBOARD_CARTE}
+              element={<IFrameCardPage />}
+            />
+            <Route
+              path={WalletRoutes.PAYMENT_CARTE}
+              element={<IFrameCardPage isPayment />}
+            />
+            <Route path={WalletRoutes.ONBOARD_APM} element={<ApmCardPage />} />
 
             <Route path={WalletRoutes.GDI_CHECK} element={<GdiCheckPage />} />
             <Route path={WalletRoutes.ESITO} element={<OutcomePage />} />

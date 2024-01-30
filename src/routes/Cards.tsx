@@ -4,13 +4,18 @@ import { useTranslation } from "react-i18next";
 import PageContainer from "../components/commons/PageContainer";
 import IframeCardForm from "../features/onboard/components/IframeCardForm";
 
-export default function IFrameCardPage() {
+interface IFrameCardPageProps {
+  isPayment?: boolean;
+}
+
+export default function IFrameCardPage(props: IFrameCardPageProps) {
+  const { isPayment } = props;
   const { t } = useTranslation();
 
   return (
     <PageContainer title={t("inputCardPage.title")}>
       <Box sx={{ mt: 6 }}>
-        <IframeCardForm />
+        <IframeCardForm isPayment={isPayment} />
       </Box>
     </PageContainer>
   );
