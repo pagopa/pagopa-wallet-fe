@@ -86,6 +86,7 @@ stages:
               npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
               wallet_gdi_check_timeout: 10000
               wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
+              wallet_onboard_switch_on_payment_page: 1
 
           - script: |
               yarn build
@@ -209,6 +210,7 @@ stages:
               npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
               wallet_gdi_check_timeout: 10000
               wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
+              wallet_onboard_switch_on_payment_page: 0
 
           - script: |
               yarn build
