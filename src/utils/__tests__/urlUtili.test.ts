@@ -40,15 +40,15 @@ describe("redirectToIoAppForPayment function utility", () => {
   it("Should redirect to the correct url", () => {
     redirectToIoAppForPayment("12345", OUTCOME_ROUTE.GENERIC_ERROR, true);
     expect(global.location.href).toBe(
-      `${WALLET_PAYMENT_REDIRECT_URL}/#walletId=12345&outcome=1&saveMethod=true`
+      `${WALLET_PAYMENT_REDIRECT_URL}#walletId=12345&outcome=1&saveMethod=true`
     );
     redirectToIoAppForPayment("12345", OUTCOME_ROUTE.GENERIC_ERROR, false);
     expect(global.location.href).toBe(
-      `${WALLET_PAYMENT_REDIRECT_URL}/#walletId=12345&outcome=1&saveMethod=false`
+      `${WALLET_PAYMENT_REDIRECT_URL}#walletId=12345&outcome=1&saveMethod=false`
     );
     redirectToIoAppForPayment("12345", OUTCOME_ROUTE.SUCCESS);
     expect(global.location.href).toBe(
-      `${WALLET_PAYMENT_REDIRECT_URL}/#walletId=12345&outcome=0`
+      `${WALLET_PAYMENT_REDIRECT_URL}#walletId=12345&outcome=0`
     );
   });
 });
