@@ -2,7 +2,7 @@ import { getConfigOrThrow } from "../config";
 import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "../routes/models/routeModel";
 
 const {
-  WALLET_IO_APP_NOT_REGISTERED_PAYMENT_REDIRECT_URL,
+  WALLET_PAYMENT_REDIRECT_URL,
   WALLET_CONFIG_API_HOST: API_HOST,
   WALLET_OUTCOME_API_BASEPATH: WALLET_OUTCOME_BASEPATH
 } = getConfigOrThrow();
@@ -69,7 +69,7 @@ const redirectToIoAppForPayment = (
 ) => {
   const saveMethodParameter =
     saveMethod === undefined ? "" : `&saveMethod=${saveMethod}`;
-  const url = `${WALLET_IO_APP_NOT_REGISTERED_PAYMENT_REDIRECT_URL}#walletId=${walletId}&outcome=${outcome}${saveMethodParameter}`;
+  const url = `${WALLET_PAYMENT_REDIRECT_URL}#walletId=${walletId}&outcome=${outcome}${saveMethodParameter}`;
   window.location.replace(url);
 };
 
