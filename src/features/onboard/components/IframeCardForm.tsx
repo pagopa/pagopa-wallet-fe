@@ -12,6 +12,7 @@ import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import ErrorModal from "../../../components/commons/ErrorModal";
 import {
+  OUTCOME_ROUTE,
   ROUTE_FRAGMENT,
   WalletRoutes
 } from "../../../routes/models/routeModel";
@@ -46,7 +47,10 @@ interface IframeCardForm {
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default function IframeCardForm(props: IframeCardForm) {
-  const [saveMethodToWallet, setSaveMethodToWallet] = React.useState(true);
+  // Here I'm using a react reft insted of a state because inserting the state as a
+  // dependecy of the effect where the Build instance is create will cause a new initialitation
+  // every time the toggle's state change and a new creation of the payment form
+  const saveMethod = React.useRef(true);
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [cardFormFields, setCardFormFields] =
@@ -60,6 +64,9 @@ export default function IframeCardForm(props: IframeCardForm) {
   const [buildInstance, setBuildInstance] = React.useState();
 
   const navigate = useNavigate();
+
+  const { isPayment } = props;
+  const { WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE } = getConfigOrThrow();
 
   const formIsValid = (fieldFormStatus: FormStatus) =>
     Object.values(fieldFormStatus).every((el) => el.isValid);
@@ -149,7 +156,20 @@ export default function IframeCardForm(props: IframeCardForm) {
           utils.storage.SessionItems.orderId,
           body.orderId
         );
-        const onReadyForPayment = () => void validation(body);
+
+        // payment/onboarding success event
+        const onReadyForPayment = () => {
+          if (isPayment) {
+            return utils.url.redirectToIoAppForPayment(
+              walletId,
+              OUTCOME_ROUTE.SUCCESS,
+              WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
+                ? saveMethod.current
+                : undefined
+            );
+          }
+          void validation(body);
+        };
 
         // payment/onboarding without 3ds challenge phase
         const onPaymentComplete = () => {
@@ -165,6 +185,15 @@ export default function IframeCardForm(props: IframeCardForm) {
 
         const onBuildError = () => {
           setLoading(false);
+          if (isPayment) {
+            return utils.url.redirectToIoAppForPayment(
+              walletId,
+              OUTCOME_ROUTE.GENERIC_ERROR,
+              WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
+                ? saveMethod.current
+                : undefined
+            );
+          }
           window.location.replace(`/${WalletRoutes.ERRORE}`);
         };
 
@@ -202,8 +231,6 @@ export default function IframeCardForm(props: IframeCardForm) {
   };
 
   const { t } = useTranslation();
-  const { isPayment } = props;
-  const { WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE } = getConfigOrThrow();
 
   const showSaveMethodToggle =
     isPayment && WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE;
@@ -267,9 +294,12 @@ export default function IframeCardForm(props: IframeCardForm) {
               <FormControlLabel
                 control={
                   <CustomSwitch
+                    defaultChecked
                     disabled={!cardFormFields}
-                    checked={saveMethodToWallet}
-                    onChange={(_e, checked) => setSaveMethodToWallet(checked)}
+                    onChange={(_e, checked) => {
+                      // eslint-disable-next-line functional/immutable-data
+                      saveMethod.current = checked;
+                    }}
                     inputProps={{ "aria-label": "controlled" }}
                   />
                 }

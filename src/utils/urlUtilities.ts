@@ -1,8 +1,11 @@
 import { getConfigOrThrow } from "../config";
 import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "../routes/models/routeModel";
 
-const API_HOST = getConfigOrThrow().WALLET_CONFIG_API_HOST;
-const WALLET_OUTCOME_BASEPATH = getConfigOrThrow().WALLET_OUTCOME_API_BASEPATH;
+const {
+  WALLET_PAYMENT_REDIRECT_URL,
+  WALLET_CONFIG_API_HOST: API_HOST,
+  WALLET_OUTCOME_API_BASEPATH: WALLET_OUTCOME_BASEPATH
+} = getConfigOrThrow();
 
 /**
  * @private
@@ -53,7 +56,25 @@ const redirectWithOutcome = (outcome: OUTCOME_ROUTE | number) =>
     `${API_HOST}${WALLET_OUTCOME_BASEPATH}/wallets/outcomes?outcome=${outcome}`
   );
 
+/**
+ * This function is used for not-registerd payment flow started from IO app
+ * When called, after the user enters the card data, executes a redirect
+ * to a specif url so that the flow can continue in app. If the save method toggle is avaiable
+ * the toggle's value is send as query paramas
+ */
+const redirectToIoAppForPayment = (
+  walletId: string,
+  outcome: OUTCOME_ROUTE,
+  saveMethod?: boolean
+) => {
+  const saveMethodParameter =
+    saveMethod === undefined ? "" : `&saveMethod=${saveMethod}`;
+  const url = `${WALLET_PAYMENT_REDIRECT_URL}#walletId=${walletId}&outcome=${outcome}${saveMethodParameter}`;
+  window.location.replace(url);
+};
+
 export default {
   redirectWithOutcome,
-  getFragments
+  getFragments,
+  redirectToIoAppForPayment
 };

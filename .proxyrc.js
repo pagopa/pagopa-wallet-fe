@@ -21,7 +21,7 @@ module.exports = function (app) {
   app.use(
     createProxyMiddleware([API_WALLET_BASEPATH, API_PM_BASEPATH, API_OUTCOME_BASEPATH], {
       target: PROXY_TARGET_API_HOST,
-      changeOrigin: true // required when target is on https
+      changeOrigin: false // required when target is on https, set to false when pointing to wallet-be-mock
     })
   );
 

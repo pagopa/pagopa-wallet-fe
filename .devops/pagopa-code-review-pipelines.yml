@@ -95,6 +95,7 @@ stages:
             api_wallet_outcome_basepath: '/payment-wallet-outcomes/v1'
             api_webview_pm_hostname: 'https://api.dev.platform.pagopa.it'
             wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
+            wallet_payment_redirect_url: 'http://test.redirect.url/test'
 
         - script: yarn generate
           displayName: 'Generate definitions'

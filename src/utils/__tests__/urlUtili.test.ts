@@ -1,9 +1,12 @@
 /* eslint-disable functional/immutable-data */
+import { getConfigOrThrow } from "../../config";
 import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "../../routes/models/routeModel";
 import urlUtils from "../../utils/urlUtilities";
 import "jest-location-mock";
 
-const { getFragments, redirectWithOutcome } = urlUtils;
+const { getFragments, redirectWithOutcome, redirectToIoAppForPayment } =
+  urlUtils;
+const { WALLET_PAYMENT_REDIRECT_URL } = getConfigOrThrow();
 
 describe("getFragments function utility", () => {
   it("Should return all the params value correctly", () => {
@@ -30,5 +33,22 @@ describe("redirectWithOutcome function utility", () => {
     expect(global.location.href).toContain("outcome=14");
     redirectWithOutcome(OUTCOME_ROUTE.CONFLICT);
     expect(global.location.href).toContain("outcome=15");
+  });
+});
+
+describe("redirectToIoAppForPayment function utility", () => {
+  it("Should redirect to the correct url", () => {
+    redirectToIoAppForPayment("12345", OUTCOME_ROUTE.GENERIC_ERROR, true);
+    expect(global.location.href).toBe(
+      `${WALLET_PAYMENT_REDIRECT_URL}#walletId=12345&outcome=1&saveMethod=true`
+    );
+    redirectToIoAppForPayment("12345", OUTCOME_ROUTE.GENERIC_ERROR, false);
+    expect(global.location.href).toBe(
+      `${WALLET_PAYMENT_REDIRECT_URL}#walletId=12345&outcome=1&saveMethod=false`
+    );
+    redirectToIoAppForPayment("12345", OUTCOME_ROUTE.SUCCESS);
+    expect(global.location.href).toBe(
+      `${WALLET_PAYMENT_REDIRECT_URL}#walletId=12345&outcome=0`
+    );
   });
 });
