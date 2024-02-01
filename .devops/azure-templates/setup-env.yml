@@ -44,7 +44,7 @@ parameters:
     type: number
     default: 1
 
-  - name: 'wallet_payment_redirect_url '
+  - name: 'wallet_payment_redirect_url'
     type: string
     default: ''
 
