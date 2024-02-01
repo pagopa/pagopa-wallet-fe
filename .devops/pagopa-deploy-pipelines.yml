@@ -87,7 +87,6 @@ stages:
               wallet_gdi_check_timeout: 10000
               wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
               wallet_onboard_switch_on_payment_page: 1
-              wallet_payment_redirect_url: 'update-here-the-payment-redirect-url'
 
           - script: |
               yarn build
@@ -212,7 +211,6 @@ stages:
               wallet_gdi_check_timeout: 10000
               wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
               wallet_onboard_switch_on_payment_page: 0
-              wallet_payment_redirect_url: 'update-here-the-payment-redirect-url'
 
           - script: |
               yarn build

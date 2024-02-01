@@ -23,8 +23,7 @@ export const IConfig = t.interface({
   WALLET_NPG_SDK_URL: NonEmptyString,
   WALLET_OUTCOME_API_BASEPATH: NonEmptyString,
   WALLET_PAGOPA_LOGOS_CDN: NonEmptyString,
-  WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE: t.boolean,
-  WALLET_PAYMENT_REDIRECT_URL: NonEmptyString
+  WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE: t.boolean
 });
 
 // No need to re-evaluate this object for each call
