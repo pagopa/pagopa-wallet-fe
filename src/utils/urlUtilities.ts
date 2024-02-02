@@ -68,7 +68,7 @@ const redirectToIoAppForPayment = (
 ) => {
   const saveMethodParameter =
     saveMethod === undefined ? "" : `&saveMethod=${saveMethod}`;
-  const url = `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transaction/wallets/${walletId}/outcomes&outcome=${outcome}${saveMethodParameter}`;
+  const url = `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/${walletId}/outcomes?outcome=${outcome}${saveMethodParameter}`;
   window.location.replace(url);
 };
 
