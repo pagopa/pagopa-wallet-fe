@@ -19,4 +19,3 @@ These are all the environment variables needed to configure the frontend:
 | WALLET_CONFIG_API_ENV                 | Deployment environment (DEV, UAT or PROD)            | string |         |
 | WALLET_PAGOPA_LOGOS_CDN               | CDN host to retrieve image resources                 | string |         |
 | WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE | show/hidden the save method's toggle                 | number |         |
-| WALLET_PAYMENT_REDIRECT_URL           | redirect url for IO app, not registered payment flow | string |         |

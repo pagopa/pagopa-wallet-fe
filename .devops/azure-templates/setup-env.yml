@@ -44,10 +44,6 @@ parameters:
     type: number
     default: 1
 
-  - name: 'wallet_payment_redirect_url'
-    type: string
-    default: ''
-
 steps:
 - bash: |
     chmod +x env.sh
@@ -63,7 +59,6 @@ steps:
       WALLET_GDI_CHECK_TIMEOUT=${{ parameters.wallet_gdi_check_timeout }} \
       WALLET_PAGOPA_LOGOS_CDN=${{ parameters.wallet_pagopa_logos_cdn }} \
       WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE=${{ parameters.wallet_onboard_switch_on_payment_page }} \
-      WALLET_PAYMENT_REDIRECT_URL=${{ parameters.wallet_payment_redirect_url }} \
       bash env.sh
 
   displayName: 'Populate environment file'
