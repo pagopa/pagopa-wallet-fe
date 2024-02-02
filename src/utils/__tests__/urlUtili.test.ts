@@ -43,15 +43,15 @@ describe("redirectToIoAppForPayment function utility", () => {
   it("Should redirect to the correct url", () => {
     redirectToIoAppForPayment("12345", OUTCOME_ROUTE.GENERIC_ERROR, true);
     expect(global.location.href).toBe(
-      `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transaction/wallets/12345/outcomes&outcome=1&saveMethod=true`
+      `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/12345/outcomes?outcome=1&saveMethod=true`
     );
     redirectToIoAppForPayment("12345", OUTCOME_ROUTE.GENERIC_ERROR, false);
     expect(global.location.href).toBe(
-      `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transaction/wallets/12345/outcomes&outcome=1&saveMethod=false`
+      `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/12345/outcomes?outcome=1&saveMethod=false`
     );
     redirectToIoAppForPayment("12345", OUTCOME_ROUTE.SUCCESS);
     expect(global.location.href).toBe(
-      `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transaction/wallets/12345/outcomes&outcome=0`
+      `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/12345/outcomes?outcome=0`
     );
   });
 });
