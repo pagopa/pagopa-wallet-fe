@@ -27,7 +27,7 @@ export default function BPAyPage() {
         await utils.api.pm.bPay.getList(sessionToken),
         E.match(
           () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
-          (items) => setBpayAccountItems(items.slice(0, 1))
+          (items) => setBpayAccountItems(items)
         )
       );
     };
@@ -39,7 +39,11 @@ export default function BPAyPage() {
       await utils.api.pm.bPay.addWallet(sessionToken, bpayAccountItems),
       E.match(
         () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
-        () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.SUCCESS)
+        () =>
+          utils.url.redirectWithOutcome(
+            OUTCOME_ROUTE.SUCCESS,
+            bpayAccountItems[0]?.uid
+          )
       )
     );
 

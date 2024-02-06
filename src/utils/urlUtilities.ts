@@ -50,11 +50,15 @@ function getFragments(
  * This function executes a window.location.replace on a particular url with a numeric outcome
  * from the outcome parameter. The IO APP will use the url and the outcome to give a feedback to the user
  */
-const redirectWithOutcome = (outcome: OUTCOME_ROUTE | number) =>
+const redirectWithOutcome = (
+  outcome: OUTCOME_ROUTE | number,
+  walletId?: string
+) => {
+  const walletIdParam = walletId === undefined ? "" : `&walletId=${walletId}`;
   window.location.replace(
-    `${API_HOST}${WALLET_OUTCOME_BASEPATH}/wallets/outcomes?outcome=${outcome}`
+    `${API_HOST}${WALLET_OUTCOME_BASEPATH}/wallets/outcomes?outcome=${outcome}${walletIdParam}`
   );
-
+};
 /**
  * This function is used for not-registerd payment flow started from IO app
  * When called, after the user enters the card data, executes a redirect
