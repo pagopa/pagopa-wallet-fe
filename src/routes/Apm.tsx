@@ -28,11 +28,6 @@ const Apm = () => {
   const redirectWithError = () =>
     utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR);
 
-  const getFirstItem = (valueList: string) => {
-    const index = valueList.indexOf(",");
-    return index > 0 ? valueList.substring(0, index) : valueList;
-  };
-
   const { sessionToken, walletId } = utils.url.getFragments(
     ROUTE_FRAGMENT.SESSION_TOKEN,
     ROUTE_FRAGMENT.WALLET_ID,
@@ -43,10 +38,7 @@ const Apm = () => {
     utils.storage.SessionItems.sessionToken,
     sessionToken
   );
-  utils.storage.setSessionItem(
-    utils.storage.SessionItems.walletId,
-    getFirstItem(walletId)
-  );
+  utils.storage.setSessionItem(utils.storage.SessionItems.walletId, walletId);
 
   const pspImagePath = (abi: string | undefined): string =>
     pipe(

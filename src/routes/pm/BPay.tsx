@@ -27,7 +27,7 @@ export default function BPAyPage() {
         await utils.api.pm.bPay.getList(sessionToken),
         E.match(
           () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
-          (items) => setBpayAccountItems(items)
+          (items) => setBpayAccountItems(items.slice(0, 1))
         )
       );
     };
