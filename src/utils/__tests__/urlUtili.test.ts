@@ -36,6 +36,11 @@ describe("redirectWithOutcome function utility", () => {
     expect(global.location.href).toContain("outcome=14");
     redirectWithOutcome(OUTCOME_ROUTE.CONFLICT);
     expect(global.location.href).toContain("outcome=15");
+    redirectWithOutcome(OUTCOME_ROUTE.SUCCESS);
+    expect(global.location.href).toContain("outcome=0");
+    expect(global.location.href).not.toContain("walletId");
+    redirectWithOutcome(OUTCOME_ROUTE.SUCCESS, "12345");
+    expect(global.location.href).toContain("outcome=0&walletId=12345");
   });
 });
 
