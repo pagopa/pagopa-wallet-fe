@@ -66,15 +66,11 @@ const redirectWithOutcome = (
 };
 
 const convertToUUIDHex = (walletId: number) => {
-  if (typeof walletId == "number") {
-    const walletIdHex = walletId.toString(16).padStart(16, "0");
-    return `00000000-0000-4000-${walletIdHex.substring(
-      0,
-      4
-    )}-${walletIdHex.substring(4)}`;
-  } else {
-    return walletId;
-  }
+  const walletIdHex = walletId.toString(16).padStart(16, "0");
+  return `00000000-0000-4000-${walletIdHex.substring(
+    0,
+    4
+  )}-${walletIdHex.substring(4)}`;
 };
 /**
  * This function is used for not-registerd payment flow started from IO app
