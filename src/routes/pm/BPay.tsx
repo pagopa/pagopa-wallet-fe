@@ -39,10 +39,12 @@ export default function BPAyPage() {
       await utils.api.pm.bPay.addWallet(sessionToken, bpayAccountItems),
       E.match(
         () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
-        (r) =>
+        (response) =>
           utils.url.redirectWithOutcome(
             OUTCOME_ROUTE.SUCCESS,
-            r === undefined || r.length === 0 ? undefined : r[0].idWallet
+            response === undefined || response.length === 0
+              ? undefined
+              : response[0].idWallet
           )
       )
     );
