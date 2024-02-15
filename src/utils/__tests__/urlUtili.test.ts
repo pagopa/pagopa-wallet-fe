@@ -45,6 +45,9 @@ describe("redirectWithOutcome function utility", () => {
     expect(global.location.href).toContain(
       "outcome=0&walletId=00000000-0000-4000-0000-000000003039"
     );
+    redirectWithOutcome(OUTCOME_ROUTE.SUCCESS, undefined);
+    expect(global.location.href).not.toContain("walletId");
+    expect(global.location.href).toContain("outcome=0");
   });
 });
 
