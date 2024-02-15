@@ -52,12 +52,29 @@ function getFragments(
  */
 const redirectWithOutcome = (
   outcome: OUTCOME_ROUTE | number,
-  walletId?: string
+  walletId?: number | string
 ) => {
-  const walletIdParam = walletId === undefined ? "" : `&walletId=${walletId}`;
+  const walletIdParam =
+    walletId === undefined
+      ? ""
+      : `&walletId=${
+          typeof walletId == "number" ? convertToUUIDHex(walletId) : walletId
+        }`;
   window.location.replace(
     `${API_HOST}${WALLET_OUTCOME_BASEPATH}/wallets/outcomes?outcome=${outcome}${walletIdParam}`
   );
+};
+
+const convertToUUIDHex = (walletId: number) => {
+  if (typeof walletId == "number") {
+    const walletIdHex = walletId.toString(16).padStart(16, "0");
+    return `00000000-0000-4000-${walletIdHex.substring(
+      0,
+      4
+    )}-${walletIdHex.substring(4)}`;
+  } else {
+    return walletId;
+  }
 };
 /**
  * This function is used for not-registerd payment flow started from IO app
