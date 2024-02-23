@@ -70,7 +70,7 @@ export default function PaypalPage() {
   }, []);
 
   const redirectWithError = () =>
-    utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR);
+    utils.url.redirectWithOutcome(OUTCOME_ROUTE.CANCELED_BY_USER);
 
   const onError = React.useCallback(() => {
     setLoading(false);
