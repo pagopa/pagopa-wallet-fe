@@ -15,7 +15,8 @@ export enum OUTCOME_ROUTE {
   GENERIC_ERROR = "1",
   AUTH_ERROR = "14",
   CONFLICT = "15",
-  SUCCESS = "0"
+  SUCCESS = "0",
+  CANCELED_BY_USER = "8"
 }
 
 export enum ROUTE_FRAGMENT {
