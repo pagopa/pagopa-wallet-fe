@@ -19,7 +19,13 @@ export default function PageContainer(props: {
   const Content = () => (
     <>
       {!!title && (
-        <Typography variant="h4" component={"div"} mb={2} color="text.primary">
+        <Typography
+          variant="h4"
+          component={"div"}
+          mb={2}
+          mt={3}
+          color="text.primary"
+        >
           {props.title}
         </Typography>
       )}
