@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { getConfigOrThrow } from "../config";
+import { useOnMountUnsafe } from "../hooks/useOnMountUnsafe";
 
 const { WALLET_CONFIG_WEBVIEW_PM_HOST } = getConfigOrThrow();
 const webview = `${WALLET_CONFIG_WEBVIEW_PM_HOST}/pp-restapi-CD/v3/webview`;
@@ -25,7 +26,7 @@ export interface Props {
 const Verify = ({ cvv, idWallet, sessionToken, idPsp, path }: Props) => {
   const formElement = useRef<HTMLFormElement | null>(null);
 
-  useEffect(() => formElement.current?.submit(), []);
+  useOnMountUnsafe(() => formElement.current?.submit());
 
   return (
     <form
