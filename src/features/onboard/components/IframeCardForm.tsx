@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { SessionWalletCreateResponse } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponse";
 import { WalletVerifyRequestAPMDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestAPMDetails";
 import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
-import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import ErrorModal from "../../../components/commons/ErrorModal";
 import {
@@ -17,12 +16,12 @@ import {
   WalletRoutes
 } from "../../../routes/models/routeModel";
 import utils from "../../../utils";
-import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import { clearNavigationEvents } from "../../../utils/eventListener";
 import { SessionWalletCreateResponseData1 } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
 import { SessionInputDataTypeCardsEnum } from "../../../../generated/definitions/webview-payment-wallet/SessionInputDataTypeCards";
 import { getConfigOrThrow } from "../../../config";
+import { useNpgSdk } from "../../../hooks/useNpgSdk";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
@@ -47,8 +46,8 @@ interface IframeCardForm {
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default function IframeCardForm(props: IframeCardForm) {
-  // Here I'm using a react reft insted of a state because inserting the state as a
-  // dependecy of the effect where the Build instance is create will cause a new initialitation
+  // Here I'm using a react reft instead of a state because inserting the state as a
+  // dependency of the effect where the Build instance is create will cause a new initialization
   // every time the toggle's state change and a new creation of the payment form
   const saveMethod = React.useRef(true);
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
@@ -67,6 +66,8 @@ export default function IframeCardForm(props: IframeCardForm) {
 
   const { isPayment } = props;
   const { WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE } = getConfigOrThrow();
+
+  const { sdkReady, buildSdk } = useNpgSdk();
 
   const formIsValid = (fieldFormStatus: FormStatus) =>
     Object.values(fieldFormStatus).every((el) => el.isValid);
@@ -87,9 +88,53 @@ export default function IframeCardForm(props: IframeCardForm) {
   );
   utils.storage.setSessionItem(utils.storage.SessionItems.walletId, walletId);
 
+  const getSdkConfig = (body: SessionWalletCreateResponse) => ({
+    onChange: (id: FieldId, status: FieldStatus) => {
+      if (Object.keys(IdFields).includes(id)) {
+        setActiveField(id);
+        setFormStatus((fields) => ({
+          ...fields,
+          [id]: status
+        }));
+      }
+    },
+    // payment/onboarding success event
+    onReadyForPayment: () => {
+      if (isPayment) {
+        return utils.url.redirectToIoAppForPayment(
+          walletId,
+          OUTCOME_ROUTE.SUCCESS,
+          WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE ? saveMethod.current : undefined
+        );
+      }
+      void validation(body);
+    },
+    // payment/onboarding without 3ds challenge phase
+    onPaymentComplete: () => {
+      clearNavigationEvents();
+      navigate(`/${WalletRoutes.ESITO}`);
+    },
+    // payment/onboarding with 3ds challenge phase
+    onPaymentRedirect: (redirect: string) => {
+      clearNavigationEvents();
+      window.location.replace(redirect);
+    },
+    onBuildError: () => {
+      setLoading(false);
+      if (isPayment) {
+        return utils.url.redirectToIoAppForPayment(
+          walletId,
+          OUTCOME_ROUTE.GENERIC_ERROR,
+          WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE ? saveMethod.current : undefined
+        );
+      }
+      window.location.replace(`/${WalletRoutes.ERRORE}`);
+    }
+  });
+
   const onValidation = ({
     details
-  }: WalletVerifyRequestsResponse & {
+  }: {
     details: WalletVerifyRequestCardDetails | WalletVerifyRequestAPMDetails;
   }) => {
     pipe(
@@ -122,22 +167,20 @@ export default function IframeCardForm(props: IframeCardForm) {
     );
   };
 
-  const onChange = (id: FieldId, status: FieldStatus) => {
-    if (Object.keys(IdFields).includes(id)) {
-      setActiveField(id);
-      setFormStatus((fields) => ({
-        ...fields,
-        [id]: status
-      }));
-    }
+  const onSuccess = (body: SessionWalletCreateResponse) => {
+    const sessionData = body.sessionData as SessionWalletCreateResponseData1;
+    setCardFormFields(sessionData.cardFormFields);
+    utils.storage.setSessionItem(
+      utils.storage.SessionItems.orderId,
+      body.orderId
+    );
+
+    const sdkConfig = getSdkConfig(body);
+    const sdkInstance = buildSdk(sdkConfig);
+    setBuildInstance(sdkInstance);
   };
 
-  const getSessionFields = async (
-    sessionToken: string,
-    walletId: string,
-    onSuccess: (body: SessionWalletCreateResponse) => void,
-    onError: () => void
-  ) => {
+  const getSessionFields = async (sessionToken: string, walletId: string) => {
     pipe(
       await utils.api.npg.createSessionWallet(sessionToken, walletId, {
         paymentMethodType: SessionInputDataTypeCardsEnum.cards
@@ -147,77 +190,10 @@ export default function IframeCardForm(props: IframeCardForm) {
   };
 
   React.useEffect(() => {
-    if (!cardFormFields) {
-      const onSuccess = (body: SessionWalletCreateResponse) => {
-        const sessionData =
-          body.sessionData as SessionWalletCreateResponseData1;
-        setCardFormFields(sessionData.cardFormFields);
-        utils.storage.setSessionItem(
-          utils.storage.SessionItems.orderId,
-          body.orderId
-        );
-
-        // payment/onboarding success event
-        const onReadyForPayment = () => {
-          if (isPayment) {
-            return utils.url.redirectToIoAppForPayment(
-              walletId,
-              OUTCOME_ROUTE.SUCCESS,
-              WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
-                ? saveMethod.current
-                : undefined
-            );
-          }
-          void validation(body);
-        };
-
-        // payment/onboarding without 3ds challenge phase
-        const onPaymentComplete = () => {
-          clearNavigationEvents();
-          navigate(`/${WalletRoutes.ESITO}`);
-        };
-
-        // payment/onboarding with 3ds challenge phase
-        const onPaymentRedirect = (redirect: string) => {
-          clearNavigationEvents();
-          window.location.replace(redirect);
-        };
-
-        const onBuildError = () => {
-          setLoading(false);
-          if (isPayment) {
-            return utils.url.redirectToIoAppForPayment(
-              walletId,
-              OUTCOME_ROUTE.GENERIC_ERROR,
-              WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
-                ? saveMethod.current
-                : undefined
-            );
-          }
-          window.location.replace(`/${WalletRoutes.ERRORE}`);
-        };
-
-        try {
-          // THIS is mandatory cause the Build class is defined in the external library called NPG SDK
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          const newBuild = new Build(
-            createBuildConfig({
-              onChange,
-              onReadyForPayment,
-              onPaymentComplete,
-              onPaymentRedirect,
-              onBuildError
-            })
-          );
-          setBuildInstance(newBuild);
-        } catch {
-          onBuildError();
-        }
-      };
-      void getSessionFields(sessionToken, walletId, onSuccess, onError);
+    if (!cardFormFields && sdkReady) {
+      void getSessionFields(sessionToken, walletId);
     }
-  }, []);
+  }, [sdkReady]);
 
   const handleSubmit = (e: React.FormEvent) => {
     try {
