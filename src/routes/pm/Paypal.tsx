@@ -83,7 +83,9 @@ export default function PaypalPage() {
   }, []);
 
   React.useEffect(() => {
-    void getPsps();
+    if (!pspList) {
+      void getPsps();
+    }
   }, []);
 
   const redirectWithError = () =>

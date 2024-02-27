@@ -63,7 +63,9 @@ const Apm = () => {
   }, []);
 
   React.useEffect(() => {
-    void getPsps();
+    if (!list) {
+      void getPsps();
+    }
   }, []);
 
   /**

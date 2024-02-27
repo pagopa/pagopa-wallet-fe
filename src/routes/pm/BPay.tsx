@@ -22,16 +22,18 @@ export default function BPAyPage() {
   const { sessionToken } = utils.url.getFragments(ROUTE_FRAGMENT.SESSION_TOKEN);
 
   useEffect(() => {
-    const getBpayAccountsItems = async () => {
-      pipe(
-        await utils.api.pm.bPay.getList(sessionToken),
-        E.match(
-          () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
-          (items) => setBpayAccountItems(items)
-        )
-      );
-    };
-    void trackPromise(getBpayAccountsItems(), "page-container");
+    if (!bpayAccountItems) {
+      const getBpayAccountsItems = async () => {
+        pipe(
+          await utils.api.pm.bPay.getList(sessionToken),
+          E.match(
+            () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
+            (items) => setBpayAccountItems(items)
+          )
+        );
+      };
+      void trackPromise(getBpayAccountsItems(), "page-container");
+    }
   }, []);
 
   const addBpayAccountsToTheWallet = async () =>
