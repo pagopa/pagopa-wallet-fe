@@ -11,13 +11,11 @@ export type SdkBuild = {
   onBuildError: () => void;
 };
 
-const notReady = () => {
-  throw new Error(
-    "sdk not ready error, wait for the sdkReady value to be true"
-  );
+const notReady = (build: SdkBuild) => {
+  build.onBuildError();
 };
 
-const scriptReadyId = "npgReadyScript";
+export const scriptReadyId = "npg-script-ready";
 
 export const useNpgSdk = () => {
   const [sdkReady, setSdkReady] = useState(false);
