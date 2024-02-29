@@ -11,8 +11,10 @@ export type SdkBuild = {
   onBuildError: () => void;
 };
 
-const notReady = (build: SdkBuild) => {
-  build.onBuildError();
+const notReady = () => {
+  throw new Error(
+    "sdk not ready error, wait for the sdkReady value to be true"
+  );
 };
 
 export const scriptReadyId = "npg-script-ready";
@@ -26,21 +28,16 @@ export const useNpgSdk = () => {
     onPaymentComplete = () => null,
     onPaymentRedirect = () => null,
     onBuildError
-  }: SdkBuild) => {
-    try {
-      return new Build(
-        createBuildConfig({
-          onChange,
-          onReadyForPayment,
-          onPaymentRedirect,
-          onPaymentComplete,
-          onBuildError
-        })
-      );
-    } catch (_e) {
-      onBuildError();
-    }
-  };
+  }: SdkBuild) =>
+    new Build(
+      createBuildConfig({
+        onChange,
+        onReadyForPayment,
+        onPaymentRedirect,
+        onPaymentComplete,
+        onBuildError
+      })
+    );
 
   useEffect(() => {
     const npgScriptLoaded = document.getElementById(scriptReadyId);

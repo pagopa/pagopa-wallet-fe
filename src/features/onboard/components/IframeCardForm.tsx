@@ -176,8 +176,13 @@ export default function IframeCardForm(props: IframeCardForm) {
     );
 
     const sdkConfig = getSdkConfig(body);
-    const sdkInstance = buildSdk(sdkConfig);
-    setBuildInstance(sdkInstance);
+
+    try {
+      const sdkInstance = buildSdk(sdkConfig);
+      setBuildInstance(sdkInstance);
+    } catch {
+      sdkConfig.onBuildError();
+    }
   };
 
   const getSessionFields = async (sessionToken: string, walletId: string) => {

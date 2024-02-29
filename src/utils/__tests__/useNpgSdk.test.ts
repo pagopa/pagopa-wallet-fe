@@ -5,9 +5,7 @@ describe("useNpgSdk", () => {
   test("Should call onBuildError on sdk not ready", () => {
     const { result } = renderHook(() => useNpgSdk());
     expect(result.current.sdkReady).toBeFalsy();
-    // eslint-disable-next-line functional/no-let
-    let error = false;
-    result.current.buildSdk({ onBuildError: () => (error = true) });
-    expect(error).toBeTruthy();
+    const onBuildError = jest.fn();
+    expect(() => result.current.buildSdk({ onBuildError })).toThrow();
   });
 });
