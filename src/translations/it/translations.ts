@@ -68,6 +68,20 @@ export const TRANSLATIONS_IT = {
     buttons: {
       cancel: "Annulla",
       submit: "Continua"
+    },
+    managerModal: {
+      title: "Cos'è il gestore della transazione?",
+      body: "È il soggetto, conosciuto anche come PSP (Prestatore di Servizi di Pagamento), che incassa l'importo per conto dell'Ente Creditore e può applicare un costo per il servizio offerto."
+    },
+    pspInfoModal: {
+      info: "Maggiori informazioni su questo gestore",
+      title: "Chi è {{pspInfo.ragioneSociale}}?",
+      body1:
+        "È un Prestatore di Servizi di Pagamento (PSP) che può gestire le tue transazioni tramite PayPal.",
+      body2:
+        "Quando paghi un avviso, potrà applicare un costo massimo fino a <strong>{{maxFeeFriendlyComp}}</strong>. Vedrai l’importo esatto prima della conferma.",
+      body3:
+        "Si applicano i Termini e condizioni d’uso e l’Informativa Privacy di Mooney"
     }
   },
   errorButton: {

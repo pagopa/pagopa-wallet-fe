@@ -1,6 +1,7 @@
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
   Box,
+  Button,
   FormControl,
   FormControlLabel,
   Link,
@@ -22,9 +23,12 @@ import PageContainer from "../../components/commons/PageContainer";
 import WalletLoader from "../../components/commons/WalletLoader";
 import { getConfigOrThrow } from "../../config";
 import utils from "../../utils";
-import pm from "../../utils/api/pm";
 import { ErrorsType } from "../../utils/errors/errorsModel";
 import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "../models/routeModel";
+import DrawerTransactionManager from "../../components/drawers/DrawerTransactionManager";
+import { PayPalPsp } from "../../../generated/definitions/payment-manager-v1/PayPalPsp";
+import DrawerPSP from "../../components/drawers/DrawerPSP";
+import pm from "../../utils/api/pm";
 
 export default function PaypalPage() {
   const { t } = useTranslation();
@@ -35,6 +39,19 @@ export default function PaypalPage() {
   const [pspList, setPspList] = React.useState<PaypalPspListResponse>();
   const [idPsp, setIdPsp] = React.useState<string>("");
   const [submitted, setSubmitted] = React.useState(false);
+  const [drawstateTM, setDrawstateTM] = React.useState(false);
+  const [drawstatePSP, setDrawstatePSP] = React.useState(false);
+  const [pspDrawerInfo, setPspDrawerInfo] = React.useState<
+    PayPalPsp | undefined
+  >(undefined);
+
+  const toggleDrawerTM = (open: boolean) => {
+    setDrawstateTM(open);
+  };
+  const toggleDrawerPSP = (open: boolean, paypalPsp?: PayPalPsp) => {
+    setPspDrawerInfo(paypalPsp || undefined);
+    setDrawstatePSP(open);
+  };
 
   const { sessionToken } = utils.url.getFragments(ROUTE_FRAGMENT.SESSION_TOKEN);
 
@@ -101,9 +118,8 @@ export default function PaypalPage() {
         description={t("paypalPage.description")}
         link={
           <Link
-            href={``}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`#`}
+            onClick={() => toggleDrawerTM(true)}
             style={{ fontWeight: 600, textDecoration: "none" }}
             title={t("paypalPage.helpLink")}
           >
@@ -135,14 +151,21 @@ export default function PaypalPage() {
                         <Stack sx={styles.radioStack}>
                           <img
                             src={pspImagePath(psp.codiceAbi)}
-                            alt="Logo gestore"
+                            alt={`Logo gestore ${psp.ragioneSociale}`}
                             style={styles.pspImg}
                           />
-                          <InfoOutlinedIcon
-                            sx={{ color: "primary.main", cursor: "pointer" }}
-                            fontSize="medium"
-                            aria-hidden="true"
-                          />
+                          <Button
+                            aria-label={t("paypalPage.pspInfoModal.info")}
+                            onClick={() => {
+                              toggleDrawerPSP(true, psp);
+                            }}
+                          >
+                            <InfoOutlinedIcon
+                              sx={{ color: "primary.main", cursor: "pointer" }}
+                              fontSize="medium"
+                              titleAccess={t("paypalPage.pspInfoModal.info")}
+                            />
+                          </Button>
                         </Stack>
                       }
                     />
@@ -170,6 +193,15 @@ export default function PaypalPage() {
           />
         )}
       </PageContainer>
+      <DrawerTransactionManager
+        drawstate={drawstateTM}
+        toggleDrawer={() => toggleDrawerTM(false)}
+      />
+      <DrawerPSP
+        drawstate={drawstatePSP}
+        toggleDrawer={() => toggleDrawerPSP(false)}
+        pspInfo={pspDrawerInfo}
+      />
     </>
   );
 }
