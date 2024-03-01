@@ -22,7 +22,7 @@ export default function BPAyPage() {
   const { sessionToken } = utils.url.getFragments(ROUTE_FRAGMENT.SESSION_TOKEN);
 
   useEffect(() => {
-    if (!bpayAccountItems) {
+    if (!bpayAccountItems?.length) {
       const getBpayAccountsItems = async () => {
         pipe(
           await utils.api.pm.bPay.getList(sessionToken),
