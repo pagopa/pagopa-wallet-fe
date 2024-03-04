@@ -81,7 +81,9 @@ export const TRANSLATIONS_IT = {
       body2:
         "Quando paghi un avviso, potrà applicare un costo massimo fino a <strong>{{maxFeeFriendlyComp}}</strong>. Vedrai l’importo esatto prima della conferma.",
       body3:
-        "Si applicano i Termini e condizioni d’uso e l’Informativa Privacy di Mooney"
+        "Si applicano i Termini e condizioni d’uso e l’Informativa Privacy di {{pspInfo.ragioneSociale}}",
+      accessibilityLinkTitle: "Visita il sito del PSP",
+      accessibilityIconAlt: "Immagine paragrafo"
     }
   },
   errorButton: {
