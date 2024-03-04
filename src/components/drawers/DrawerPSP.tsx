@@ -1,9 +1,12 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, Link, Typography } from "@mui/material";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { CustomDrawer } from "../modals/CustomDrawer";
 import { PayPalPsp } from "../../../generated/definitions/payment-manager-v1/PayPalPsp";
 import formatters from "../../utils";
+import pspIcon from "../../assets/icons/psp.svg";
+import securityIcon from "../../assets/icons/security.svg";
+import tagIcon from "../../assets/icons/tag.svg";
 
 interface Props {
   drawstate: boolean;
@@ -14,6 +17,7 @@ interface Props {
 export default function DrawerPSP(props: Props) {
   const { t } = useTranslation();
   const pspInfo = props.pspInfo;
+  const pspInfoPrivacyUrl = t("paypalPage.pspInfoModal.body3", { pspInfo });
   const maxFeeFriendlyComp = formatters.formatters.moneyFormat(
     pspInfo?.maxFee || 0
   );
@@ -25,16 +29,36 @@ export default function DrawerPSP(props: Props) {
             {t("paypalPage.pspInfoModal.title", { pspInfo })}
           </Typography>
           <Grid container spacing={2} my={2}>
-            <Grid item xs={2}>
-              asd
+            <Grid
+              item
+              xs={2}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <img
+                src={pspIcon}
+                alt={t("paypalPage.pspInfoModal.accessibilityIconAlt")}
+                aria-hidden="true"
+              />
             </Grid>
             <Grid item xs={10}>
               <Typography variant="body2">
                 {t("paypalPage.pspInfoModal.body1", { pspInfo })}
               </Typography>
             </Grid>
-            <Grid item xs={2}>
-              asd
+            <Grid
+              item
+              xs={2}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <img
+                src={securityIcon}
+                alt={t("paypalPage.pspInfoModal.accessibilityIconAlt")}
+                aria-hidden="true"
+              />
             </Grid>
             <Grid item xs={10}>
               <Typography variant="body2">
@@ -44,12 +68,30 @@ export default function DrawerPSP(props: Props) {
                 />
               </Typography>
             </Grid>
-            <Grid item xs={2}>
-              asd
+            <Grid
+              item
+              xs={2}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <img
+                src={tagIcon}
+                alt={t("paypalPage.pspInfoModal.accessibilityIconAlt")}
+                aria-hidden="true"
+              />
             </Grid>
             <Grid item xs={10}>
               <Typography variant="body2">
-                {t("paypalPage.pspInfoModal.body3", { pspInfo })}
+                <Link
+                  href={pspInfo.privacyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={t("paypalPage.pspInfoModal.accessibilityLinkTitle")}
+                  sx={{ textDecoration: "none", fontWeight: 600 }}
+                >
+                  {pspInfoPrivacyUrl}
+                </Link>
               </Typography>
             </Grid>
           </Grid>
