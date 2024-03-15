@@ -62,7 +62,7 @@ export default function BPAyPage() {
       ))}
       <FormButtons
         handleCancel={() =>
-          utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR)
+          utils.url.redirectWithOutcome(OUTCOME_ROUTE.CANCELED_BY_USER)
         }
         handleSubmit={() =>
           trackPromise(addBpayAccountsToTheWallet(), "submit-form-button")
