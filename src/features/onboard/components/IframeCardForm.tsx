@@ -128,7 +128,8 @@ export default function IframeCardForm(props: IframeCardForm) {
           WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE ? saveMethod.current : undefined
         );
       }
-      window.location.replace(`/${WalletRoutes.ERRORE}`);
+      // TODO check if this navigation is correct
+      utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR);
     }
   });
 
