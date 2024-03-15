@@ -1,3 +1,9 @@
+/* istanbul ignore file
+ * This hook load an external asynchronous script,
+ * its functionality should be tested with an integration test
+ * not with an unit test, only the pure part of
+ * this hook should be tested
+ */
 import { useEffect, useState } from "react";
 import createBuildConfig from "../utils/buildConfig";
 import { FieldId, FieldStatus } from "../features/onboard/components/types";
