@@ -60,7 +60,7 @@ const getBpayList = async (
     (response) =>
       api.utils.matchApiStatus(response, () => {
         const { value, status } = response;
-        if (status === 200 && value?.data && !!value.data.length) {
+        if (status === 200 && value?.data) {
           return E.right(value.data);
         } else {
           return E.left(ErrorsType.GENERIC_ERROR);

@@ -27,7 +27,15 @@ export default function BPAyPage() {
         await utils.api.pm.bPay.getList(sessionToken),
         E.match(
           () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
-          (items) => setBpayAccountItems(items)
+          (items) => {
+            if (items.length > 0) {
+              setBpayAccountItems(items);
+            } else {
+              utils.url.redirectWithOutcome(
+                OUTCOME_ROUTE.ACCOUNT_BPAY_NOT_PRESENT
+              );
+            }
+          }
         )
       );
     };
