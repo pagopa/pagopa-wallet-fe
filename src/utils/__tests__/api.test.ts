@@ -137,7 +137,7 @@ describe("Bancomat Pay: getting the list", () => {
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.bPay.getList(sessionToken);
-    expect(result).toEqual(E.right({ data: [] }));
+    expect(result).toEqual(E.right([]));
   });
 
   it("should fails when http === 200 but no data", async () => {
