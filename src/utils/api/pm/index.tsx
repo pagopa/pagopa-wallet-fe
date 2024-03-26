@@ -47,7 +47,6 @@ const addWalletCreditCard = async (
 
 /**
  * returns Bancomat Pay account items of the user identified by the sessionToken parameter
- * returns an instance of O.none when no accounts are returned
  */
 const getBpayList = async (
   sessionToken: string
@@ -60,7 +59,7 @@ const getBpayList = async (
     (response) =>
       api.utils.matchApiStatus(response, () => {
         const { value, status } = response;
-        if (status === 200 && value?.data && !!value.data.length) {
+        if (status === 200 && value?.data !== undefined) {
           return E.right(value.data);
         } else {
           return E.left(ErrorsType.GENERIC_ERROR);

@@ -143,10 +143,10 @@ const getPspsForWallet =
   (client: WalletClient) => async (walletId: string, walletToken: string) =>
     api.utils.validateApi(
       () => client.getPspsForWallet({ walletId, bearerAuth: walletToken }),
-      (resposne) =>
-        api.utils.matchApiStatus(resposne, () =>
+      (response) =>
+        api.utils.matchApiStatus(response, () =>
           pipe(
-            resposne.value,
+            response.value,
             BundleOption.decode,
             E.match(
               () => E.left(ErrorsType.GENERIC_ERROR),
