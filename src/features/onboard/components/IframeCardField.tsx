@@ -54,8 +54,11 @@ export function IframeCardField(props: Props) {
 
   React.useEffect(() => {
     if (src) {
-      setTimeout(() => setLoaded(true), 2000);
+      const timeoutId = setTimeout(() => setLoaded(true), 2000);
+
+      return () => clearTimeout(timeoutId);
     }
+    return () => true;
   }, [src]);
 
   const InnerComponent = (

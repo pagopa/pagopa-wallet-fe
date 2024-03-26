@@ -22,7 +22,7 @@ import { ROUTE_FRAGMENT, OUTCOME_ROUTE } from "./models/routeModel";
 const Apm = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
-  const [list, setList] = React.useState<BundleOption>([]);
+  const [list, setList] = React.useState<BundleOption>();
   const [selectedIdPsp, setSelectedIdPsp] = React.useState<string>("");
 
   const redirectWithError = () =>
@@ -63,7 +63,9 @@ const Apm = () => {
   }, []);
 
   React.useEffect(() => {
-    void getPsps();
+    if (!list) {
+      void getPsps();
+    }
   }, []);
 
   /**
@@ -102,7 +104,7 @@ const Apm = () => {
           onChange={(_, value) => setSelectedIdPsp(value)}
           value={selectedIdPsp}
         >
-          {list.bundleOptions?.map((bundle) => (
+          {list?.bundleOptions?.map((bundle) => (
             <FormControlLabel
               key={bundle.idPsp}
               value={bundle.idPsp}
