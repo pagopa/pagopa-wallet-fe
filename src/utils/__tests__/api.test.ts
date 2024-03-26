@@ -131,7 +131,7 @@ describe("Bancomat Pay: getting the list", () => {
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("should fails when http === 200 but no bpay item", async () => {
+  it("should return E.right with empty array when http === 200 but no bpay item", async () => {
     const response = new Response(JSON.stringify({ data: [] }), {
       status: 200
     });

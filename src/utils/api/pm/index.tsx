@@ -47,7 +47,6 @@ const addWalletCreditCard = async (
 
 /**
  * returns Bancomat Pay account items of the user identified by the sessionToken parameter
- * returns an instance of O.none when no accounts are returned
  */
 const getBpayList = async (
   sessionToken: string
