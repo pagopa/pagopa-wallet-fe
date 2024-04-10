@@ -34,7 +34,8 @@ const Outcome = () => {
                   utils.url.redirectWithOutcome(
                     outcome === undefined
                       ? OUTCOME_ROUTE.GENERIC_ERROR
-                      : outcome
+                      : outcome,
+                    walletId?.value
                   )
               )
             )
