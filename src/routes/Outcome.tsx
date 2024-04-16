@@ -35,9 +35,7 @@ const Outcome = () => {
                     outcome === undefined
                       ? OUTCOME_ROUTE.GENERIC_ERROR
                       : outcome,
-                    outcome === 0
-                      ? walletId?.value
-                      : undefined
+                    outcome === 0 ? walletId?.value : undefined
                   )
               )
             )
