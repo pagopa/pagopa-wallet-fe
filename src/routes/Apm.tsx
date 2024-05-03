@@ -22,6 +22,7 @@ import { ROUTE_FRAGMENT, OUTCOME_ROUTE } from "./models/routeModel";
 const Apm = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
+  const [loadingSubmit, setLoadingSubmit] = React.useState(false);
   const [list, setList] = React.useState<BundleOption>([]);
   const [selectedIdPsp, setSelectedIdPsp] = React.useState<string>("");
 
@@ -70,6 +71,7 @@ const Apm = () => {
    *  return a redirect url when the method is of type apm
    */
   const onSubmit = async () => {
+    setLoadingSubmit(true);
     pipe(
       await utils.api.npg.createSessionWallet(sessionToken, walletId, {
         paymentMethodType: SessionInputDataTypePaypalEnum.paypal,
@@ -107,6 +109,7 @@ const Apm = () => {
               key={bundle.idPsp}
               value={bundle.idPsp}
               control={<Radio />}
+              disabled={loadingSubmit}
               sx={styles.formControl}
               label={
                 <img
@@ -126,6 +129,7 @@ const Apm = () => {
         cancelTitle="paypalPage.buttons.cancel"
         disabledSubmit={loading || !selectedIdPsp}
         disabledCancel={loading}
+        loadingSubmit={loadingSubmit}
         handleSubmit={onSubmit}
       />
     </PageContainer>
