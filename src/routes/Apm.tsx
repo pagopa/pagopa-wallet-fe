@@ -162,7 +162,9 @@ const Apm = () => {
               <Link
                 href={`#`}
                 onClick={() => toggleDrawerTM(true)}
-                style={{ fontWeight: 600, textDecoration: "none" }}
+                fontWeight={"600"}
+                display="flex"
+                style={{ textDecoration: "none" }}
                 title={t("paypalPage.helpLink")}
               >
                 {t("paypalPage.helpLink")}
