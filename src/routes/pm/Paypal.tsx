@@ -41,17 +41,21 @@ export default function PaypalPage() {
   const [submitted, setSubmitted] = React.useState(false);
   const [drawstateTM, setDrawstateTM] = React.useState(false);
   const [drawstatePSP, setDrawstatePSP] = React.useState(false);
-  const [pspDrawerInfo, setPspDrawerInfo] = React.useState<
-    PayPalPsp | undefined
-  >(undefined);
+  const [pspDrawerInfoName, setPspDrawerInfoName] = React.useState<string>("");
+  const [pspDrawerInfoFee, setPspDrawerInfoFee] = React.useState<number>(0);
 
   const theme = useTheme();
 
   const toggleDrawerTM = (open: boolean) => {
     setDrawstateTM(open);
   };
-  const toggleDrawerPSP = (open: boolean, paypalPsp?: PayPalPsp) => {
-    setPspDrawerInfo(paypalPsp || undefined);
+  const toggleDrawerPSP = (
+    open: boolean,
+    paypalPspName: string,
+    paypalPspFee: number
+  ) => {
+    setPspDrawerInfoName(paypalPspName);
+    setPspDrawerInfoFee(paypalPspFee);
     setDrawstatePSP(open);
   };
 
@@ -145,7 +149,6 @@ export default function PaypalPage() {
         <>
           <PageContainer
             title={t("paypalPage.title")}
-            description={t("paypalPage.description")}
             link={
               <Link
                 href={`#`}
@@ -171,7 +174,7 @@ export default function PaypalPage() {
                 <FormControl sx={{ width: "100%" }}>
                   <RadioGroup onChange={handleChangeSelection} value={idPsp}>
                     {idPsp &&
-                      pspList?.data.map((psp) => (
+                      pspList?.data.map((psp: PayPalPsp) => (
                         <FormControlLabel
                           key={psp.idPsp}
                           value={psp.idPsp}
@@ -185,7 +188,11 @@ export default function PaypalPage() {
                               <Button
                                 aria-label={t("paypalPage.pspInfoModal.info")}
                                 onClick={() => {
-                                  toggleDrawerPSP(true, psp);
+                                  toggleDrawerPSP(
+                                    true,
+                                    psp.ragioneSociale,
+                                    psp.avgFee
+                                  );
                                 }}
                               >
                                 <InfoOutlinedIcon
@@ -229,8 +236,9 @@ export default function PaypalPage() {
           />
           <DrawerPSP
             drawstate={drawstatePSP}
-            toggleDrawer={() => toggleDrawerPSP(false)}
-            pspInfo={pspDrawerInfo}
+            toggleDrawer={() => toggleDrawerPSP(false, "", 0)}
+            pspName={pspDrawerInfoName}
+            pspFee={pspDrawerInfoFee}
           />
         </>
       )}

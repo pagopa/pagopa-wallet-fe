@@ -47,7 +47,8 @@ export const TRANSLATIONS_IT = {
   },
   paypalPage: {
     title: "Scegli chi gestirà i pagamenti con PayPal",
-    description: "",
+    description:
+      "Se vuoi cambiare scelta in futuro, basta salvare nuovamente il tuo conto PayPal su IO.",
     helpLink: "Cos'è il gestore del pagamento?",
     formFields: {
       billCode: "Codice Avviso",
@@ -79,13 +80,13 @@ export const TRANSLATIONS_IT = {
     },
     pspInfoModal: {
       info: "Maggiori informazioni su questo gestore",
-      title: "Chi è {{pspInfo.ragioneSociale}}?",
+      title: "Chi è {{pspName}}?",
       body1:
         "È un Prestatore di Servizi di Pagamento (PSP) che può gestire le tue transazioni tramite PayPal.",
       body2:
         "Quando paghi un avviso, potrà applicare un costo massimo fino a <strong>{{maxFeeFriendlyComp}}</strong>. Vedrai l’importo esatto prima della conferma.",
       body3:
-        "Si applicano i Termini e condizioni d’uso e l’Informativa Privacy di {{pspInfo.ragioneSociale}}",
+        "Si applicano i Termini e condizioni d’uso e l’Informativa Privacy di {{pspName}}",
       accessibilityLinkTitle: "Visita il sito del PSP",
       accessibilityIconAlt: "Immagine paragrafo"
     }
