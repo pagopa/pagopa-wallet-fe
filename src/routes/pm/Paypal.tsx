@@ -138,6 +138,7 @@ export default function PaypalPage() {
                 variant="contained"
                 onClick={() => setShowPreamble(false)}
                 style={{ width: "100%" }}
+                id="preambleButton"
               >
                 {t("paypalPage.preamble.cta")}
               </Button>
