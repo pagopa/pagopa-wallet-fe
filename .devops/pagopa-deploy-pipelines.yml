@@ -116,7 +116,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az storage blob sync --container '$web' --account-name pagopadweuwalletfesa -s '$(Pipeline.Workspace)/Bundle_DEV'
+                az storage blob sync --container '$web' --account-name pagopaditnpaywalletfesa -s '$(Pipeline.Workspace)/Bundle_DEV'
 
           - task: AzureCLI@2
             displayName: 'Purge CDN endpoint on DEV'
@@ -125,7 +125,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az cdn endpoint purge -g pagopa-d-weu-wallet-fe-rg -n pagopa-d-weu-wallet-fe-cdn-endpoint --profile-name pagopa-d-weu-wallet-fe-cdn-profile --content-paths "/*"
+                az cdn endpoint purge -g pagopa-d-itn-pay-wallet-fe-rg -n pagopa-d-itn-pay-wallet-fe-cdn-endpoint --profile-name pagopa-d-itn-pay-wallet-fe-cdn-profile --content-paths "/*"
 
   - stage: End_to_End_Tests_DEV
     dependsOn:
@@ -251,7 +251,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az storage blob sync --container '$web' --account-name pagopauweuwalletfesa -s '$(Pipeline.Workspace)/Bundle_UAT'
+                az storage blob sync --container '$web' --account-name pagopauitnpaywalletfesa -s '$(Pipeline.Workspace)/Bundle_UAT'
 
           - task: AzureCLI@2
             displayName: 'Purge CDN endpoint on UAT'
@@ -260,7 +260,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az cdn endpoint purge -g pagopa-u-weu-wallet-fe-rg -n pagopa-u-weu-wallet-fe-cdn-endpoint --profile-name pagopa-u-weu-wallet-fe-cdn-profile --content-paths "/*"
+                az cdn endpoint purge -g pagopa-u-itn-pay-wallet-fe-rg -n pagopa-u-itn-pay-wallet-fe-cdn-endpoint --profile-name pagopa-u-itn-pay-wallet-fe-cdn-profile --content-paths "/*"
  
   - stage: End_to_End_Tests_UAT
     dependsOn:
