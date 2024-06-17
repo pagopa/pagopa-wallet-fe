@@ -339,18 +339,20 @@ stages:
           - download: current
             artifact: Bundle
 
-          - task: AzureCLI@1
+          - task: AzureCLI@2
             displayName: 'Sync wallet storage on PROD'
             inputs:
               azureSubscription: 'PROD-PAGOPA-SERVICE-CONN'
+              scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                call az storage blob sync --container $web --account-name pagopapitnpaywalletfesa -s "$(Pipeline.Workspace)\Bundle"
+                az storage blob sync --container '$web' --account-name pagopapitnpaywalletfesa -s '$(Pipeline.Workspace)/Bundle_PROD'
 
-          - task: AzureCLI@1
+          - task: AzureCLI@2
             displayName: 'Purge CDN endpoint on PROD'
             inputs:
               azureSubscription: 'PROD-PAGOPA-SERVICE-CONN'
+              scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                call az cdn endpoint purge -g pagopa-p-pay-wallet-rg -n pagopa-p-pay-wallet-cdn-endpoint --profile-name pagopa-p-pay-wallet-cdn-profile --content-paths "/*"
+                az cdn endpoint purge -g pagopa-p-itn-pay-wallet-fe-rg -n pagopa-p-itn-pay-wallet-fe-cdn-endpoint --profile-name pagopa-p-itn-pay-wallet-fe-cdn-profile --content-paths "/*"
