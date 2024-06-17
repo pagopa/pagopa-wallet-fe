@@ -198,27 +198,26 @@ const Apm = () => {
                         <Typography fontWeight="600">
                           {bundle.pspBusinessName}
                         </Typography>
-                        {bundle.taxPayerFee && (
-                          <Button
-                            aria-label={t("paypalPage.pspInfoModal.info")}
-                            onClick={() => {
-                              toggleDrawerPSP(
-                                true,
-                                bundle.pspBusinessName || "",
-                                bundle.taxPayerFee || 0
-                              );
+                        <Button
+                          aria-label={t("paypalPage.pspInfoModal.info")}
+                          onClick={() => {
+                            toggleDrawerPSP(
+                              true,
+                              bundle.pspBusinessName || "",
+                              bundle.taxPayerFee || 0
+                            );
+                          }}
+                          sx={styles.formControlInfo}
+                        >
+                          <InfoOutlinedIcon
+                            sx={{
+                              color: "primary.main",
+                              cursor: "pointer"
                             }}
-                          >
-                            <InfoOutlinedIcon
-                              sx={{
-                                color: "primary.main",
-                                cursor: "pointer"
-                              }}
-                              fontSize="medium"
-                              titleAccess={t("paypalPage.pspInfoModal.info")}
-                            />
-                          </Button>
-                        )}
+                            fontSize="medium"
+                            titleAccess={t("paypalPage.pspInfoModal.info")}
+                          />
+                        </Button>
                       </Stack>
                     }
                   />
@@ -264,6 +263,9 @@ const styles = {
     ".MuiFormControlLabel-label": {
       width: "100%"
     }
+  },
+  formControlInfo: {
+    width: "1.5rem"
   },
   radioStack: {
     alignItems: "center",

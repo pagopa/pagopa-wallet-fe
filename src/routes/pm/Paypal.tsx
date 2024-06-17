@@ -188,6 +188,7 @@ export default function PaypalPage() {
                               </Typography>
                               <Button
                                 aria-label={t("paypalPage.pspInfoModal.info")}
+                                sx={styles.formControlInfo}
                                 onClick={() => {
                                   toggleDrawerPSP(
                                     true,
@@ -259,6 +260,9 @@ const styles = {
     ".MuiFormControlLabel-label": {
       width: "100%"
     }
+  },
+  formControlInfo: {
+    width: "1.5rem"
   },
   radioStack: {
     alignItems: "center",
