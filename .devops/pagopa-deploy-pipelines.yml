@@ -337,7 +337,7 @@ stages:
           - checkout: none
 
           - download: current
-            artifact: Bundle
+            artifact: Bundle_PROD
 
           - task: AzureCLI@2
             displayName: 'Sync wallet storage on PROD'
