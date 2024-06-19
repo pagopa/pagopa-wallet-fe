@@ -7,10 +7,10 @@ export const TRANSLATIONS_IT = {
   inputCardPage: {
     title: "Inserisci i dati della carta",
     formFields: {
-      name: "Titolare carta",
+      name: "Intestata a",
       number: "Numero carta",
       expirationDate: "Scadenza",
-      cvv: "Codice di sicurezza",
+      cvv: "CVV",
       cid: "CID (4 cifre)"
     },
     formErrors: {
@@ -92,15 +92,15 @@ export const TRANSLATIONS_IT = {
     retry: "Riprova"
   },
   GENERIC_ERROR: {
-    title: "Spiacenti, si è verificato un errore imprevisto",
+    title: "Si è verificato un errore imprevisto",
     body: "Prova di nuovo o contattaci per ricevere assistenza."
   },
   NOT_LISTED: {
-    title: "Spiacenti, si è verificato un errore imprevisto",
+    title: "Si è verificato un errore imprevisto",
     body: "Prova di nuovo o contattaci per ricevere assistenza."
   },
   ERRORE_TECNICO: {
-    title: "Spiacenti, si è verificato un errore tecnico"
+    title: "Si è verificato un errore tecnico"
   },
   clipboard: {
     copy: "Copia",
@@ -108,14 +108,13 @@ export const TRANSLATIONS_IT = {
     edit: "Modifica"
   },
   errorMessageNPG: {
-    HF0001: "Errore generico in fase di costruzione del campo",
+    HF0001: "Inserisci 3 o 4 cifre",
     HF0002: "Servizio temporaneamente non disponibile",
-    HF0003:
-      "La sessione del servizio è scaduta, torna indietro o ricarica la pagina",
+    HF0003: "La sessione è scaduta, torna indietro e riprova",
     HF0004: "Inserisci un numero valido",
-    HF0005: "Il circuito di questa carta sembra non essere supportato",
+    HF0005: "Il circuito di questa carta non è supportato",
     HF0006: "Inserisci mm/aa",
     HF0007: "Inserisci come riportato sulla carta",
-    HF0009: "Verifica 3DS GDI fallita"
+    HF0009: "Verifica 3DS fallita"
   }
 };
