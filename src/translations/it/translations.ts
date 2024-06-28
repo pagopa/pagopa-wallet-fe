@@ -111,5 +111,16 @@ export const TRANSLATIONS_IT = {
     copy: "Copia",
     copied: "Copiato",
     edit: "Modifica"
+  },
+  errorMessageNPG: {
+    HF0001: "Errore generico in fase di costruzione del campo",
+    HF0002: "Servizio temporaneamente non disponibile",
+    HF0003:
+      "La sessione del servizio è scaduta, torna indietro o ricarica la pagina",
+    HF0004: "Inserisci un numero valido",
+    HF0005: "Il circuito di questa carta sembra non essere supportato",
+    HF0006: "Inserisci mm/aa",
+    HF0007: "Inserisci come riportato sulla carta",
+    HF0009: "Verifica 3DS GDI fallita"
   }
 };
