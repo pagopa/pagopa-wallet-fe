@@ -48,6 +48,20 @@ export function IframeCardField(props: Props) {
   // Find src based on ID
   const src = fields && id ? getSrcFromFieldsByID(fields, id) : "";
 
+  React.useEffect(() => {
+    if (src) {
+      setSrcOnIframe(src);
+    }
+  }, [src]);
+
+  const setSrcOnIframe = (src: string) => {
+    const iframeEl: HTMLIFrameElement | null = document.getElementById(
+      `frame_${id}`
+    ) as HTMLIFrameElement;
+    iframeEl?.contentWindow?.location.replace(src);
+    iframeEl.setAttribute("src", src);
+  };
+
   const InnerComponent = (
     <FormControl sx={styles.formControl}>
       <InputLabel
