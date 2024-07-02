@@ -77,7 +77,6 @@ export function IframeCardField(props: Props) {
         <iframe
           aria-labelledby={label}
           id={`frame_${id}`}
-          loading="lazy"
           seamless
           src={src}
           style={styles.iframe}
