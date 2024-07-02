@@ -200,6 +200,7 @@ export default function IframeCardForm(props: IframeCardForm) {
 
         const onAllFieldsLoaded = () => {
           setFormLoading(false);
+          setLoading(false);
         };
 
         try {
