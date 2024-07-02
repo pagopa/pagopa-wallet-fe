@@ -22,6 +22,7 @@ interface Props {
   errorMessage?: string | null;
   isValid?: boolean;
   activeField: FieldId | undefined;
+  loaded: boolean;
 }
 
 interface State {
@@ -43,20 +44,13 @@ interface Styles {
 }
 
 export function IframeCardField(props: Props) {
-  const { fields, id, errorCode, errorMessage, label, isValid } = props;
+  const { fields, id, errorCode, errorMessage, label, isValid, loaded } = props;
   const { t } = useTranslation();
 
-  const [loaded, setLoaded] = React.useState<State["loaded"]>(false);
   const styles = useStyles(props);
 
   // Find src based on ID
   const src = fields && id ? getSrcFromFieldsByID(fields, id) : "";
-
-  React.useEffect(() => {
-    if (src) {
-      setTimeout(() => setLoaded(true), 2000);
-    }
-  }, [src]);
 
   const InnerComponent = (
     <FormControl sx={styles.formControl}>
