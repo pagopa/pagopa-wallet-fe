@@ -22,9 +22,6 @@ interface Props {
   errorMessage?: string | null;
   isValid?: boolean;
   activeField: FieldId | undefined;
-}
-
-interface State {
   loaded: boolean;
 }
 
@@ -43,10 +40,9 @@ interface Styles {
 }
 
 export function IframeCardField(props: Props) {
-  const { fields, id, errorCode, errorMessage, label, isValid } = props;
+  const { fields, id, errorCode, errorMessage, label, isValid, loaded } = props;
   const { t } = useTranslation();
 
-  const [loaded, setLoaded] = React.useState<State["loaded"]>(false);
   const styles = useStyles(props);
 
   // Find src based on ID
@@ -54,9 +50,17 @@ export function IframeCardField(props: Props) {
 
   React.useEffect(() => {
     if (src) {
-      setTimeout(() => setLoaded(true), 2000);
+      setSrcOnIframe(src);
     }
   }, [src]);
+
+  const setSrcOnIframe = (src: string) => {
+    const iframeEl: HTMLIFrameElement | null = document.getElementById(
+      `frame_${id}`
+    ) as HTMLIFrameElement;
+    iframeEl?.contentWindow?.location.replace(src);
+    iframeEl.setAttribute("src", src);
+  };
 
   const InnerComponent = (
     <FormControl sx={styles.formControl}>
@@ -73,7 +77,6 @@ export function IframeCardField(props: Props) {
         <iframe
           aria-labelledby={label}
           id={`frame_${id}`}
-          loading="lazy"
           seamless
           src={src}
           style={styles.iframe}
