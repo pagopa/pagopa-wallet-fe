@@ -25,10 +25,6 @@ interface Props {
   loaded: boolean;
 }
 
-interface State {
-  loaded: boolean;
-}
-
 const getSrcFromFieldsByID = (
   fields: ReadonlyArray<Field>,
   id: keyof typeof IdFields

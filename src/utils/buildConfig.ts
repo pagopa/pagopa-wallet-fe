@@ -27,7 +27,7 @@ export default (buildConfig: BuildConfig) => {
     onReadyForPayment,
     onPaymentComplete,
     onPaymentRedirect,
-    onAllFieldsLoaded,
+    onAllFieldsLoaded
   } = buildConfig;
 
   return {
