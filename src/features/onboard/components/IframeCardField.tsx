@@ -78,7 +78,6 @@ export function IframeCardField(props: Props) {
           aria-labelledby={label}
           id={`frame_${id}`}
           seamless
-          src={src}
           style={styles.iframe}
         />
         <Box
