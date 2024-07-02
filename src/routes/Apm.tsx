@@ -190,7 +190,7 @@ const Apm = () => {
                   <FormControlLabel
                     key={bundle.idPsp}
                     value={bundle.idPsp}
-                    control={<Radio />}
+                    control={<Radio id={bundle.idPsp} />}
                     disabled={loadingSubmit}
                     sx={styles.formControl}
                     label={
