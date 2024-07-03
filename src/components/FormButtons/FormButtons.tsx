@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 type SubmitButton = {
   handleSubmit?: (e: React.FormEvent) => void;
   type?: "submit" | "button";
+  id?: string;
   disabledSubmit: boolean;
   loadingSubmit?: boolean;
   submitTitle: string;
@@ -16,6 +17,7 @@ type CancellableButtons = {
   handleSubmit?: (e: React.FormEvent) => void;
   handleCancel: () => void;
   type?: "submit" | "button";
+  id?: string;
   disabledSubmit: boolean;
   disabledCancel?: false;
   loadingSubmit?: boolean;
@@ -43,6 +45,7 @@ export function FormButtons(props: SubmitButton | CancellableButtons) {
       >
         <Grid xs={props.disabledCancel ? 12 : 8} item>
           <LoadingButton
+            id={props.id}
             type={props.type}
             onSubmit={props.handleSubmit}
             loading={props.loadingSubmit || false}
