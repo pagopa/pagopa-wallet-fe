@@ -227,7 +227,7 @@ const Apm = () => {
             <FormButtons
               type="button"
               submitTitle={`${t("paypalPage.buttons.submit")}`}
-              submitId="apmSubmit"
+              id="apmSubmit"
               disabledSubmit={loading || !selectedIdPsp}
               disabledCancel={true}
               loadingSubmit={loadingSubmit}
