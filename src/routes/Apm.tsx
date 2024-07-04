@@ -190,7 +190,7 @@ const Apm = () => {
                   <FormControlLabel
                     key={bundle.idPsp}
                     value={bundle.idPsp}
-                    control={<Radio />}
+                    control={<Radio id={bundle.idPsp} />}
                     disabled={loadingSubmit}
                     sx={styles.formControl}
                     label={
@@ -227,6 +227,7 @@ const Apm = () => {
             <FormButtons
               type="button"
               submitTitle={`${t("paypalPage.buttons.submit")}`}
+              idSubmit="apmSubmit"
               disabledSubmit={loading || !selectedIdPsp}
               disabledCancel={true}
               loadingSubmit={loadingSubmit}
