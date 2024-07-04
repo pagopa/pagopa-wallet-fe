@@ -53,6 +53,7 @@ export default function IframeCardForm(props: IframeCardForm) {
   const saveMethod = React.useRef(true);
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [formLoading, setFormLoading] = React.useState(true);
   const [cardFormFields, setCardFormFields] =
     React.useState<SessionWalletCreateResponseData1["cardFormFields"]>();
   const [activeField, setActiveField] = React.useState<FieldId | undefined>(
@@ -197,6 +198,11 @@ export default function IframeCardForm(props: IframeCardForm) {
           window.location.replace(`/${WalletRoutes.ERRORE}`);
         };
 
+        const onAllFieldsLoaded = () => {
+          setFormLoading(false);
+          setLoading(false);
+        };
+
         try {
           // THIS is mandatory cause the Build class is defined in the external library called NPG SDK
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -207,7 +213,8 @@ export default function IframeCardForm(props: IframeCardForm) {
               onReadyForPayment,
               onPaymentComplete,
               onPaymentRedirect,
-              onBuildError
+              onBuildError,
+              onAllFieldsLoaded
             })
           );
           setBuildInstance(newBuild);
@@ -248,6 +255,7 @@ export default function IframeCardForm(props: IframeCardForm) {
               errorMessage={formStatus.CARD_NUMBER?.errorMessage}
               isValid={formStatus.CARD_NUMBER?.isValid}
               activeField={activeField}
+              loaded={!formLoading}
             />
           </Box>
           <Box
@@ -264,6 +272,7 @@ export default function IframeCardForm(props: IframeCardForm) {
                 errorMessage={formStatus.EXPIRATION_DATE?.errorMessage}
                 isValid={formStatus.EXPIRATION_DATE?.isValid}
                 activeField={activeField}
+                loaded={!formLoading}
               />
             </Box>
             <Box width="50%">
@@ -275,6 +284,7 @@ export default function IframeCardForm(props: IframeCardForm) {
                 errorMessage={formStatus.SECURITY_CODE?.errorMessage}
                 isValid={formStatus.SECURITY_CODE?.isValid}
                 activeField={activeField}
+                loaded={!formLoading}
               />
             </Box>
           </Box>
@@ -287,6 +297,7 @@ export default function IframeCardForm(props: IframeCardForm) {
               errorMessage={formStatus.CARDHOLDER_NAME?.errorMessage}
               isValid={formStatus.CARDHOLDER_NAME?.isValid}
               activeField={activeField}
+              loaded={!formLoading}
             />
           </Box>
           <Box>
