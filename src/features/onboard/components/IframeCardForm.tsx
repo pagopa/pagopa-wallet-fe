@@ -195,13 +195,13 @@ export default function IframeCardForm(props: IframeCardForm) {
       utils.storage.SessionItems.orderId,
       body.orderId
     );
-        
-  const onAllFieldsLoaded = () => {
-    setFormLoading(false);
-    setLoading(false);
-  };    
-    
-  try {
+
+    const onAllFieldsLoaded = () => {
+      setFormLoading(false);
+      setLoading(false);
+    };
+
+    try {
       // THIS is mandatory cause the Build class is defined in the external library called NPG SDK
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
