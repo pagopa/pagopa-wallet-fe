@@ -1,6 +1,6 @@
 {
   "name": "pagopa-wallet-fe",
-  "version": "0.7.4",
+  "version": "0.13.1",
   "repository": "https://github.com/pagopa/pagopa-wallet-fe.git",
   "author": "PagoPA SpA",
   "license": "MIT",
@@ -68,13 +68,13 @@
     "util": "^0.12.5"
   },
   "dependencies": {
-    "@emotion/react": "^11.9.0",
-    "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "^5.2.5",
-    "@mui/lab": "^5.0.0-alpha.69",
-    "@mui/material": "^5.13.4",
-    "@mui/system": "^5.13.2",
-    "@pagopa/mui-italia": "0.6.10",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.3",
+    "@mui/lab": "^5.0.0-alpha.140",
+    "@mui/material": "^5.14.5",
+    "@mui/system": "^5.14.5",
+    "@pagopa/mui-italia": "1.4.0",
     "@pagopa/openapi-codegen-ts": "12.1.2",
     "@types/jest": "^29.5.5",
     "card-validator": "^8.1.1",

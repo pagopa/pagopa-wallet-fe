@@ -11,6 +11,7 @@ interface BuildConfig {
   onPaymentComplete: () => void;
   onPaymentRedirect: (urlRedirect: string) => void;
   onBuildError: () => void;
+  onAllFieldsLoaded: () => void;
 }
 
 export default (buildConfig: BuildConfig) => {
@@ -25,7 +26,8 @@ export default (buildConfig: BuildConfig) => {
     onChange,
     onReadyForPayment,
     onPaymentComplete,
-    onPaymentRedirect
+    onPaymentRedirect,
+    onAllFieldsLoaded
   } = buildConfig;
 
   return {
@@ -91,6 +93,7 @@ export default (buildConfig: BuildConfig) => {
           onBuildError();
       }
     },
+    onAllFieldsLoaded,
     cssLink: cssPath,
     defaultComponentCssClassName: "npg-component",
     defaultContainerCssClassName: "npg-container"

@@ -29,17 +29,15 @@ export default function PageContainer(props: {
           {props.title}
         </Typography>
       )}
-      {!!description && (
-        <Typography
-          variant="body2"
-          sx={{ mb: 1 }}
-          color="text.light"
-          whiteSpace="pre-line"
-        >
-          {description}
-          {!!link && link}
-        </Typography>
-      )}
+      <Typography
+        variant="body2"
+        sx={{ mb: 1 }}
+        color="text.light"
+        whiteSpace="pre-line"
+      >
+        {!!description && description}
+        {!!link && link}
+      </Typography>
       <Box sx={childrenSx}>{children}</Box>
     </>
   );
