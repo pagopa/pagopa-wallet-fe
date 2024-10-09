@@ -84,7 +84,7 @@ stages:
               api_wallet_outcome_basepath: '/payment-wallet-outcomes/v1'
               api_timeout:  10000
               npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
-              wallet_gdi_check_timeout: 10000
+              wallet_gdi_check_timeout: 20000
               wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
               wallet_onboard_switch_on_payment_page: 1
 
@@ -208,7 +208,7 @@ stages:
               api_wallet_outcome_basepath: '/payment-wallet-outcomes/v1'
               api_timeout:  10000
               npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
-              wallet_gdi_check_timeout: 10000
+              wallet_gdi_check_timeout: 20000
               wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
               wallet_onboard_switch_on_payment_page: 0
 
@@ -303,7 +303,7 @@ stages:
               api_wallet_outcome_basepath: '/payment-wallet-outcomes/v1'
               api_timeout:  10000
               npg_sdk_url: 'https://xpay.nexigroup.com/monetaweb/resources/hfsdk.js'
-              wallet_gdi_check_timeout: 10000
+              wallet_gdi_check_timeout: 20000
               wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
               wallet_onboard_switch_on_payment_page: 0
 
