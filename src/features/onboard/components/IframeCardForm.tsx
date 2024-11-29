@@ -88,11 +88,14 @@ export default function IframeCardForm(props: IframeCardForm) {
   );
   utils.storage.setSessionItem(utils.storage.SessionItems.walletId, walletId);
 
-  const onValidation = ({
-    details
-  }: WalletVerifyRequestsResponse & {
-    details: WalletVerifyRequestCardDetails | WalletVerifyRequestAPMDetails;
-  }) => {
+  const onValidation = (
+    {
+      details
+    }: WalletVerifyRequestsResponse & {
+      details: WalletVerifyRequestCardDetails | WalletVerifyRequestAPMDetails;
+    },
+    isPayment: boolean | undefined
+  ) => {
     pipe(
       WalletVerifyRequestCardDetails.decode(details),
       E.fold(
@@ -100,6 +103,15 @@ export default function IframeCardForm(props: IframeCardForm) {
           pipe(
             WalletVerifyRequestAPMDetails.decode(details),
             E.fold(onError, (detail) => {
+              if (isPayment) {
+                return utils.url.redirectToIoAppForPayment(
+                  walletId,
+                  OUTCOME_ROUTE.SUCCESS,
+                  WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
+                    ? saveMethod.current
+                    : undefined
+                );
+              }
               pipe(
                 O.fromNullable(detail.redirectUrl),
                 O.match(onError, (redirect) =>
@@ -116,10 +128,16 @@ export default function IframeCardForm(props: IframeCardForm) {
     );
   };
 
-  const validation = async ({ orderId }: SessionWalletCreateResponse) => {
+  const validation = async (
+    { orderId }: SessionWalletCreateResponse,
+    isPayment: boolean | undefined
+  ) => {
     pipe(
       await utils.api.npg.validations(sessionToken, orderId, walletId),
-      E.match(onError, onValidation)
+      E.match(
+        (_) => onError(),
+        (response) => onValidation(response, isPayment)
+      )
     );
   };
 
@@ -160,16 +178,7 @@ export default function IframeCardForm(props: IframeCardForm) {
 
         // payment/onboarding success event
         const onReadyForPayment = () => {
-          if (isPayment) {
-            return utils.url.redirectToIoAppForPayment(
-              walletId,
-              OUTCOME_ROUTE.SUCCESS,
-              WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
-                ? saveMethod.current
-                : undefined
-            );
-          }
-          void validation(body);
+          void validation(body, isPayment);
         };
 
         // payment/onboarding without 3ds challenge phase
