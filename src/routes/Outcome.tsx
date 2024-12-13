@@ -4,12 +4,32 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { pipe } from "fp-ts/function";
 import * as E from "fp-ts/Either";
 import PageContainer from "../components/commons/PageContainer";
-import WalletLoader from "../components/commons/WalletLoader";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import utils from "../utils";
 import { OUTCOME_ROUTE } from "./models/routeModel";
+import { getConfigOrThrow } from "../config";
+import { useTranslation } from "react-i18next";
 
 const Outcome = () => {
+  const { t } = useTranslation();
   const { getSessionItem, SessionItems } = utils.storage;
+
+  const [outcomeState, setOutcomeState] =
+    React.useState<OUTCOME_ROUTE | null>(null);
+  const config = getConfigOrThrow();
+
+  const performRedirectToClient = (newOutcome?: OUTCOME_ROUTE, walletId?: string) => {
+    // if not present new outcome use old one
+    const outcome = newOutcome || outcomeState || OUTCOME_ROUTE.GENERIC_ERROR;
+    utils.url.redirectWithOutcome(outcome, walletId)
+    // if is new outcome, update state after timeout
+    if (newOutcome) {
+      setTimeout(
+        () => setOutcomeState(outcome),
+        config.WALLET_SHOW_CONTINUE_IO_BTN_DELAY_MILLIS
+      );
+    }
+  };
 
   useEffect(() => {
     void (async () => {
@@ -19,7 +39,7 @@ const Outcome = () => {
       pipe(
         sequenceS(O.option)({ walletId, orderId, sessionToken }),
         O.match(
-          () => utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
+          () => performRedirectToClient(OUTCOME_ROUTE.GENERIC_ERROR),
           async ({ walletId, orderId, sessionToken }) =>
             pipe(
               await utils.api.npg.getSessionWallet(
@@ -29,12 +49,10 @@ const Outcome = () => {
               ),
               E.match(
                 () =>
-                  utils.url.redirectWithOutcome(OUTCOME_ROUTE.GENERIC_ERROR),
+                  performRedirectToClient(OUTCOME_ROUTE.GENERIC_ERROR),
                 ({ outcome }) =>
-                  utils.url.redirectWithOutcome(
-                    outcome === undefined
-                      ? OUTCOME_ROUTE.GENERIC_ERROR
-                      : outcome,
+                  performRedirectToClient(
+                    utils.url.getOutcomeRouteFromValue(outcome),
                     outcome === 0 ? walletId?.value : undefined
                   )
               )
@@ -46,7 +64,53 @@ const Outcome = () => {
 
   return (
     <PageContainer>
-      <WalletLoader />
+      <Box
+        sx={{
+          position: "fixed",
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          left: 0,
+          top: 0,
+          pb: 20,
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <CircularProgress />
+        {outcomeState && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              alignItems: "center",
+              maxWidth: "400px",
+              textAlign: "center",
+              p: 3,
+              gap: 2,
+            }}
+          >
+            <Typography variant="h5" fontWeight={700}>
+              {t("resultPage.justFewMoments")}
+            </Typography>
+            <Typography variant="body2">
+              {t("resultPage.completeOperationMsg")}
+            </Typography>
+            <Button
+              sx={{
+                mt: 2,
+              }}
+              variant="outlined"
+              onClick={() => performRedirectToClient()}
+              id="continueToIOBtn"
+            >
+              {t("resultPage.continueToIO")}
+            </Button>
+          </Box>
+        )}
+      </Box>
     </PageContainer>
   );
 };

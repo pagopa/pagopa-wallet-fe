@@ -49,6 +49,7 @@ stages:
             api_pm_basepath: '/pp-restapi-CD'
             api_timeout:  10000
             npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
+            wallet_show_continue_io_btn_delay_millis: 2000
     
         - script: |
             yarn build
