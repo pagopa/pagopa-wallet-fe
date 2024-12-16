@@ -93,7 +93,8 @@ export const TRANSLATIONS_IT = {
   },
   resultPage: {
     justFewMoments: "Ancora qualche istante...",
-    completeOperationMsg: "Se il dispositivo lo chiede, dai il permesso per completare l'operazione.",
+    completeOperationMsg:
+      "Se il dispositivo lo chiede, dai il permesso per completare l'operazione.",
     continueToIO: "Continua sull'app IO"
   },
   errorButton: {

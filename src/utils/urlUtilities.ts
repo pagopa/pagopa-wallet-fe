@@ -49,22 +49,20 @@ function getFragments(
 /**
  * This function convert number outcome with related enum OUTCOME_ROUTE
  */
-const getOutcomeRouteFromValue = (
-  outcome: number | undefined
-) => {
-  switch(outcome) {
+const getOutcomeRouteFromValue = (outcome: number | undefined) => {
+  switch (outcome) {
     case 0:
-      return OUTCOME_ROUTE.SUCCESS
+      return OUTCOME_ROUTE.SUCCESS;
     case 1:
-      return OUTCOME_ROUTE.GENERIC_ERROR
+      return OUTCOME_ROUTE.GENERIC_ERROR;
     case 8:
-      return OUTCOME_ROUTE.CANCELED_BY_USER
+      return OUTCOME_ROUTE.CANCELED_BY_USER;
     case 14:
-      return OUTCOME_ROUTE.AUTH_ERROR
+      return OUTCOME_ROUTE.AUTH_ERROR;
     case 15:
-      return OUTCOME_ROUTE.CONFLICT
+      return OUTCOME_ROUTE.CONFLICT;
     case 16:
-      return OUTCOME_ROUTE.ACCOUNT_BPAY_NOT_PRESENT
+      return OUTCOME_ROUTE.ACCOUNT_BPAY_NOT_PRESENT;
     default:
       return OUTCOME_ROUTE.GENERIC_ERROR;
   }

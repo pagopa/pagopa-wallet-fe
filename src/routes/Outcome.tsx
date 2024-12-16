@@ -3,25 +3,29 @@ import * as O from "fp-ts/lib/Option";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { pipe } from "fp-ts/function";
 import * as E from "fp-ts/Either";
-import PageContainer from "../components/commons/PageContainer";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
-import utils from "../utils";
-import { OUTCOME_ROUTE } from "./models/routeModel";
-import { getConfigOrThrow } from "../config";
 import { useTranslation } from "react-i18next";
+import PageContainer from "../components/commons/PageContainer";
+import utils from "../utils";
+import { getConfigOrThrow } from "../config";
+import { OUTCOME_ROUTE } from "./models/routeModel";
 
 const Outcome = () => {
   const { t } = useTranslation();
   const { getSessionItem, SessionItems } = utils.storage;
 
-  const [outcomeState, setOutcomeState] =
-    React.useState<OUTCOME_ROUTE | null>(null);
+  const [outcomeState, setOutcomeState] = React.useState<OUTCOME_ROUTE | null>(
+    null
+  );
   const config = getConfigOrThrow();
 
-  const performRedirectToClient = (newOutcome?: OUTCOME_ROUTE, walletId?: string) => {
+  const performRedirectToClient = (
+    newOutcome?: OUTCOME_ROUTE,
+    walletId?: string
+  ) => {
     // if not present new outcome use old one
     const outcome = newOutcome || outcomeState || OUTCOME_ROUTE.GENERIC_ERROR;
-    utils.url.redirectWithOutcome(outcome, walletId)
+    utils.url.redirectWithOutcome(outcome, walletId);
     // if is new outcome, update state after timeout
     if (newOutcome) {
       setTimeout(
@@ -48,8 +52,7 @@ const Outcome = () => {
                 sessionToken.value
               ),
               E.match(
-                () =>
-                  performRedirectToClient(OUTCOME_ROUTE.GENERIC_ERROR),
+                () => performRedirectToClient(OUTCOME_ROUTE.GENERIC_ERROR),
                 ({ outcome }) =>
                   performRedirectToClient(
                     utils.url.getOutcomeRouteFromValue(outcome),
@@ -75,7 +78,7 @@ const Outcome = () => {
           pb: 20,
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "center"
         }}
       >
         <CircularProgress />
@@ -89,7 +92,7 @@ const Outcome = () => {
               maxWidth: "400px",
               textAlign: "center",
               p: 3,
-              gap: 2,
+              gap: 2
             }}
           >
             <Typography variant="h5" fontWeight={700}>
@@ -100,7 +103,7 @@ const Outcome = () => {
             </Typography>
             <Button
               sx={{
-                mt: 2,
+                mt: 2
               }}
               variant="outlined"
               onClick={() => performRedirectToClient()}

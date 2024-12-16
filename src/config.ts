@@ -53,7 +53,7 @@ const errorOrConfig: t.Validation<IConfig> = IConfig.decode({
         (window as any)._env_.WALLET_SHOW_CONTINUE_IO_BTN_DELAY_MILLIS,
         10
       )
-    : 2000,
+    : 2000
 });
 
 /**

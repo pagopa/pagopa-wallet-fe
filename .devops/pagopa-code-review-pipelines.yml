@@ -123,3 +123,68 @@ stages:
           inputs:
             codeCoverageTool: Cobertura
             summaryFileLocation: 'coverage/cobertura-coverage.xml'      
+
+  # B) Run integration tests if there is a push or pull request on any branch.
+  - stage: Integration_Tests
+    pool:
+      vmImage: 'ubuntu-latest'
+    dependsOn: []
+    jobs:
+      - job: run_integration_tests
+        timeoutInMinutes: 30
+        steps:
+
+        - checkout: wallet-be-mock
+
+        - script: |
+            cp env.example .env
+            sed -i "s/^NPG_API_KEY=.*$/NPG_API_KEY=$(WALLET-TEST-NPG-API-KEY)/" .env
+          workingDirectory: pagopa-wallet-be-mock
+          displayName: 'Setup env for mock'
+
+        - script: yarn global add node-gyp && yarn install && yarn build
+          workingDirectory: pagopa-wallet-be-mock
+          displayName: 'Setup deps for mock'
+
+        - script: |
+            nohup yarn start &
+          displayName: 'Start backend mock'
+          workingDirectory: pagopa-wallet-be-mock
+
+        - checkout: self
+
+        - template: templates/node-job-setup/template.yaml@pagopaCommons
+          parameters:
+           projectDir: pagopa-wallet-fe
+
+        - script: |
+            export $(grep -v '^#' .env.development | xargs)
+          displayName: 'export envs from .env.development.noredirect'
+          workingDirectory: pagopa-wallet-fe
+
+        - script: |
+            yarn dev &
+          displayName: 'Start wallet fe'
+          workingDirectory: pagopa-wallet-fe
+
+        - script: while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:1234)" != "200" ]]; do sleep 5; done
+          displayName: 'Wait for backend to be up and running'
+          workingDirectory: pagopa-wallet-fe
+          
+        - script: |
+            yarn dev:env:noredirect &
+          displayName: 'Set wallet fe with noredirect env'
+          workingDirectory: pagopa-wallet-fe
+
+        - script: yarn test:noredirect
+          displayName: 'IO noredirect button Integration tests exec'
+          workingDirectory: pagopa-wallet-fe
+
+        - task: PublishTestResults@2
+          displayName: 'Publish integration tests results from Jest tests'
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: '**/*TEST.xml'
+            searchFolder: '$(System.DefaultWorkingDirectory)'
+            failTaskOnFailedTests: true
+

@@ -19,3 +19,52 @@ These are all the environment variables needed to configure the frontend:
 | WALLET_CONFIG_API_ENV                 | Deployment environment (DEV, UAT or PROD)            | string |         |
 | WALLET_PAGOPA_LOGOS_CDN               | CDN host to retrieve image resources                 | string |         |
 | WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE | show/hidden the save method's toggle                 | number |         |
+
+## Getting Started
+
+This is an example of how you may give instructions on setting up your project locally.
+To get a local copy up and running follow these simple example steps.
+
+### Prerequisites
+
+In order to build and run this project are required:
+
+- [yarn](https://yarnpkg.com/)
+- [node (18.17.1)](https://nodejs.org/it/)
+
+
+### Installation
+
+1. Install node packages
+   ```sh
+   yarn install
+   ```
+2. Generate api client
+   ```sh
+   yarn generate
+   ```
+3. Build
+   ```sh
+   yarn build
+   ```
+4. tests
+   ```sh
+   yarn test
+   ```
+5. Linter
+   ```sh
+   yarn lint
+   ```
+
+### Usage
+
+In order to run the application on a local dev server with mock API responses:
+-  ```sh
+   yarn start
+   ```
+the application is available at http://localhost:1234
+
+Test use cases: 
+
+- *ONBOARDING* 
+    http://localhost:1234/onboarding/creditcard#walletId=111&paymentMethodId=222&sessionToken=token
