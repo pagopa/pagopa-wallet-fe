@@ -68,3 +68,4 @@ Test use cases:
 
 - *ONBOARDING* 
     http://localhost:1234/onboarding/creditcard#walletId=111&paymentMethodId=222&sessionToken=token
+    http://localhost:1234/onboarding/apm#walletId=111&paymentMethodId=222&sessionToken=token
