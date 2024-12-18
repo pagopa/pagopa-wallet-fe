@@ -30,6 +30,7 @@ resources:
       name: pagopa/azure-pipeline-templates
       ref: refs/tags/v19
       endpoint: 'io-azure-devops-github-ro'
+      
     - repository: wallet-be-mock
       type: github
       name: pagopa/pagopa-wallet-be-mock
@@ -141,9 +142,10 @@ stages:
 
         - checkout: wallet-be-mock
 
+        # actualy npg api key does not required for current integration test
         - script: |
             cp env.example .env
-            sed -i "s/^NPG_API_KEY=.*$/NPG_API_KEY=$(WALLET-TEST-NPG-API-KEY)/" .env
+            sed -i "s/^NPG_API_KEY=.*$/NPG_API_KEY=key/" .env
           workingDirectory: pagopa-wallet-be-mock
           displayName: 'Setup env for mock'
 

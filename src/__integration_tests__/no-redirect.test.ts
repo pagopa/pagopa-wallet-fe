@@ -16,11 +16,11 @@ describe("Test showing final button for continue to IO", () => {
   it(`Test IO button on success payment flow`, async() => {
     console.log("Start outcome page with IO app redirect")
 
-    const WALLET_FE_CARD_ONBOARDING = "http://localhost:1234/onboarding/creditcard#walletId=111&paymentMethodId=222&sessionToken=token";
+    const WALLET_FE_APM_ONBOARDING = "http://localhost:1234/onboarding/apm#walletId=111&paymentMethodId=222&sessionToken=token";
     const WALLET_FE_ESITO_PAGE = "http://localhost:1234/esito";
 
     console.log("start onboarding for session storage initialization")
-    await page.goto(WALLET_FE_CARD_ONBOARDING);
+    await page.goto(WALLET_FE_APM_ONBOARDING);
 
     console.log("redirect directly into result page")
     await page.goto(WALLET_FE_ESITO_PAGE);
