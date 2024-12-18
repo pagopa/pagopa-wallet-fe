@@ -30,10 +30,10 @@ resources:
       name: pagopa/azure-pipeline-templates
       ref: refs/tags/v19
       endpoint: 'io-azure-devops-github-ro'
-  - repository: wallet-be-mock
+    - repository: wallet-be-mock
       type: github
       name: pagopa/pagopa-wallet-be-mock
-      ref: master
+      ref: main
       endpoint: 'io-azure-devops-github-ro'
 
 stages:
