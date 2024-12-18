@@ -166,7 +166,7 @@ stages:
 
         - script: |
             export $(grep -v '^#' .env.development | xargs)
-          displayName: 'export envs from .env.noredirect'
+          displayName: 'export envs from .env.development'
           workingDirectory: pagopa-wallet-fe
 
         - script: |
