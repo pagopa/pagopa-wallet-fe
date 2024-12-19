@@ -55,7 +55,9 @@ const Outcome = () => {
                 () => performRedirectToClient(OUTCOME_ROUTE.GENERIC_ERROR),
                 ({ outcome }) =>
                   performRedirectToClient(
-                    outcome,
+                    outcome === undefined
+                      ? OUTCOME_ROUTE.GENERIC_ERROR
+                      : outcome,
                     outcome === 0 ? walletId?.value : undefined
                   )
               )
