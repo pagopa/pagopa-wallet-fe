@@ -15,4 +15,7 @@ module.exports = {
   ],
   testResultsProcessor: "jest-sonar-reporter",
   setupFiles: ['<rootDir>/src/env-config.js'],
+  testPathIgnorePatterns: [
+    "/<rootDir>/src/__integration_tests__"
+  ],
 };

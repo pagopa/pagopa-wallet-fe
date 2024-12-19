@@ -106,7 +106,8 @@
     "testEnvironment": "jsdom",
     "testPathIgnorePatterns": [
       "/dist",
-      "/node_modules"
+      "/node_modules",
+      "/<rootDir>/src/__integration_tests__"
     ],
     "coverageReporters": [
       "cobertura",
