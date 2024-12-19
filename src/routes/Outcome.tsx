@@ -14,13 +14,13 @@ const Outcome = () => {
   const { t } = useTranslation();
   const { getSessionItem, SessionItems } = utils.storage;
 
-  const [outcomeState, setOutcomeState] = React.useState<OUTCOME_ROUTE | null>(
+  const [outcomeState, setOutcomeState] = React.useState<OUTCOME_ROUTE | number | null>(
     null
   );
   const config = getConfigOrThrow();
 
   const performRedirectToClient = (
-    newOutcome?: OUTCOME_ROUTE,
+    newOutcome?: OUTCOME_ROUTE | number,
     walletId?: string
   ) => {
     // if not present new outcome use old one
@@ -55,7 +55,7 @@ const Outcome = () => {
                 () => performRedirectToClient(OUTCOME_ROUTE.GENERIC_ERROR),
                 ({ outcome }) =>
                   performRedirectToClient(
-                    utils.url.getOutcomeRouteFromValue(outcome),
+                    outcome,
                     outcome === 0 ? walletId?.value : undefined
                   )
               )
