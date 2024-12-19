@@ -173,6 +173,11 @@ stages:
             yarn dev &
           displayName: 'Start wallet fe'
           workingDirectory: pagopa-wallet-fe
+
+        - script: |
+            timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:1234)" != "200" ]]; do sleep 5; done' || exit 1
+          displayName: 'Wait for backend to be up and running'
+          workingDirectory: pagopa-wallet-fe
           
         - script: |
             yarn dev:env:noredirect &
