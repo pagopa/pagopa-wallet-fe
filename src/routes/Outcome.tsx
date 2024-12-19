@@ -14,9 +14,9 @@ const Outcome = () => {
   const { t } = useTranslation();
   const { getSessionItem, SessionItems } = utils.storage;
 
-  const [outcomeState, setOutcomeState] = React.useState<OUTCOME_ROUTE | number | null>(
-    null
-  );
+  const [outcomeState, setOutcomeState] = React.useState<
+    OUTCOME_ROUTE | number | null
+  >(null);
   const config = getConfigOrThrow();
 
   const performRedirectToClient = (
