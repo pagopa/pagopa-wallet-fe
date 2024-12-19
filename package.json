@@ -116,8 +116,7 @@
     ],
     "collectCoverage": true,
     "coveragePathIgnorePatterns": [
-      "generated",
-      "<rootDir>/src/__integration_tests__/"
+      "generated"
     ],
     "coverageDirectory": "<rootDir>/coverage/",
     "setupFiles": [

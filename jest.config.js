@@ -13,6 +13,7 @@ module.exports = {
       outputName: 'sonar-report.xml',
     } ]
   ],
+  modulePathIgnorePatterns: ["__integration_tests__"],
   testResultsProcessor: "jest-sonar-reporter",
   setupFiles: ['<rootDir>/src/env-config.js'],
 };
