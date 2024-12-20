@@ -75,7 +75,7 @@ export function getConfig(): t.Validation<IConfig> {
  */
 export function getConfigOrThrow(): IConfig {
   return pipe(
-    errorOrConfig,
+    getConfig(),
     E.getOrElseW((errors) => {
       throw new Error(`Invalid configuration: ${readableReport(errors)}`);
     })
