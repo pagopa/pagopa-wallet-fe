@@ -18,7 +18,7 @@
     "start:noredirect": "npm-run-all generate type-check dev:env:noredirect && parcel src/index.html",
     "dev:env": "export $(grep -v '^#' .env.development | xargs) && chmod +x env.sh && ./env.sh",
     "dev:env:noredirect": "export $(grep -vh '^#' .env.development .env.noredirect | xargs) && chmod +x env.sh && ./env.sh",
-    "dev:server": "parcel src/index.html",
+    "dev:server": "parcel src/index.html &",
     "dev": "rimraf .cache && rimraf dist && npm-run-all generate type-check dev:env dev:server",
     "test": "jest --config=jest.config.js",
     "test:integration": "jest --config=jest.integration.config.js",
