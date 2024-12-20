@@ -46,14 +46,11 @@ const errorOrConfig: t.Validation<IConfig> = IConfig.decode({
     parseInt((window as any)._env_.WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE, 10)
   ),
   // eslint-disable-next-line no-underscore-dangle
-  WALLET_SHOW_CONTINUE_IO_BTN_DELAY_MILLIS: (window as any)._env_
-    .WALLET_SHOW_CONTINUE_IO_BTN_DELAY_MILLIS
-    ? parseInt(
-        // eslint-disable-next-line no-underscore-dangle
-        (window as any)._env_.WALLET_SHOW_CONTINUE_IO_BTN_DELAY_MILLIS,
-        10
-      )
-    : 2000
+  WALLET_SHOW_CONTINUE_IO_BTN_DELAY_MILLIS: parseInt(
+    // eslint-disable-next-line no-underscore-dangle
+    (window as any)._env_.WALLET_SHOW_CONTINUE_IO_BTN_DELAY_MILLIS,
+    10
+  )
 });
 
 /**
