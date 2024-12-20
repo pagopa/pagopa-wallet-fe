@@ -166,12 +166,12 @@ stages:
            projectDir: pagopa-wallet-fe
 
         - script: |
-            export $(grep -v '^#' .env.development | xargs)
-          displayName: 'export envs from .env.development'
+            cp env.example .env.development
+          displayName: 'copy env.example to .env.development'
           workingDirectory: pagopa-wallet-fe
 
         - script: |
-            yarn dev
+            yarn dev &
           displayName: 'Start wallet fe'
           workingDirectory: pagopa-wallet-fe
 
