@@ -91,6 +91,7 @@ stages:
             extraProperties: |
               sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
               sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
+              sonar.coverage.exclusions=src/**/__integration_tests__/**, src/**/__tests__/**
 
         - template: azure-templates/setup-env.yml
           parameters:
