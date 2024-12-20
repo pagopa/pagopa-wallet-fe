@@ -170,7 +170,7 @@ stages:
           workingDirectory: pagopa-wallet-fe
 
         - script: |
-            yarn dev &
+            yarn dev
           displayName: 'Start wallet fe'
           workingDirectory: pagopa-wallet-fe
 
