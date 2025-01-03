@@ -46,7 +46,7 @@ parameters:
 
   - name: 'wallet_show_continue_io_btn_delay_millis'
     type: number
-    default: 1
+    default: 1000
 
 steps:
 - bash: |
