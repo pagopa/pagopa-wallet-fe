@@ -181,12 +181,12 @@ stages:
           workingDirectory: pagopa-wallet-fe
           
         - script: |
-            yarn dev:env:noredirect &
-          displayName: 'Set wallet fe with noredirect env'
+            yarn dev:env:no-outcome-redirect &
+          displayName: 'Set wallet fe with no-outcome-redirect env'
           workingDirectory: pagopa-wallet-fe
 
-        - script: yarn test:noredirect
-          displayName: 'IO noredirect button Integration tests exec'
+        - script: yarn test:no-outcome-redirect
+          displayName: 'IO no-outcome-redirect button Integration tests exec'
           workingDirectory: pagopa-wallet-fe
 
         - task: PublishTestResults@2
