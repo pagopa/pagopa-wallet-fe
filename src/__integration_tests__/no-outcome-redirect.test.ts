@@ -1,3 +1,5 @@
+import { TRANSLATIONS_IT } from "../translations/it/translations.ts";
+
 describe("Test showing final button for continue to IO", () => {
 
   /**
@@ -26,5 +28,11 @@ describe("Test showing final button for continue to IO", () => {
     await page.goto(WALLET_FE_ESITO_PAGE);
 
     await page.waitForSelector('#continueToIOBtn');
+    const waitingTitleSelector = await page.waitForSelector('#waitingTitle');
+    const waitingTitle = await waitingTitleSelector.evaluate((el) => el.textContent);
+    expect(waitingTitle).toBe(TRANSLATIONS_IT.resultPage.justFewMoments);
+    const waitingMessageSelector = await page.waitForSelector('#waitingMessage')
+    const waitingMessage =  await waitingMessageSelector.evaluate((el) => el.textContent);
+    expect(waitingMessage).toBe(TRANSLATIONS_IT.resultPage.completeOperationMsg);
   })
 });

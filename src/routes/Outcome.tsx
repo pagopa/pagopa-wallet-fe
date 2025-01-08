@@ -97,10 +97,10 @@ const Outcome = () => {
               gap: 2
             }}
           >
-            <Typography variant="h5" fontWeight={700}>
+            <Typography variant="h5" fontWeight={700} id="waitingTitle">
               {t("resultPage.justFewMoments")}
             </Typography>
-            <Typography variant="body2">
+            <Typography variant="body2" id="waitingMessage">
               {t("resultPage.completeOperationMsg")}
             </Typography>
             <Button
