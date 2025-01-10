@@ -28,10 +28,10 @@ describe("getOnboardingOutcome function utility", () => {
       OUTCOME_ROUTE.ALREADY_ONBOARDED
     );
     expect(utils.outcome.getOnboardingOutcome(16)).toBe(
-      OUTCOME_ROUTE.PSP_ERROR
+      OUTCOME_ROUTE.ACCOUNT_BPAY_NOT_PRESENT
     );
     expect(utils.outcome.getOnboardingOutcome(25)).toBe(
-      OUTCOME_ROUTE.GENERIC_ERROR
+      OUTCOME_ROUTE.PSP_ERROR
     );
     expect(utils.outcome.getOnboardingOutcome(116)).toBe(
       OUTCOME_ROUTE.BALANCE_LIMIT
