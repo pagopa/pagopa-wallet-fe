@@ -20,14 +20,14 @@ describe.only("PayPal: get list of psp", () => {
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("Changes the location with outcome 14 on status code 401", async () => {
+  it("Changes the location with outcome 2 on status code 401", async () => {
     const response = new Response(JSON.stringify({}), {
       status: 401
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.paypal.getPaypalPsps(sessionToken);
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
-    expect(global.location.href).toContain("outcome=14");
+    expect(global.location.href).toContain("outcome=2");
   });
 
   it("Changes the location with outcome 1 on status code 4xx", async () => {
