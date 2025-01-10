@@ -1,6 +1,6 @@
 {
   "name": "pagopa-wallet-fe",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "repository": "https://github.com/pagopa/pagopa-wallet-fe.git",
   "author": "PagoPA SpA",
   "license": "MIT",
@@ -23,7 +23,7 @@
     "test": "jest --config=jest.config.js",
     "test:integration": "jest --config=jest.integration.config.js",
     "test:no-outcome-redirect": "jest --config=jest.no-outcome-redirect.config.js",
-    "test:coverage": "jest --coverage --passWithNoTests --config=package.json --testResultsProcessor ./node_modules/jest-sonar-reporter/index.js",
+    "test:coverage": "jest --coverage --passWithNoTests --config=jest.config.js --testResultsProcessor ./node_modules/jest-sonar-reporter/index.js",
     "prepare": "husky install"
   },
   "devDependencies": {
