@@ -97,7 +97,7 @@ const statusCodeValidator = (
 
 const getOutcome = (actualCode: number): OUTCOME_ROUTE => {
   if (actualCode === 401) {
-    return OUTCOME_ROUTE.AUTH_ERROR;
+    return OUTCOME_ROUTE.INVALID_SESSION;
   }
   if (actualCode === 422) {
     return OUTCOME_ROUTE.ALREADY_ONBOARDED;

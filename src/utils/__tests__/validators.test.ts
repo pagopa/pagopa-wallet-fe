@@ -171,10 +171,10 @@ describe("badStatusHandler", () => {
     expect(result).toEqual(ErrorsType.GENERIC_ERROR);
   });
 
-  it("Redirect with outcome 2 on a 401 status code", () => {
+  it("Redirect with outcome 14 on a 401 status code", () => {
     const result = badStatusHandler({ familyCode: "4xx", actualCode: 401 });
     expect(result).toEqual(ErrorsType.GENERIC_ERROR);
-    expect(global.location.href).toContain("outcome=2");
+    expect(global.location.href).toContain("outcome=14");
   });
 
   it("Redirect with outcome 1 on a 4xx status code", () => {
@@ -185,7 +185,7 @@ describe("badStatusHandler", () => {
     badStatusHandler({ familyCode: "4xx", actualCode: 404 });
     expect(global.location.href).toContain("outcome=1");
     badStatusHandler({ familyCode: "4xx", actualCode: 401 });
-    expect(global.location.href).toContain("outcome=2");
+    expect(global.location.href).toContain("outcome=14");
   });
 
   it("Returns GENERIC_ERROR on any other status code", () => {

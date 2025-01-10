@@ -58,12 +58,12 @@ describe("Credit Card: add to the wallet", () => {
     expect(global.location.href).toContain("outcome=1");
   });
 
-  it("Changes the location with outcome 2 on status code 401", async () => {
+  it("Changes the location with outcome 14 on status code 401", async () => {
     const response = new Response(null, { status: 401 });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.creditCard.addWallet(sessionToken, walletRequest);
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
-    expect(global.location.href).toContain("outcome=2");
+    expect(global.location.href).toContain("outcome=14");
   });
 
   it("Returns a generic error when the idWallet is missing", async () => {
@@ -102,14 +102,14 @@ describe("Bancomat Pay: getting the list", () => {
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("Changes the location with outcome 2 on status code 401", async () => {
+  it("Changes the location with outcome 14 on status code 401", async () => {
     const response = new Response(JSON.stringify({}), {
       status: 401
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.bPay.getList(sessionToken);
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
-    expect(global.location.href).toContain("outcome=2");
+    expect(global.location.href).toContain("outcome=14");
   });
 
   it("Changes the location with outcome 1 on status code 4xx", async () => {
@@ -173,14 +173,14 @@ describe("Bancomat Pay: add wallet", () => {
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
   });
 
-  it("Changes the location with outcome 2 on status code 401", async () => {
+  it("Changes the location with outcome 14 on status code 401", async () => {
     const response = new Response(JSON.stringify({}), {
       status: 401
     });
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await pm.bPay.addWallet(sessionToken, bpayListItems);
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
-    expect(global.location.href).toContain("outcome=2");
+    expect(global.location.href).toContain("outcome=14");
   });
 
   it("Changes the location with outcome 1 on status code 4xx", async () => {
@@ -236,7 +236,7 @@ describe("NPG Credit Card: getSessionWallet", () => {
     global.fetch = jest.fn(() => Promise.resolve(response));
     const result = await npg.getSessionWallet(walletId, orderId, "1234");
     expect(result).toEqual(E.left(ErrorsType.GENERIC_ERROR));
-    expect(global.location.href).toContain("outcome=2");
+    expect(global.location.href).toContain("outcome=14");
   });
 });
 
