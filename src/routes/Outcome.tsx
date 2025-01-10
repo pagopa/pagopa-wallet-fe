@@ -84,7 +84,7 @@ const Outcome = () => {
         }}
       >
         <CircularProgress />
-        {outcomeState && (
+        {outcomeState != null && (
           <Box
             sx={{
               display: "flex",
