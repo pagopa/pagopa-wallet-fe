@@ -100,7 +100,7 @@ const getOutcome = (actualCode: number): OUTCOME_ROUTE => {
     return OUTCOME_ROUTE.AUTH_ERROR;
   }
   if (actualCode === 422) {
-    return OUTCOME_ROUTE.CONFLICT;
+    return OUTCOME_ROUTE.ALREADY_ONBOARDED;
   }
   return OUTCOME_ROUTE.GENERIC_ERROR;
 };

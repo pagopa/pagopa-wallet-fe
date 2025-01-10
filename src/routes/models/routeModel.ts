@@ -12,12 +12,20 @@ export enum WalletRoutes {
 }
 
 export enum OUTCOME_ROUTE {
-  GENERIC_ERROR = "1",
-  AUTH_ERROR = "14",
-  CONFLICT = "15",
   SUCCESS = "0",
+  GENERIC_ERROR = "1",
+  AUTH_ERROR = "2",
+  INVALID_DATA = "3",
+  TIMEOUT = "4",
+  INVALID_CARD = "7",
   CANCELED_BY_USER = "8",
-  ACCOUNT_BPAY_NOT_PRESENT = "16"
+  INVALID_SESSION = "14",
+  ALREADY_ONBOARDED = "15",
+  ACCOUNT_BPAY_NOT_PRESENT = "16",
+  PSP_ERROR = "25",
+  BALANCE_LIMIT = "116",
+  CVV_ERROR = "117",
+  LIMIT_EXCEEDED = "121"
 }
 
 export enum ROUTE_FRAGMENT {
