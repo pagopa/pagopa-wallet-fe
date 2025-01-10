@@ -30,6 +30,12 @@ resources:
       name: pagopa/azure-pipeline-templates
       ref: refs/tags/v19
       endpoint: 'io-azure-devops-github-ro'
+      
+    - repository: wallet-be-mock
+      type: github
+      name: pagopa/pagopa-wallet-be-mock
+      ref: main
+      endpoint: 'io-azure-devops-github-ro'
 
 stages:
   - stage: Build
@@ -49,6 +55,7 @@ stages:
             api_pm_basepath: '/pp-restapi-CD'
             api_timeout:  10000
             npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
+            wallet_show_continue_io_btn_delay_millis: 2000
     
         - script: |
             yarn build
@@ -84,6 +91,7 @@ stages:
             extraProperties: |
               sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
               sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
+              sonar.coverage.exclusions=src/**/__integration_tests__/**, src/**/__tests__/**
 
         - template: azure-templates/setup-env.yml
           parameters:
@@ -122,3 +130,70 @@ stages:
           inputs:
             codeCoverageTool: Cobertura
             summaryFileLocation: 'coverage/cobertura-coverage.xml'      
+
+  # B) Run integration tests if there is a push or pull request on any branch.
+  - stage: Integration_Tests
+    pool:
+      vmImage: 'ubuntu-latest'
+    dependsOn: []
+    jobs:
+      - job: run_integration_tests
+        timeoutInMinutes: 30
+        steps:
+
+        - checkout: wallet-be-mock
+
+        # Currently npg api key is not required for current integration test
+        - script: |
+            cp env.example .env
+            sed -i "s/^NPG_API_KEY=.*$/NPG_API_KEY=key/" .env
+          workingDirectory: pagopa-wallet-be-mock
+          displayName: 'Setup env for mock'
+
+        - script: yarn global add node-gyp && yarn install && yarn generate && yarn build
+          workingDirectory: pagopa-wallet-be-mock
+          displayName: 'Setup deps for mock'
+
+        - script: |
+            nohup yarn start &
+          displayName: 'Start backend mock'
+          workingDirectory: pagopa-wallet-be-mock
+
+        - checkout: self
+
+        - template: templates/node-job-setup/template.yaml@pagopaCommons
+          parameters:
+           projectDir: pagopa-wallet-fe
+
+        - script: |
+            cp env.example .env.development
+          displayName: 'copy env.example to .env.development'
+          workingDirectory: pagopa-wallet-fe
+
+        - script: |
+            yarn dev &
+          displayName: 'Start wallet fe'
+          workingDirectory: pagopa-wallet-fe
+
+        - script: |
+            timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:1234)" != "200" ]]; do sleep 5; done' || exit 1
+          displayName: 'Wait for backend to be up and running'
+          workingDirectory: pagopa-wallet-fe
+          
+        - script: |
+            yarn dev:env:no-outcome-redirect &
+          displayName: 'Set wallet fe with no-outcome-redirect env'
+          workingDirectory: pagopa-wallet-fe
+
+        - script: yarn test:no-outcome-redirect
+          displayName: 'IO no-outcome-redirect button Integration tests exec'
+          workingDirectory: pagopa-wallet-fe
+
+        - task: PublishTestResults@2
+          displayName: 'Publish integration tests results from Jest tests'
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: '**/*TEST.xml'
+            searchFolder: '$(System.DefaultWorkingDirectory)'
+            failTaskOnFailedTests: true
+
