@@ -24,10 +24,13 @@ const Outcome = () => {
     walletId?: string
   ) => {
     // if not present new outcome use old one
-    const outcome = newOutcome || outcomeState || OUTCOME_ROUTE.GENERIC_ERROR;
-    utils.url.redirectWithOutcome(outcome, walletId);
+    const outcome = newOutcome != null ? newOutcome : outcomeState;
+    utils.url.redirectWithOutcome(
+      outcome != null ? outcome : OUTCOME_ROUTE.GENERIC_ERROR,
+      walletId
+    );
     // if is new outcome, update state after timeout
-    if (newOutcome) {
+    if (newOutcome != null) {
       setTimeout(
         () => setOutcomeState(outcome),
         config.WALLET_SHOW_CONTINUE_IO_BTN_DELAY_MILLIS
