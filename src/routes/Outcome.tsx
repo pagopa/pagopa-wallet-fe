@@ -25,7 +25,10 @@ const Outcome = () => {
   ) => {
     // if not present new outcome use old one
     const outcome = newOutcome != null ? newOutcome : outcomeState;
-    utils.url.redirectWithOutcome(outcome != null ? outcome : OUTCOME_ROUTE.GENERIC_ERROR, walletId);
+    utils.url.redirectWithOutcome(
+      outcome != null ? outcome : OUTCOME_ROUTE.GENERIC_ERROR,
+      walletId
+    );
     // if is new outcome, update state after timeout
     if (newOutcome != null) {
       setTimeout(
