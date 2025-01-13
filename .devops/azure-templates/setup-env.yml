@@ -44,6 +44,10 @@ parameters:
     type: number
     default: 1
 
+  - name: 'wallet_show_continue_io_btn_delay_millis'
+    type: number
+    default: 1000
+
 steps:
 - bash: |
     chmod +x env.sh
@@ -59,6 +63,7 @@ steps:
       WALLET_GDI_CHECK_TIMEOUT=${{ parameters.wallet_gdi_check_timeout }} \
       WALLET_PAGOPA_LOGOS_CDN=${{ parameters.wallet_pagopa_logos_cdn }} \
       WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE=${{ parameters.wallet_onboard_switch_on_payment_page }} \
+      WALLET_SHOW_CONTINUE_IO_BTN_DELAY_MILLIS=${{ parameters.wallet_show_continue_io_btn_delay_millis }} \
       bash env.sh
 
   displayName: 'Populate environment file'

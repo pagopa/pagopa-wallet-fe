@@ -91,6 +91,12 @@ export const TRANSLATIONS_IT = {
       accessibilityIconAlt: "Immagine paragrafo"
     }
   },
+  resultPage: {
+    justFewMoments: "Ancora qualche istante...",
+    completeOperationMsg:
+      "Se il dispositivo lo chiede, dai il permesso per completare l'operazione.",
+    continueToIO: "Continua sull'app IO"
+  },
   errorButton: {
     help: "Contatta l'assistenza",
     close: "Chiudi",

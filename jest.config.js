@@ -1,6 +1,7 @@
 module.exports = {
   testEnvironment: "jsdom",
   preset: "ts-jest",
+  testRegex: "./*test\\.ts$",
   reporters: [
     'default',
     [ 'jest-junit', {
@@ -14,4 +15,5 @@ module.exports = {
   ],
   testResultsProcessor: "jest-sonar-reporter",
   setupFiles: ['<rootDir>/src/env-config.js'],
+  modulePathIgnorePatterns: ["__integration_tests__"]
 };
