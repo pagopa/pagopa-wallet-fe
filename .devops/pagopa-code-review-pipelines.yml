@@ -129,7 +129,7 @@ stages:
           displayName: 'Publish code coverage from Jest tests'
           inputs:
             codeCoverageTool: Cobertura
-            summaryFileLocation: 'coverage/cobertura-coverage.xml'      
+            summaryFileLocation: 'coverage/clover.xml'
 
   # B) Run integration tests if there is a push or pull request on any branch.
   - stage: Integration_Tests
