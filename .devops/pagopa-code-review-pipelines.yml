@@ -82,7 +82,7 @@ stages:
         
         - template: templates/node-job-setup/template.yaml@pagopaCommons
         
-        - task: SonarCloudPrepare@1
+        - task: SonarCloudPrepare@3
           displayName: 'Prepare SonarCloud analysis configuration'
           inputs:
             SonarCloud: '$(SONARCLOUD_SERVICE_CONN)'
@@ -110,10 +110,10 @@ stages:
         - script: yarn test:coverage
           displayName: 'Unit tests exec'
 
-        - task: SonarCloudAnalyze@1
+        - task: SonarCloudAnalyze@3
           displayName: 'Run SonarCloud analysis'
           
-        - task: SonarCloudPublish@1
+        - task: SonarCloudPublish@3
           displayName: 'Publish SonarCloud results on build summary'
           inputs:
             pollingTimeoutSec: '300' 
@@ -125,11 +125,11 @@ stages:
             searchFolder: '$(System.DefaultWorkingDirectory)'
             failTaskOnFailedTests: true
 
-        - task: PublishCodeCoverageResults@1
+        - task: PublishCodeCoverageResults@2
           displayName: 'Publish code coverage from Jest tests'
           inputs:
             codeCoverageTool: Cobertura
-            summaryFileLocation: 'coverage/cobertura-coverage.xml'      
+            summaryFileLocation: 'coverage/clover.xml'
 
   # B) Run integration tests if there is a push or pull request on any branch.
   - stage: Integration_Tests
