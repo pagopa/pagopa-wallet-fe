@@ -46,10 +46,10 @@ export const TRANSLATIONS_IT = {
     }
   },
   paypalPage: {
-    title: "Con quale gestore vuoi usare il tuo conto PayPal",
+    title: "Scegli chi gestirà i pagamenti con PayPal",
     description:
-      "Quando usi pagoPA, sei tu a decidere quale gestore della transazione ti conviene di più.\nPotrai modificare tale scelta ad ogni pagamento in base alla commissione proposta.\n",
-    helpLink: "Cos'è il gestore della transazione?",
+      "Se vuoi cambiare scelta in futuro, basta salvare nuovamente il tuo conto PayPal su IO.",
+    helpLink: "Cos'è il gestore del pagamento?",
     formFields: {
       billCode: "Codice Avviso",
       cf: "Codice Fiscale Ente Creditore"
@@ -58,6 +58,11 @@ export const TRANSLATIONS_IT = {
       required: "Campo obbligatorio",
       minCode: "Inserisci 18 cifre",
       minCf: "Inserisci 11 cifre"
+    },
+    preamble: {
+      title: "Salva il tuo conto PayPal e attiva il pagamento veloce",
+      body: "Scegli il metodo preferito da utilizzare per pagare gli avvisi pagoPA, senza dover autorizzare di volta in volta con l’app PayPal.",
+      cta: "Continua"
     },
     psp: {
       header: {
@@ -70,21 +75,27 @@ export const TRANSLATIONS_IT = {
       submit: "Continua"
     },
     managerModal: {
-      title: "Cos'è il gestore della transazione?",
+      title: "Cos'è il gestore del pagamento?",
       body: "È il soggetto, conosciuto anche come PSP (Prestatore di Servizi di Pagamento), che incassa l'importo per conto dell'Ente Creditore e può applicare un costo per il servizio offerto."
     },
     pspInfoModal: {
       info: "Maggiori informazioni su questo gestore",
-      title: "Chi è {{pspInfo.ragioneSociale}}?",
+      title: "Chi è {{pspName}}?",
       body1:
         "È un Prestatore di Servizi di Pagamento (PSP) che può gestire le tue transazioni tramite PayPal.",
       body2:
         "Quando paghi un avviso, potrà applicare un costo massimo fino a <strong>{{maxFeeFriendlyComp}}</strong>. Vedrai l’importo esatto prima della conferma.",
       body3:
-        "Si applicano i Termini e condizioni d’uso e l’Informativa Privacy di {{pspInfo.ragioneSociale}}",
+        "Si applicano i Termini e condizioni d’uso e l’Informativa Privacy di {{pspName}}",
       accessibilityLinkTitle: "Visita il sito del PSP",
       accessibilityIconAlt: "Immagine paragrafo"
     }
+  },
+  resultPage: {
+    justFewMoments: "Ancora qualche istante...",
+    completeOperationMsg:
+      "Se il dispositivo lo chiede, dai il permesso per completare l'operazione.",
+    continueToIO: "Continua sull'app IO"
   },
   errorButton: {
     help: "Contatta l'assistenza",
