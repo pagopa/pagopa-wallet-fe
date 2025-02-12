@@ -1,4 +1,4 @@
-import { TRANSLATIONS_IT } from "../translations/it/translations.ts";
+import translationIT from "../translations/it/translations.json";
 
 describe("Test showing final button for continue to IO", () => {
 
@@ -30,9 +30,9 @@ describe("Test showing final button for continue to IO", () => {
     await page.waitForSelector('#continueToIOBtn');
     const waitingTitleSelector = await page.waitForSelector('#waitingTitle');
     const waitingTitle = await waitingTitleSelector.evaluate((el) => el.textContent);
-    expect(waitingTitle).toBe(TRANSLATIONS_IT.resultPage.justFewMoments);
+    expect(waitingTitle).toBe(translationIT.resultPage.justFewMoments);
     const waitingMessageSelector = await page.waitForSelector('#waitingMessage')
     const waitingMessage =  await waitingMessageSelector.evaluate((el) => el.textContent);
-    expect(waitingMessage).toBe(TRANSLATIONS_IT.resultPage.completeOperationMsg);
+    expect(waitingMessage).toBe(translationIT.resultPage.completeOperationMsg);
   })
 });
