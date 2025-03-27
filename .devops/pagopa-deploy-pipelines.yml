@@ -140,6 +140,7 @@ stages:
             parameters:
               ENVIRONMENT: DEV
               CHECKOUT_RESOURCE_REPO_NAME: walletTests
+              USER_WALLET_TOKEN_DEV: $(USER_WALLET_TOKEN_DEV)
 
   # Create a relase
   # Activated when ONE OF these are met:
@@ -276,6 +277,7 @@ stages:
             parameters:
               ENVIRONMENT: UAT
               CHECKOUT_RESOURCE_REPO_NAME: walletTests
+              USER_WALLET_TOKEN_UAT: $(USER_WALLET_TOKEN_UAT)
 
   # Prepare Artifact
   - stage: Prepare_artifact_prod
