@@ -95,7 +95,7 @@ const statusCodeValidator = (
     )
   );
 
-const getOutcome = (actualCode: number): number | OUTCOME_ROUTE => {
+const getOutcome = (actualCode: number): OUTCOME_ROUTE => {
   if (actualCode === 401) {
     return OUTCOME_ROUTE.AUTH_ERROR;
   }

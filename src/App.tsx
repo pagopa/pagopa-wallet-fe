@@ -47,7 +47,12 @@ export function App() {
     <ThemeProvider theme={transactionsTheme}>
       <CssBaseline />
       <Layout>
-        <Router>
+        <Router
+          future={{
+            v7_relativeSplatPath: true,
+            v7_startTransition: true
+          }}
+        >
           <Routes>
             <Route path={WalletRoutes.PM_CARTE} element={<InputCardPage />} />
             <Route path={WalletRoutes.PM_PAYPAL} element={<PaypalPage />} />
