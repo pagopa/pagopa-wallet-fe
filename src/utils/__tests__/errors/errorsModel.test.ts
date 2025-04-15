@@ -28,7 +28,6 @@ describe("ErrorModalByErrorCategory", () => {
       (b) => b.title === "errorButton.help"
     );
     expect(helpButton).toBeDefined();
-    // Execute the action if it exists.
     if (helpButton && helpButton.action) {
       helpButton.action();
     }
@@ -126,4 +125,126 @@ describe("WalletErrors", () => {
     const errorMsg = WalletErrors[ErrorsType.GENERIC_ERROR];
     expect(errorMsg.category).toBe(WalletFaultCategory.NOT_LISTED);
   });
+
+  describe("CUSTOM", () => {
+    let focusMock: jest.Mock;
+
+    beforeEach(() => {
+      focusMock = jest.fn();
+      window.open = jest.fn(() => ({ focus: focusMock } as unknown as Window));
+    });
+
+    it("should have the correct modal properties for CUSTOM", () => {
+      const modal = ErrorModalByErrorCategory[WalletFaultCategory.CUSTOM];
+      expect(modal.title).toBe("");
+      expect(modal.detail).toBe(false);
+      expect(modal.buttons).toHaveLength(2);
+    });
+
+    it("should call .focus() when help button is triggered (window.open returns a window)", () => {
+      const modal = ErrorModalByErrorCategory[WalletFaultCategory.CUSTOM];
+      const helpButton = modal.buttons?.find(
+        (b) => b.title === "errorButton.help"
+      );
+      helpButton?.action?.();
+
+      expect(window.open).toHaveBeenCalledWith(HELPDESK_URL, "_blank");
+      expect(focusMock).toHaveBeenCalled();
+    });
+
+    it("should NOT call .focus() when window.open returns null (CUSTOM)", () => {
+      window.open = jest.fn(() => null);
+
+      const modal = ErrorModalByErrorCategory[WalletFaultCategory.CUSTOM];
+      const helpButton = modal.buttons?.find(
+        (b) => b.title === "errorButton.help"
+      );
+      helpButton?.action?.();
+
+      expect(window.open).toHaveBeenCalledWith(HELPDESK_URL, "_blank");
+    });
+  });
+
+  describe("GENERIC_ERROR", () => {
+    let focusMock: jest.Mock;
+
+    beforeEach(() => {
+      focusMock = jest.fn();
+      window.open = jest.fn(() => ({ focus: focusMock } as unknown as Window));
+    });
+
+    it("should have the correct modal properties for GENERIC_ERROR", () => {
+      const modal =
+        ErrorModalByErrorCategory[WalletFaultCategory.GENERIC_ERROR];
+      expect(modal.title).toBe("ERRORE_GENERICO.title");
+      expect(modal.detail).toBe(false);
+      expect(modal.buttons).toHaveLength(2);
+    });
+
+    it("should call .focus() when help button is triggered (window.open returns a window)", () => {
+      const modal =
+        ErrorModalByErrorCategory[WalletFaultCategory.GENERIC_ERROR];
+      const helpButton = modal.buttons?.find(
+        (b) => b.title === "errorButton.help"
+      );
+      helpButton?.action?.();
+
+      expect(window.open).toHaveBeenCalledWith(HELPDESK_URL, "_blank");
+      expect(focusMock).toHaveBeenCalled();
+    });
+
+    it("should NOT call .focus() when window.open returns null (GENERIC_ERROR)", () => {
+      window.open = jest.fn(() => null);
+
+      const modal =
+        ErrorModalByErrorCategory[WalletFaultCategory.GENERIC_ERROR];
+      const helpButton = modal.buttons?.find(
+        (b) => b.title === "errorButton.help"
+      );
+      helpButton?.action?.();
+
+      expect(window.open).toHaveBeenCalledWith(HELPDESK_URL, "_blank");
+    });
+  });
+
+  describe("NOT_LISTED", () => {
+    let focusMock: jest.Mock;
+
+    beforeEach(() => {
+      focusMock = jest.fn();
+      window.open = jest.fn(() => ({ focus: focusMock } as unknown as Window));
+    });
+
+    it("should have the correct modal properties for NOT_LISTED", () => {
+      const modal = ErrorModalByErrorCategory[WalletFaultCategory.NOT_LISTED];
+      expect(modal.title).toBe("NOT_LISTED.title");
+      expect(modal.body).toBe("NOT_LISTED.body");
+      expect(modal.detail).toBe(false);
+      expect(modal.buttons).toHaveLength(2);
+    });
+
+    it("should call .focus() when help button is triggered (window.open returns a window)", () => {
+      const modal = ErrorModalByErrorCategory[WalletFaultCategory.NOT_LISTED];
+      const helpButton = modal.buttons?.find(
+        (b) => b.title === "errorButton.help"
+      );
+      helpButton?.action?.();
+
+      expect(window.open).toHaveBeenCalledWith(HELPDESK_URL, "_blank");
+      expect(focusMock).toHaveBeenCalled();
+    });
+
+    it("should NOT call .focus() when window.open returns null (NOT_LISTED)", () => {
+      window.open = jest.fn(() => null);
+
+      const modal = ErrorModalByErrorCategory[WalletFaultCategory.NOT_LISTED];
+      const helpButton = modal.buttons?.find(
+        (b) => b.title === "errorButton.help"
+      );
+      helpButton?.action?.();
+
+      expect(window.open).toHaveBeenCalledWith(HELPDESK_URL, "_blank");
+    });
+  });
 });
+
