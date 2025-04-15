@@ -1,8 +1,8 @@
 /* eslint-disable functional/immutable-data */
 import * as E from "fp-ts/Either";
 import * as TE from "fp-ts/TaskEither";
-import { retryLogicOnPromisePredicate } from "../api/config";
 import { TransientError } from "@pagopa/ts-commons/lib/tasks";
+import { retryLogicOnPromisePredicate } from "../api/config";
 import pm from "../api/pm";
 import npg from "../api/npg";
 import { ErrorsType } from "../errors/errorsModel";
@@ -264,18 +264,27 @@ describe("NPG apm: getPspsForPaymentMethod", () => {
 
 describe("retryLogicOnPromisePredicate", () => {
   const mockResponse = new Response("mock", { status: 200 });
-  const mockTask: TE.TaskEither<Error | "transient", Response> = TE.right(mockResponse);
+  const mockTask: TE.TaskEither<Error | "transient", Response> =
+    TE.right(mockResponse);
   const mockRetryLogic = (
     t: TE.TaskEither<Error | "transient", Response>
   ): TE.TaskEither<Error | "max-retries" | "retry-aborted", Response> =>
-    t as unknown as TE.TaskEither<Error | "max-retries" | "retry-aborted", Response>;
+    t as unknown as TE.TaskEither<
+      Error | "max-retries" | "retry-aborted",
+      Response
+    >;
 
   it("should return Left(TransientError) when the predicate returns true", async () => {
     const predicateReturnsTrue = (_: Response) => Promise.resolve(true);
-    const testFunc = retryLogicOnPromisePredicate(predicateReturnsTrue, mockRetryLogic);
+    const testFunc = retryLogicOnPromisePredicate(
+      predicateReturnsTrue,
+      mockRetryLogic
+    );
     const result = await testFunc(mockTask)();
 
+    // eslint-disable-next-line no-underscore-dangle
     expect(result._tag).toBe("Left");
+    // eslint-disable-next-line no-underscore-dangle
     if (result._tag === "Left") {
       expect(result.left).toBe(TransientError);
     }
@@ -283,10 +292,15 @@ describe("retryLogicOnPromisePredicate", () => {
 
   it("should return Right(mockResponse) when the predicate returns false", async () => {
     const predicateReturnsFalse = (_: Response) => Promise.resolve(false);
-    const testFunc = retryLogicOnPromisePredicate(predicateReturnsFalse, mockRetryLogic);
+    const testFunc = retryLogicOnPromisePredicate(
+      predicateReturnsFalse,
+      mockRetryLogic
+    );
     const result = await testFunc(mockTask)();
 
+    // eslint-disable-next-line no-underscore-dangle
     expect(result._tag).toBe("Right");
+    // eslint-disable-next-line no-underscore-dangle
     if (result._tag === "Right") {
       expect(result.right).toBe(mockResponse);
     }

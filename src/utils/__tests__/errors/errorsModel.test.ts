@@ -6,15 +6,16 @@ import {
 } from "../../errors/errorsModel";
 
 const HELPDESK_URL = "https://www.pagopa.gov.it/it/helpdesk/";
+// eslint-disable-next-line functional/no-let
+let focusMock: jest.Mock;
+
+beforeEach(() => {
+  focusMock = jest.fn();
+  // eslint-disable-next-line functional/immutable-data
+  window.open = jest.fn(() => ({ focus: focusMock } as unknown as Window));
+});
 
 describe("ErrorModalByErrorCategory", () => {
-  let focusMock: jest.Mock;
-
-  beforeEach(() => {
-    focusMock = jest.fn();
-    window.open = jest.fn(() => ({ focus: focusMock } as unknown as Window));
-  });
-
   it("should have ERRORE_TECNICO defined with title, detail and 2 buttons", () => {
     const modal = ErrorModalByErrorCategory[WalletFaultCategory.ERRORE_TECNICO];
     expect(modal.title).toBe("ERRORE_TECNICO.title");
@@ -36,6 +37,7 @@ describe("ErrorModalByErrorCategory", () => {
   });
 
   it("should execute help button action in ERRORE_TECNICO when window.open returns null", () => {
+    // eslint-disable-next-line functional/immutable-data
     window.open = jest.fn(() => null);
 
     const modal = ErrorModalByErrorCategory[WalletFaultCategory.ERRORE_TECNICO];
@@ -64,13 +66,6 @@ describe("ErrorModalByErrorCategory", () => {
 });
 
 describe("WalletErrors", () => {
-  let focusMock: jest.Mock;
-
-  beforeEach(() => {
-    focusMock = jest.fn();
-    window.open = jest.fn(() => ({ focus: focusMock } as unknown as Window));
-  });
-
   it("should map MISSING_SESSIONTOKEN to category ERRORE_TECNICO", () => {
     const errorMsg = WalletErrors[ErrorsType.MISSING_SESSIONTOKEN];
     expect(errorMsg.category).toBe(WalletFaultCategory.ERRORE_TECNICO);
@@ -114,6 +109,7 @@ describe("WalletErrors", () => {
       );
       expect(helpButton).toBeDefined();
       if (helpButton && helpButton.action) {
+        // eslint-disable-next-line functional/immutable-data
         window.open = jest.fn(() => null);
         helpButton.action();
         expect(window.open).toHaveBeenCalledWith(HELPDESK_URL, "_blank");
@@ -127,13 +123,6 @@ describe("WalletErrors", () => {
   });
 
   describe("CUSTOM", () => {
-    let focusMock: jest.Mock;
-
-    beforeEach(() => {
-      focusMock = jest.fn();
-      window.open = jest.fn(() => ({ focus: focusMock } as unknown as Window));
-    });
-
     it("should have the correct modal properties for CUSTOM", () => {
       const modal = ErrorModalByErrorCategory[WalletFaultCategory.CUSTOM];
       expect(modal.title).toBe("");
@@ -153,6 +142,7 @@ describe("WalletErrors", () => {
     });
 
     it("should NOT call .focus() when window.open returns null (CUSTOM)", () => {
+      // eslint-disable-next-line functional/immutable-data
       window.open = jest.fn(() => null);
 
       const modal = ErrorModalByErrorCategory[WalletFaultCategory.CUSTOM];
@@ -166,13 +156,6 @@ describe("WalletErrors", () => {
   });
 
   describe("GENERIC_ERROR", () => {
-    let focusMock: jest.Mock;
-
-    beforeEach(() => {
-      focusMock = jest.fn();
-      window.open = jest.fn(() => ({ focus: focusMock } as unknown as Window));
-    });
-
     it("should have the correct modal properties for GENERIC_ERROR", () => {
       const modal =
         ErrorModalByErrorCategory[WalletFaultCategory.GENERIC_ERROR];
@@ -194,6 +177,7 @@ describe("WalletErrors", () => {
     });
 
     it("should NOT call .focus() when window.open returns null (GENERIC_ERROR)", () => {
+      // eslint-disable-next-line functional/immutable-data
       window.open = jest.fn(() => null);
 
       const modal =
@@ -208,13 +192,6 @@ describe("WalletErrors", () => {
   });
 
   describe("NOT_LISTED", () => {
-    let focusMock: jest.Mock;
-
-    beforeEach(() => {
-      focusMock = jest.fn();
-      window.open = jest.fn(() => ({ focus: focusMock } as unknown as Window));
-    });
-
     it("should have the correct modal properties for NOT_LISTED", () => {
       const modal = ErrorModalByErrorCategory[WalletFaultCategory.NOT_LISTED];
       expect(modal.title).toBe("NOT_LISTED.title");
@@ -235,6 +212,7 @@ describe("WalletErrors", () => {
     });
 
     it("should NOT call .focus() when window.open returns null (NOT_LISTED)", () => {
+      // eslint-disable-next-line functional/immutable-data
       window.open = jest.fn(() => null);
 
       const modal = ErrorModalByErrorCategory[WalletFaultCategory.NOT_LISTED];
@@ -247,4 +225,3 @@ describe("WalletErrors", () => {
     });
   });
 });
-

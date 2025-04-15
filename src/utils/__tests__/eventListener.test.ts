@@ -24,12 +24,17 @@ describe("eventListener", () => {
       const event: any = { preventDefault };
       const pushStateSpy = jest
         .spyOn(window.history, "pushState")
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         .mockImplementation(() => {});
 
       onBrowserBackEvent(event);
 
       expect(preventDefault).toHaveBeenCalled();
-      expect(pushStateSpy).toHaveBeenCalledWith(null, "", window.location.pathname);
+      expect(pushStateSpy).toHaveBeenCalledWith(
+        null,
+        "",
+        window.location.pathname
+      );
       pushStateSpy.mockRestore();
     });
   });

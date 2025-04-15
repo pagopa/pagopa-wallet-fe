@@ -13,6 +13,7 @@ const mockBuildConfig = {
 };
 
 describe("BuildConfigHandler Module", () => {
+  // eslint-disable-next-line functional/no-let
   let instance: ReturnType<typeof createBuildInstance>;
 
   beforeEach(() => {
@@ -124,6 +125,7 @@ describe("BuildConfigHandler Module", () => {
     const originalEnv = process.env.NODE_ENV;
     const originalLocation = window.location;
     beforeEach(() => {
+      // eslint-disable-next-line functional/immutable-data
       Object.defineProperty(window, "location", {
         value: {
           protocol: "https:",
@@ -134,19 +136,23 @@ describe("BuildConfigHandler Module", () => {
       });
     });
     afterEach(() => {
+      // eslint-disable-next-line functional/immutable-data
       process.env.NODE_ENV = originalEnv;
+      // eslint-disable-next-line functional/immutable-data
       Object.defineProperty(window, "location", {
         value: originalLocation
       });
     });
 
     it("should compute cssLink with port in development", () => {
+      // eslint-disable-next-line functional/immutable-data
       process.env.NODE_ENV = "development";
       const inst = createBuildInstance(mockBuildConfig);
       expect(inst.cssLink).toBe("https://example.com:3000/npg/style.css");
     });
 
     it("should compute cssLink without port in production", () => {
+      // eslint-disable-next-line functional/immutable-data
       process.env.NODE_ENV = "production";
       const inst = createBuildInstance(mockBuildConfig);
       expect(inst.cssLink).toBe("https://example.com/npg/style.css");
