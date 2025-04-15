@@ -39,10 +39,5 @@ module.exports = {
 ],
   testResultsProcessor: "jest-sonar-reporter",
   setupFiles: ['<rootDir>/src/env-config.js'],
-  modulePathIgnorePatterns: ["__integration_tests__"],
-  collectCoverageFrom: [
-      "src/utils/**/*.{ts,tsx}",
-      "!src/utils/api/pm/**/*.{ts,tsx}"
-    ],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"]
 };
