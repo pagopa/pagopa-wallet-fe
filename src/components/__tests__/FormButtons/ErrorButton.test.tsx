@@ -29,7 +29,12 @@ describe("ErrorButton Component", () => {
       { title: "button1", action: undefined },
       { title: "button2", action: dummyAction }
     ];
-    render(<ErrorButton handleClose={handleCloseMock} buttonsDetail={buttonsDetail} />);
+    render(
+      <ErrorButton
+        handleClose={handleCloseMock}
+        buttonsDetail={buttonsDetail}
+      />
+    );
     const buttons = screen.getAllByRole("button", { name: /button/i });
     expect(buttons).toHaveLength(2);
   });
@@ -37,7 +42,12 @@ describe("ErrorButton Component", () => {
   it("calls handleClose for button with undefined action", () => {
     (useSmallDevice as jest.Mock).mockReturnValue(false);
     const buttonsDetail = [{ title: "buttonClose", action: undefined }];
-    render(<ErrorButton handleClose={handleCloseMock} buttonsDetail={buttonsDetail} />);
+    render(
+      <ErrorButton
+        handleClose={handleCloseMock}
+        buttonsDetail={buttonsDetail}
+      />
+    );
     const button = screen.getByRole("button", { name: /buttonClose/i });
     fireEvent.click(button);
     expect(handleCloseMock).toHaveBeenCalled();
@@ -46,7 +56,12 @@ describe("ErrorButton Component", () => {
   it("calls custom action if provided", () => {
     (useSmallDevice as jest.Mock).mockReturnValue(false);
     const buttonsDetail = [{ title: "buttonAction", action: dummyAction }];
-    render(<ErrorButton handleClose={handleCloseMock} buttonsDetail={buttonsDetail} />);
+    render(
+      <ErrorButton
+        handleClose={handleCloseMock}
+        buttonsDetail={buttonsDetail}
+      />
+    );
     const button = screen.getByRole("button", { name: /buttonAction/i });
     fireEvent.click(button);
     expect(dummyAction).toHaveBeenCalled();
@@ -56,7 +71,12 @@ describe("ErrorButton Component", () => {
   it("applies paddingTop style when useSmallDevice returns true", () => {
     (useSmallDevice as jest.Mock).mockReturnValue(true);
     const buttonsDetail = [{ title: "buttonStyle", action: undefined }];
-    const { container } = render(<ErrorButton handleClose={handleCloseMock} buttonsDetail={buttonsDetail} />);
+    const { container } = render(
+      <ErrorButton
+        handleClose={handleCloseMock}
+        buttonsDetail={buttonsDetail}
+      />
+    );
     const gridItem = container.querySelector('[style*="padding-top"]');
     expect(gridItem).toBeInTheDocument();
     expect(gridItem).toHaveStyle("padding-top: 0px");

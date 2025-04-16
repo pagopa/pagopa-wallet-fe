@@ -22,7 +22,7 @@ describe("TextFormField", () => {
     type: "text",
     handleChange,
     handleBlur,
-    autoComplete: "on",
+    autoComplete: "on"
   };
 
   beforeEach(() => {

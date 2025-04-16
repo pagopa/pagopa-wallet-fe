@@ -1,4 +1,3 @@
-// DrawerDetail.test.tsx
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import DrawerDetail from "../../drawers/DrawerDetail";
@@ -6,13 +5,18 @@ import "@testing-library/jest-dom";
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
-    t: (key: string) => key,
-  }),
+    t: (key: string) => key
+  })
 }));
 
 jest.mock("../../modals/CustomDrawer", () => ({
-  CustomDrawer: ({ open, children }: { open: boolean; children: React.ReactNode }) =>
-    open ? <div data-testid="custom-drawer">{children}</div> : null,
+  CustomDrawer: ({
+    open,
+    children
+  }: {
+    open: boolean;
+    children: React.ReactNode;
+  }) => (open ? <div data-testid="custom-drawer">{children}</div> : null)
 }));
 
 jest.mock("@mui/material", () => {
@@ -22,9 +26,9 @@ jest.mock("@mui/material", () => {
     useTheme: () => ({
       palette: {
         info: { main: "#123456" },
-        background: { default: "white" },
-      },
-    }),
+        background: { default: "white" }
+      }
+    })
   };
 });
 

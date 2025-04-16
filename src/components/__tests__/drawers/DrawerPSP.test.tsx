@@ -13,19 +13,25 @@ jest.mock("react-i18next", () => ({
       options && options.pspName ? `${key}-${options.pspName}` : key,
   }),
   Trans: ({ i18nKey, values }: { i18nKey: string; values: { maxFeeFriendlyComp: string } }) => (
-    <div>{`${i18nKey}-${values.maxFeeFriendlyComp}`}</div>
+    <span>{`${i18nKey}-${values.maxFeeFriendlyComp}`}</span>
   ),
 }));
 
 jest.mock("../../../utils", () => ({
   formatters: {
-    moneyFormat: (fee: number) => `$${fee.toFixed(2)}`,
-  },
+    moneyFormat: (fee: number) => `$${fee.toFixed(2)}`
+  }
 }));
 
 jest.mock("../../modals/CustomDrawer", () => ({
-  CustomDrawer: ({ open, children }: { open: boolean; onClose: () => void; children: React.ReactNode }) =>
-    open ? <div data-testid="custom-drawer">{children}</div> : null,
+  CustomDrawer: ({
+    open,
+    children
+  }: {
+    open: boolean;
+    onClose: () => void;
+    children: React.ReactNode;
+  }) => (open ? <div data-testid="custom-drawer">{children}</div> : null)
 }));
 
 describe("DrawerPSP", () => {
@@ -45,12 +51,24 @@ describe("DrawerPSP", () => {
       />
     );
     expect(screen.getByTestId("custom-drawer")).toBeInTheDocument();
-    expect(screen.getByText("paypalPage.pspInfoModal.title-TestPSP")).toBeInTheDocument();
-    expect(screen.getByText("paypalPage.pspInfoModal.body1-TestPSP")).toBeInTheDocument();
-    expect(screen.getByText("paypalPage.pspInfoModal.body2-$1.23")).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "paypalPage.pspInfoModal.accessibilityLinkTitle" })
+      screen.getByText("paypalPage.pspInfoModal.title-TestPSP")
     ).toBeInTheDocument();
+    expect(
+      screen.getByText("paypalPage.pspInfoModal.body1-TestPSP")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("paypalPage.pspInfoModal.body2-$1.23")
+    ).toBeInTheDocument();
+
+    const link = screen.getByRole("link", {
+      name: "paypalPage.pspInfoModal.body3-TestPSP"
+    });
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute(
+      "title",
+      "paypalPage.pspInfoModal.accessibilityLinkTitle"
+    );
   });
 
   it("does not render anything when pspName is falsy", () => {

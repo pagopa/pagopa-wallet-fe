@@ -6,8 +6,8 @@ import { ErrorsType } from "../../../utils/errors/errorsModel";
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
-    t: (key: string) => key,
-  }),
+    t: (key: string) => key
+  })
 }));
 
 jest.mock("../../../utils/errors/errorsModel", () => ({
@@ -109,6 +109,7 @@ jest.mock("../../../utils/errors/errorsModel", () => ({
   }
 }));
 
+/* eslint-disable functional/immutable-data */
 Object.assign(navigator, {
   clipboard: {
     writeText: jest.fn().mockResolvedValue(undefined)
@@ -133,7 +134,9 @@ describe("ErrorModal Component", () => {
     );
     expect(screen.getByText("Custom Title")).toBeInTheDocument();
     expect(screen.getByText("Custom Body")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Custom Button/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Custom Button/i })
+    ).toBeInTheDocument();
   });
 
   it("renders a not-listed error properly", () => {
@@ -146,7 +149,9 @@ describe("ErrorModal Component", () => {
     );
     expect(screen.getByText("Not Listed Title")).toBeInTheDocument();
     expect(screen.getByText("Not Listed Body")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Not Listed Button/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Not Listed Button/i })
+    ).toBeInTheDocument();
   });
 
   it("renders a progress bar for POLLING_SLOW and omits buttons", () => {
@@ -158,7 +163,9 @@ describe("ErrorModal Component", () => {
       />
     );
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /Some Category Button/i })).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: /Some Category Button/i })
+    ).toBeNull();
   });
 
   it("shows detail alert and error buttons for DETAIL_ERROR", () => {
@@ -187,7 +194,9 @@ describe("ErrorModal Component", () => {
     expect(screen.getByText("Another Title")).toBeInTheDocument();
     expect(screen.queryByText("ErrorCodeDescription")).toBeNull();
     const btns = screen.getAllByRole("button");
-    const retryButton = btns.find((btn) => btn.textContent?.includes("Status Second"));
+    const retryButton = btns.find((btn) =>
+      btn.textContent?.includes("Status Second")
+    );
     expect(retryButton).toBeDefined();
     if (retryButton) {
       fireEvent.click(retryButton);
@@ -223,9 +232,15 @@ describe("ErrorModal Component", () => {
       />
     );
 
-    const tooltipTrigger = screen.getByRole("button", { name: /clipboard.copy/i });
+    const tooltipTrigger = screen.getByRole("button", {
+      name: /clipboard.copy/i
+    });
 
-    const mouseOverEvent = new MouseEvent("mouseover", { bubbles: true, cancelable: true });
+    const mouseOverEvent = new MouseEvent("mouseover", {
+      bubbles: true,
+      cancelable: true
+    });
+    /* eslint-disable functional/immutable-data */
     Object.defineProperty(mouseOverEvent, "stopPropagation", {
       value: stopPropagationMock
     });
@@ -242,7 +257,9 @@ describe("ErrorModal Component", () => {
         onClose={onCloseMock}
       />
     );
-    expect(screen.getByRole("button", { name: /Fallback Custom Button/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Fallback Custom Button/i })
+    ).toBeInTheDocument();
   });
 
   it("returns fallback body for a non-detailed, listed error", () => {
@@ -267,8 +284,14 @@ describe("ErrorModal Component", () => {
       />
     );
     const copyButton = screen.getByRole("button", { name: /clipboard.copy/i });
-    const mouseOverEvent = new MouseEvent("mouseover", { bubbles: true, cancelable: true });
-    Object.defineProperty(mouseOverEvent, "stopPropagation", { value: stopPropagationMock });
+    const mouseOverEvent = new MouseEvent("mouseover", {
+      bubbles: true,
+      cancelable: true
+    });
+    /* eslint-disable functional/immutable-data */
+    Object.defineProperty(mouseOverEvent, "stopPropagation", {
+      value: stopPropagationMock
+    });
     fireEvent(copyButton, mouseOverEvent);
     expect(stopPropagationMock).toHaveBeenCalled();
   });

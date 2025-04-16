@@ -23,7 +23,7 @@ describe("FormButtons Component", () => {
       disabledCancel: true,
       submitTitle: "Submit",
       handleSubmit: handleSubmitMock,
-      type: "button" as "button",
+      type: "button" as const,
       handleCancel: handleCancelMock,
       cancelTitle: "Cancel"
     };
@@ -43,14 +43,16 @@ describe("FormButtons Component", () => {
     });
 
     it("displays loading state on submit button when loadingSubmit is true", () => {
-        render(<FormButtons {...submitProps} loadingSubmit={true} />);
-        const loadingButtons = screen
-          .getAllByRole("button", { hidden: true })
-          .filter((btn) => btn.getAttribute("aria-label") === "ariaLabels.loading");
-        expect(loadingButtons.length).toBeGreaterThan(0);
-        const button = loadingButtons[0];
-        expect(button).toHaveTextContent("");
-      });
+      render(<FormButtons {...submitProps} loadingSubmit={true} />);
+      const loadingButtons = screen
+        .getAllByRole("button", { hidden: true })
+        .filter(
+          (btn) => btn.getAttribute("aria-label") === "ariaLabels.loading"
+        );
+      expect(loadingButtons.length).toBeGreaterThan(0);
+      const button = loadingButtons[0];
+      expect(button).toHaveTextContent("");
+    });
   });
 
   describe("CancellableButtons variant", () => {
@@ -61,14 +63,16 @@ describe("FormButtons Component", () => {
       cancelTitle: "Cancel",
       handleSubmit: handleSubmitMock,
       handleCancel: handleCancelMock,
-      type: "button" as "button"
+      type: "button" as const
     };
 
     it("renders both submit and cancel buttons", () => {
       render(<FormButtons {...cancellableProps} />);
       const buttons = screen.getAllByRole("button");
       expect(buttons).toHaveLength(2);
-      expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Cancel" })
+      ).toBeInTheDocument();
     });
 
     it("calls handleCancel when cancel button is clicked", () => {
@@ -79,13 +83,15 @@ describe("FormButtons Component", () => {
     });
 
     it("displays loading state on cancel button when loadingCancel is true", () => {
-        render(<FormButtons {...cancellableProps} loadingCancel={true} />);
-        const loadingButtons = screen
-          .getAllByRole("button", { hidden: true })
-          .filter((btn) => btn.getAttribute("aria-label") === "ariaLabels.loading");
-        expect(loadingButtons.length).toBeGreaterThan(0);
-        const cancelButton = loadingButtons[0];
-        expect(cancelButton).toHaveTextContent("");
-      });
+      render(<FormButtons {...cancellableProps} loadingCancel={true} />);
+      const loadingButtons = screen
+        .getAllByRole("button", { hidden: true })
+        .filter(
+          (btn) => btn.getAttribute("aria-label") === "ariaLabels.loading"
+        );
+      expect(loadingButtons.length).toBeGreaterThan(0);
+      const cancelButton = loadingButtons[0];
+      expect(cancelButton).toHaveTextContent("");
+    });
   });
 });

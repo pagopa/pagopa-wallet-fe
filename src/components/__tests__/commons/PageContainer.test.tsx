@@ -12,6 +12,7 @@ jest.mock("../../../components/commons/WalletLoader", () => () => (
 ));
 
 describe("PageContainer", () => {
+  /* eslint-disable @typescript-eslint/no-var-requires */
   const { usePromiseTracker } = require("react-promise-tracker");
 
   beforeEach(() => {
