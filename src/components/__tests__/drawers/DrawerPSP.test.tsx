@@ -10,11 +10,15 @@ jest.mock("../../../assets/icons/tag.svg", () => "tagIconMock");
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string, options?: any) =>
-      options && options.pspName ? `${key}-${options.pspName}` : key,
+      options && options.pspName ? `${key}-${options.pspName}` : key
   }),
-  Trans: ({ i18nKey, values }: { i18nKey: string; values: { maxFeeFriendlyComp: string } }) => (
-    <span>{`${i18nKey}-${values.maxFeeFriendlyComp}`}</span>
-  ),
+  Trans: ({
+    i18nKey,
+    values
+  }: {
+    i18nKey: string;
+    values: { maxFeeFriendlyComp: string };
+  }) => <span>{`${i18nKey}-${values.maxFeeFriendlyComp}`}</span>
 }));
 
 jest.mock("../../../utils", () => ({
