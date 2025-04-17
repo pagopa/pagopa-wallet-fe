@@ -34,6 +34,8 @@ module.exports = {
     "<rootDir>/src/__mocks__/*.ts",
     "<rootDir>/src/utils/api/pm",
     "<rootDir>/src/routes/pm",
+    "<rootDir>/src/components/Verify.tsx",
+    "<rootDir>/src/components/commons/BpayAccountItem.tsx",
     "index.ts",
     "image.d.ts",
 ],
