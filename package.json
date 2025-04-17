@@ -28,6 +28,9 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.17.7",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
     "@types/express": "^4.17.20",
     "@types/node": "^18.0.0",
     "@types/puppeteer": "^7.0.4",
