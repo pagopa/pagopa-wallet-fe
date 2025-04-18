@@ -22,7 +22,7 @@ const API_TIMEOUT = getConfigOrThrow().WALLET_CONFIG_API_TIMEOUT as Millisecond;
  * Given predicate that return a boolean promise, fetch with transient error handling.
  * Handle error that occurs once or at unpredictable intervals.
  */
-function retryLogicOnPromisePredicate(
+export function retryLogicOnPromisePredicate(
   p: (r: Response) => Promise<boolean>,
   retryLogic: (
     t: RetriableTask<Error, Response>,

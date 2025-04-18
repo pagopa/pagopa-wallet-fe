@@ -1,6 +1,6 @@
 import { FieldId } from "../components/types";
 
-enum NpgEvtDataErroCode {
+export enum NpgEvtDataErroCode {
   HF0001 = "HF0001",
   HF0002 = "HF0002",
   HF0003 = "HF0003",
