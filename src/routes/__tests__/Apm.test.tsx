@@ -78,8 +78,10 @@ describe("Apm component", () => {
     locationSpy.mockRestore();
   });
 
-  it("renders preamble initially", () => {
-    render(<Apm />);
+  it("renders preamble initially", async () => {
+    await act(async () => {
+      render(<Apm />);
+    });
     expect(screen.getByText("paypalPage.preamble.title")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "paypalPage.preamble.cta" })
@@ -87,7 +89,9 @@ describe("Apm component", () => {
   });
 
   it("transitions from preamble to form view on CTA click", async () => {
-    render(<Apm />);
+    await act(async () => {
+      render(<Apm />);
+    });
     clickWithAct(
       screen.getByRole("button", { name: "paypalPage.preamble.cta" })
     );
@@ -111,7 +115,9 @@ describe("Apm component", () => {
       }
     });
 
-    render(<Apm />);
+    await act(async () => {
+      render(<Apm />);
+    });
     clickWithAct(
       screen.getByRole("button", { name: "paypalPage.preamble.cta" })
     );
@@ -147,7 +153,9 @@ describe("Apm component", () => {
       }
     });
 
-    render(<Apm />);
+    await act(async () => {
+      render(<Apm />);
+    });
     clickWithAct(
       screen.getByRole("button", { name: "paypalPage.preamble.cta" })
     );
@@ -172,7 +180,9 @@ describe("Apm component", () => {
       E.left(new Error("mocked error"))
     );
 
-    render(<Apm />);
+    await act(async () => {
+      render(<Apm />);
+    });
     clickWithAct(
       screen.getByRole("button", { name: "paypalPage.preamble.cta" })
     );
@@ -181,8 +191,10 @@ describe("Apm component", () => {
       expect(utils.url.redirectWithOutcome).toHaveBeenCalled()
     );
   });
-  it("calls redirectWithOutcome with GENERIC_ERROR route", () => {
-    render(<Apm />);
+  it("calls redirectWithOutcome with GENERIC_ERROR route", async () => {
+    await act(async () => {
+      render(<Apm />);
+    });
     act(() => {
       jest.advanceTimersByTime(getConfigOrThrow().WALLET_GDI_CHECK_TIMEOUT);
     });
@@ -190,8 +202,10 @@ describe("Apm component", () => {
       OUTCOME_ROUTE.GENERIC_ERROR
     );
   });
-  it("opens and closes DrawerTransactionManager when help link is clicked", () => {
-    render(<Apm />);
+  it("opens and closes DrawerTransactionManager when help link is clicked", async () => {
+    await act(async () => {
+      render(<Apm />);
+    });
     clickWithAct(
       screen.getByRole("button", { name: "paypalPage.preamble.cta" })
     );
@@ -207,6 +221,7 @@ describe("Apm component", () => {
 
     clickWithAct(screen.getByTestId("CloseIcon"));
 
-    expect(screen.getByAltText("drawer-tm")).not.toBeInTheDocument();
+    const drawer = screen.getByRole("presentation", { hidden: true });
+    expect(drawer).toHaveAttribute("aria-hidden", "true");
   });
 });

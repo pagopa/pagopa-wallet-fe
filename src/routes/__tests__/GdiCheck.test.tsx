@@ -70,7 +70,7 @@ describe("GdiCheckPage", () => {
   it("calls redirectWithOutcome after timeout", () => {
     render(<GdiCheckPage />);
 
-    jest.advanceTimersByTime(5000);
+    jest.advanceTimersByTime(getConfigOrThrow().WALLET_GDI_CHECK_TIMEOUT);
     expect(mockRedirect).toHaveBeenCalledTimes(1);
   });
 
@@ -78,7 +78,7 @@ describe("GdiCheckPage", () => {
     const { unmount } = render(<GdiCheckPage />);
     unmount();
 
-    jest.advanceTimersByTime(5000);
+    jest.advanceTimersByTime(getConfigOrThrow().WALLET_GDI_CHECK_TIMEOUT);
     expect(mockRedirect).not.toHaveBeenCalled();
   });
   it("calls redirectWithOutcome with GENERIC_ERROR route", () => {
