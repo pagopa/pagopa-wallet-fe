@@ -87,6 +87,10 @@ module.exports = {
       'functional/immutable-data': 'error',
       'sonarjs/no-small-switch': 'off',
       'sonarjs/no-duplicate-string': 'off',
+      'prettier/prettier': [
+        'error', 
+        {'endOfLine': 'auto'}
+      ]
     },
     settings: {
       react: {

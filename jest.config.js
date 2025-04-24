@@ -42,5 +42,8 @@ module.exports = {
   testResultsProcessor: "jest-sonar-reporter",
   setupFiles: ['<rootDir>/src/env-config.js'],
   modulePathIgnorePatterns: ["__integration_tests__"],
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"]
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  moduleNameMapper: {
+    '\\.svg$': '<rootDir>/src/utils/svgMock.ts',
+  }
 };
