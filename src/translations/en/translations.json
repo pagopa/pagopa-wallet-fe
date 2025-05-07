@@ -1,0 +1,131 @@
+{
+  "paymentMethodPage": {
+    "title": "Add a payment method",
+    "description":
+      "The method will be saved in your IO Wallet and used to make payments or to join compatible initiatives."
+  },
+  "inputCardPage": {
+    "title": "Enter your card details",
+    "formFields": {
+      "name": "Cardholder",
+      "number": "Card number",
+      "expirationDate": "Expiration date",
+      "cvv": "CVV",
+      "cid": "CID (4 digits)"
+    },
+    "formErrors": {
+      "required": "Required",
+      "name": "Enter name as shown on the card",
+      "number": "Enter a valid number",
+      "expirationDate": "Enter mm/yy",
+      "cvv": "Enter 3 digits",
+      "cid": "Enter 4 digits"
+    },
+    "saveMethod": "Save to Wallet",
+    "formButtons": {
+      "submit": "Continue"
+    },
+    "privacyDesc": "I have read and understood ",
+    "privacyTerms":
+      "the privacy policy and accept the terms and conditions of use",
+    "helpLink": "Where can I find the security code?",
+    "modal": {
+      "title": "Security code",
+      "description":
+        "It is a three-digit code, called CVV or CVS, which you can find on the back of your card.",
+      "descriptionAE":
+        "On American Express cards, the code (CID) has four digits and is located on the front."
+    }
+  },
+  "bPayPage": {
+    "title": "Do you want to add this account?",
+    "description": "BANCOMAT PAY account {{nAccount}} of {{of}}",
+    "formButtons": {
+      "submit": "Add",
+      "annulla": "Skip"
+    }
+  },
+  "paypalPage": {
+    "title": "Choose who will handle your PayPal payments.",
+    "description":
+      "If you want to change your choice later, just save your PayPal account again in IO.",
+    "helpLink": "What is a payment service provider (PSP)?",
+    "formFields": {
+      "billCode": "Notice code",
+      "cf": "Payee tax code"
+    },
+    "formErrors": {
+      "required": "Required",
+      "minCode": "Enter 18 digits",
+      "minCf": "Enter 11 digits"
+    },
+    "preamble": {
+      "title": "Save your PayPal account and enable quick payments.",
+      "body": "Choose your preferred method to pay pagoPA notices, without having to authorize each time in the PayPal app.",
+      "cta": "Continue"
+    },
+    "psp": {
+      "header": {
+        "name": "Provider",
+        "info": "Info and fees"
+      }
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Continue"
+    },
+    "managerModal": {
+      "title": "What is a payment service provider (PSP)?",
+      "body": "It is the entity, also known as PSP (Payment Service Provider), that collects the amount on behalf of the Creditor Entity and may apply a fee for the service provided."
+    },
+    "pspInfoModal": {
+      "info": "More details on this provider",
+      "title": "Who is {{pspName}}?",
+      "body1":
+        "It’s a Payment Service Provider (PSP) that can handle your transactions via PayPal.",
+      "body2":
+        "When you pay a notice, they may charge a maximum fee of <strong>{{maxFeeFriendlyComp}}</strong>. You will see the exact amount before confirming",
+      "body3":
+        "{{pspName}}’s Terms and Conditions and Privacy Policy apply",
+      "accessibilityLinkTitle": "Visit the PSP website.",
+      "accessibilityIconAlt": "Paragraph image"
+    }
+  },
+  "resultPage": {
+    "justFewMoments": "Just a moment...",
+    "completeOperationMsg":
+      "If your device asks, grant permission to complete the operation.",
+    "continueToIO": "Continue in the IO app."
+  },
+  "errorButton": {
+    "help": "Contact support",
+    "close": "Close",
+    "retry": "Try again"
+  },
+  "GENERIC_ERROR": {
+    "title": "An unexpected error occurred",
+    "body": "Try again or contact us for support."
+  },
+  "NOT_LISTED": {
+    "title": "An unexpected error occurred",
+    "body": "Try again or contact us for support."
+  },
+  "ERRORE_TECNICO": {
+    "title": "A technical error occurred"
+  },
+  "clipboard": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "edit": "Change"
+  },
+  "errorMessageNPG": {
+    "HF0001": "Enter 3 or 4 digits",
+    "HF0002": "Service temporarily unavailable",
+    "HF0003": "The session has expired, go back and try again",
+    "HF0004": "Enter a valid number",
+    "HF0005": "The network of this card is not supported",
+    "HF0006": "Enter mm/yy",
+    "HF0007": "Enter name as shown on the card",
+    "HF0009": "3DS verification failed"
+  }
+}
