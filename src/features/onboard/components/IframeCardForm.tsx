@@ -77,6 +77,11 @@ export default function IframeCardForm(props: IframeCardForm) {
     setErrorModalOpen(true);
   };
 
+  const onErrorRetry = () => {
+    onError();
+    void getSessionFields(sessionToken, walletId, onSuccess, onError);
+  };
+
   const { sessionToken, walletId } = utils.url.getFragments(
     ROUTE_FRAGMENT.SESSION_TOKEN,
     ROUTE_FRAGMENT.WALLET_ID
@@ -99,10 +104,10 @@ export default function IframeCardForm(props: IframeCardForm) {
         () =>
           pipe(
             WalletVerifyRequestAPMDetails.decode(details),
-            E.fold(onError, (detail) => {
+            E.fold(onErrorRetry, (detail) => {
               pipe(
                 O.fromNullable(detail.redirectUrl),
-                O.match(onError, (redirect) =>
+                O.match(onErrorRetry, (redirect) =>
                   window.location.replace(redirect)
                 )
               );
@@ -119,7 +124,7 @@ export default function IframeCardForm(props: IframeCardForm) {
   const validation = async ({ orderId }: SessionWalletCreateResponse) => {
     pipe(
       await utils.api.npg.validations(sessionToken, orderId, walletId),
-      E.match(onError, onValidation)
+      E.match(onErrorRetry, onValidation)
     );
   };
 
@@ -147,81 +152,77 @@ export default function IframeCardForm(props: IframeCardForm) {
     );
   };
 
+  // payment/onboarding success event
+  const onReadyForPayment = (body: SessionWalletCreateResponse) => {
+    if (isPayment) {
+      return utils.url.redirectToIoAppForPayment(
+        walletId,
+        OUTCOME_ROUTE.SUCCESS,
+        WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE ? saveMethod.current : undefined
+      );
+    }
+    void validation(body);
+  };
+
+  // payment/onboarding without 3ds challenge phase
+  const onPaymentComplete = () => {
+    clearNavigationEvents();
+    navigate(`/${WalletRoutes.ESITO}`);
+  };
+
+  // payment/onboarding with 3ds challenge phase
+  const onPaymentRedirect = (redirect: string) => {
+    clearNavigationEvents();
+    window.location.replace(redirect);
+  };
+
+  const onBuildError = () => {
+    setLoading(false);
+    if (isPayment) {
+      return utils.url.redirectToIoAppForPayment(
+        walletId,
+        OUTCOME_ROUTE.GENERIC_ERROR,
+        WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE ? saveMethod.current : undefined
+      );
+    }
+    window.location.replace(`/${WalletRoutes.ERRORE}`);
+  };
+
+  const onSuccess = (body: SessionWalletCreateResponse) => {
+    const sessionData = body.sessionData as SessionWalletCreateResponseData1;
+    setCardFormFields(sessionData.cardFormFields);
+    utils.storage.setSessionItem(
+      utils.storage.SessionItems.orderId,
+      body.orderId
+    );
+
+    const onAllFieldsLoaded = () => {
+      setFormLoading(false);
+      setLoading(false);
+    };
+
+    try {
+      // THIS is mandatory cause the Build class is defined in the external library called NPG SDK
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const newBuild = new Build(
+        createBuildConfig({
+          onChange,
+          onReadyForPayment: () => onReadyForPayment(body),
+          onPaymentComplete,
+          onPaymentRedirect,
+          onBuildError,
+          onAllFieldsLoaded
+        })
+      );
+      setBuildInstance(newBuild);
+    } catch {
+      onBuildError();
+    }
+  };
+
   React.useEffect(() => {
     if (!cardFormFields) {
-      const onSuccess = (body: SessionWalletCreateResponse) => {
-        const sessionData =
-          body.sessionData as SessionWalletCreateResponseData1;
-        setCardFormFields(sessionData.cardFormFields);
-        utils.storage.setSessionItem(
-          utils.storage.SessionItems.orderId,
-          body.orderId
-        );
-
-        // payment/onboarding success event
-        const onReadyForPayment = () => {
-          if (isPayment) {
-            return utils.url.redirectToIoAppForPayment(
-              walletId,
-              OUTCOME_ROUTE.SUCCESS,
-              WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
-                ? saveMethod.current
-                : undefined
-            );
-          }
-          void validation(body);
-        };
-
-        // payment/onboarding without 3ds challenge phase
-        const onPaymentComplete = () => {
-          clearNavigationEvents();
-          navigate(`/${WalletRoutes.ESITO}`);
-        };
-
-        // payment/onboarding with 3ds challenge phase
-        const onPaymentRedirect = (redirect: string) => {
-          clearNavigationEvents();
-          window.location.replace(redirect);
-        };
-
-        const onBuildError = () => {
-          setLoading(false);
-          if (isPayment) {
-            return utils.url.redirectToIoAppForPayment(
-              walletId,
-              OUTCOME_ROUTE.GENERIC_ERROR,
-              WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
-                ? saveMethod.current
-                : undefined
-            );
-          }
-          window.location.replace(`/${WalletRoutes.ERRORE}`);
-        };
-
-        const onAllFieldsLoaded = () => {
-          setFormLoading(false);
-          setLoading(false);
-        };
-
-        try {
-          // THIS is mandatory cause the Build class is defined in the external library called NPG SDK
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          const newBuild = new Build(
-            createBuildConfig({
-              onChange,
-              onReadyForPayment,
-              onPaymentComplete,
-              onPaymentRedirect,
-              onBuildError,
-              onAllFieldsLoaded
-            })
-          );
-          setBuildInstance(newBuild);
-        } catch {
-          onBuildError();
-        }
-      };
       void getSessionFields(sessionToken, walletId, onSuccess, onError);
     }
   }, []);
