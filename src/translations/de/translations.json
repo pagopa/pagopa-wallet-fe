@@ -1,0 +1,131 @@
+{
+  "paymentMethodPage": {
+    "title": "Füge eine Methode hinzu",
+    "description":
+      "Die Methode wird im IO-Portemonnaie gespeichert und kann für Zahlungen oder zur Teilnahme an kompatiblen Initiativen verwendet werden."
+  },
+  "inputCardPage": {
+    "title": "Kartendaten eingeben",
+    "formFields": {
+      "name": "Ausgestellt auf",
+      "number": "Kartennummer",
+      "expirationDate": "Ablaufdatum",
+      "cvv": "CVV",
+      "cid": "CID (4 Ziffern)"
+    },
+    "formErrors": {
+      "required": "Pflichtfeld",
+      "name": "Genau wie auf der Karte eingeben",
+      "number": "Gib eine gültige Nummer ein",
+      "expirationDate": "Gib MM/JJ ein",
+      "cvv": "Gib 3 Ziffern ein",
+      "cid": "Gib 4 Ziffern ein"
+    },
+    "saveMethod": "Im Portemonnaie speichern",
+    "formButtons": {
+      "submit": "Weiter"
+    },
+    "privacyDesc": "Ich habe die ",
+    "privacyTerms":
+      "Datenschutzerklärung gelesen und stimme den Nutzungsbedingungen zu",
+    "helpLink": "Wo finde ich den Sicherheitscode?",
+    "modal": {
+      "title": "Sicherheitscode",
+      "description":
+        "Das ist ein dreistelliger Code, CVV oder CVS genannt, den du auf der Rückseite deiner Karte findest.",
+      "descriptionAE":
+        "Bei American Express-Karten ist der Code (CID) vierstellig und befindet sich auf der Vorderseite."
+    }
+  },
+  "bPayPage": {
+    "title": "Möchtest du dieses Konto hinzufügen?",
+    "description": "BANCOMAT PAY-Konto {{nAccount}} von {{of}}",
+    "formButtons": {
+      "submit": "Hinzufügen",
+      "annulla": "Abbrechen"
+    }
+  },
+  "paypalPage": {
+    "title": "Wähle, wer deine PayPal-Zahlungen verwaltet",
+    "description":
+      "Wenn du dich später umentscheidest, kannst du dein PayPal-Konto einfach erneut in IO speichern.",
+    "helpLink": "Was ist der Zahlungsdienstleister?",
+    "formFields": {
+      "billCode": "Zahlungscode",
+      "cf": "Steuernummer der Behörde"
+    },
+    "formErrors": {
+      "required": "Pflichtfeld",
+      "minCode": "Gib 18 Ziffern ein",
+      "minCf": "Gib 11 Ziffern ein"
+    },
+    "preamble": {
+      "title": "Speichere dein PayPal-Konto und aktiviere Schnellzahlung",
+      "body": "Wähle deine bevorzugte Methode zur Bezahlung von pagoPA-Mitteilungen, ohne sie jedes Mal in der PayPal-App genehmigen zu müssen.",
+      "cta": "Weiter"
+    },
+    "psp": {
+      "header": {
+        "name": "Dienstleister",
+        "info": "Info und Kosten"
+      }
+    },
+    "buttons": {
+      "cancel": "Abbrechen",
+      "submit": "Weiter"
+    },
+    "managerModal": {
+      "title": "Was ist der Zahlungsdienstleister?",
+      "body": "Das ist der Anbieter, auch PSP (Payment Service Provider) genannt, der den Betrag im Namen der Behörde einzieht und dafür eventuell eine Gebühr erhebt."
+    },
+    "pspInfoModal": {
+      "info": "Mehr Infos zu diesem Anbieter",
+      "title": "Wer ist {{pspName}}?",
+      "body1":
+        "Das ist ein Zahlungsdienstleister (PSP), der deine Transaktionen über PayPal abwickeln kann.",
+      "body2":
+        "Bei der Bezahlung kann eine Gebühr von bis zu <strong>{{maxFeeFriendlyComp}}</strong> anfallen. Der genaue Betrag wird dir vor der Bestätigung angezeigt.",
+      "body3":
+        "Es gelten die Nutzungsbedingungen und die Datenschutzerklärung von {{pspName}}",
+      "accessibilityLinkTitle": "Zur Website des PSP",
+      "accessibilityIconAlt": "Absatzbild"
+    }
+  },
+  "resultPage": {
+    "justFewMoments": "Nur noch einen Moment...",
+    "completeOperationMsg":
+      "Wenn das Gerät dich darum bittet, erteile die Erlaubnis, um den Vorgang abzuschließen.",
+    "continueToIO": "Weiter in der IO-App"
+  },
+  "errorButton": {
+    "help": "Kontakt mit Kundendienst",
+    "close": "Schließen",
+    "retry": "Erneut versuchen"
+  },
+  "GENERIC_ERROR": {
+    "title": "Ein unvorhergesehener Fehler ist aufgetreten",
+    "body": "Versuche es noch einmal oder wende dich an den Kundendienst."
+  },
+  "NOT_LISTED": {
+    "title": "Ein unvorhergesehener Fehler ist aufgetreten",
+    "body": "Versuche es noch einmal oder wende dich an den Kundendienst."
+  },
+  "ERRORE_TECNICO": {
+    "title": "Ein technischer Fehler ist aufgetreten"
+  },
+  "clipboard": {
+    "copy": "Kopieren",
+    "copied": "Kopiert",
+    "edit": "Ändern"
+  },
+  "errorMessageNPG": {
+    "HF0001": "3 oder 4 Ziffern eingeben",
+    "HF0002": "Dienst vorübergehend nicht verfügbar",
+    "HF0003": "Die Sitzung ist abgelaufen, geh zurück und versuch es noch einmal",
+    "HF0004": "Gültige Nummer eingeben",
+    "HF0005": "Das Netzwerk dieser Karte wird nicht unterstützt",
+    "HF0006": "MM/JJ eingeben",
+    "HF0007": "Genau wie auf der Karte eingeben",
+    "HF0009": "3DS-Überprüfung fehlgeschlagen"
+  }
+}

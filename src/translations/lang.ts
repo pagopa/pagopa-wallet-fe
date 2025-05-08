@@ -1,10 +1,22 @@
 import translationIT from "./it/translations.json";
+import translationEN from "./en/translations.json";
+import translationDE from "./de/translations.json";
 
 const lang: Languages = {
   it: {
     label: "Italiano",
     lang: "it-IT",
     translation: translationIT
+  },
+  en: {
+    label: "English",
+    lang: "en-US",
+    translation: translationEN
+  },
+  de: {
+    label: "Deutsch",
+    lang: "de-DE",
+    translation: translationDE
   }
 };
 
