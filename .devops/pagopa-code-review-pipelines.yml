@@ -21,7 +21,7 @@ trigger:
 # Execute agents (jobs) on latest Ubuntu version.
 # To change OS for a specific, ovverride "pool" attribute inside the job definition
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-22.04'
 
 resources:
   repositories:
@@ -41,9 +41,7 @@ stages:
   - stage: Build
     dependsOn: []
     jobs:
-      - job: make_build  
-        pool:
-          vmImage: 'ubuntu-latest'  
+      - job: make_build
         steps:
         - template: templates/node-job-setup/template.yaml@pagopaCommons
 
@@ -72,8 +70,6 @@ stages:
 
   # B) Run unit tests if there is a push or pull request on any branch.
   - stage: Unit_Tests
-    pool:
-      vmImage: 'ubuntu-latest'
     dependsOn: []
     jobs:
       
@@ -133,8 +129,6 @@ stages:
 
   # B) Run integration tests if there is a push or pull request on any branch.
   - stage: Integration_Tests
-    pool:
-      vmImage: 'ubuntu-latest'
     dependsOn: []
     jobs:
       - job: run_integration_tests
@@ -150,7 +144,16 @@ stages:
           workingDirectory: pagopa-wallet-be-mock
           displayName: 'Setup env for mock'
 
-        - script: yarn global add node-gyp && yarn install && yarn generate && yarn build
+        - task: Cache@2
+          inputs:
+            key: 'yarn | "$(Agent.OS)" | pagopa-wallet-be-mock/yarn.lock'
+            restoreKeys: |
+              yarn | "$(Agent.OS)"
+              yarn
+              path: $(YARN_CACHE_FOLDER)
+            displayName: Cache Mock Yarn packages
+
+        - script: yarn global add node-gyp && yarn install --frozen-lockfile && yarn generate && yarn build
           workingDirectory: pagopa-wallet-be-mock
           displayName: 'Setup deps for mock'
 

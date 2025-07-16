@@ -1,7 +1,7 @@
 module.exports = {
     launch: {
         dumpio: true,
-        headless: "new",
+        headless: false,//"new",
         product: 'chrome',
         args: ["--no-sandbox"] // to fix
     },
