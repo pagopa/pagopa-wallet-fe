@@ -40,7 +40,7 @@ pr: none
 # runtime, the pipeline is currently configured to use a Windows hosted image for
 # the build and deploy.
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-22.04'
 
 resources:
   repositories:
@@ -63,7 +63,7 @@ stages:
     jobs:
       - job: make_build
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: 'ubuntu-22.04'
         steps:
           - template: templates/node-job-setup/template.yaml@pagopaCommons
             parameters:
@@ -103,7 +103,7 @@ stages:
     jobs:
       - job: 'deploy'
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: 'ubuntu-22.04'
         steps:
           - checkout: none
 
@@ -132,7 +132,7 @@ stages:
     dependsOn:
       - Deploy_DEV_pagoPA
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-22.04'
     jobs:
       - job: e2e_tests
         steps:
@@ -161,7 +161,7 @@ stages:
         )
       )
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-22.04'
     jobs:
       - job: make_release
         steps:
@@ -188,7 +188,7 @@ stages:
     jobs:
       - job: make_build
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: 'ubuntu-22.04'
         steps:
           - template: templates/node-job-setup/template.yaml@pagopaCommons
             parameters:
@@ -268,7 +268,7 @@ stages:
     dependsOn:
       - Deploy_UAT_pagoPA
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-22.04'
     jobs:
       - job: e2e_tests
         steps:
@@ -284,7 +284,7 @@ stages:
     jobs:
       - job: make_build
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: 'ubuntu-22.04'
         steps:
           - template: templates/node-job-setup/template.yaml@pagopaCommons
             parameters:
