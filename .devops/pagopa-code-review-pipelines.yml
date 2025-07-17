@@ -150,7 +150,7 @@ stages:
             restoreKeys: |
               yarn | "$(Agent.OS)"
               yarn
-              path: $(YARN_CACHE_FOLDER)
+            path: $(YARN_CACHE_FOLDER)
             displayName: Cache Mock Yarn packages
 
         - script: yarn global add node-gyp && yarn install --frozen-lockfile && yarn generate && yarn build
