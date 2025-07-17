@@ -22,10 +22,10 @@ describe("Test showing final button for continue to IO", () => {
     const WALLET_FE_ESITO_PAGE = "http://localhost:1234/esito";
 
     console.log("start onboarding for session storage initialization")
-    await page.goto(WALLET_FE_APM_ONBOARDING, { timeout: 30000 });
+    await page.goto(WALLET_FE_APM_ONBOARDING, { waitUntil: "networkidle0" });
 
     console.log("redirect directly into result page")
-    await page.goto(WALLET_FE_ESITO_PAGE, { timeout: 30000 });
+    await page.goto(WALLET_FE_ESITO_PAGE, { waitUntil: "networkidle0" });
 
     await page.waitForSelector('#continueToIOBtn');
     const waitingTitleSelector = await page.waitForSelector('#waitingTitle');
