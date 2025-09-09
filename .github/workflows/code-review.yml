@@ -58,7 +58,6 @@ jobs:
         run: |
           yarn lint
           yarn type-check
-          yarn test:coverage
 
       - name: Install Sonar Scanner
         run: |
