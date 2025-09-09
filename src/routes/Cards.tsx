@@ -32,7 +32,7 @@ export default function IFrameCardPage(props: IFrameCardPageProps) {
       </Box>
 
       <InformationModal ref={cvvModalRef} maxWidth="sm" hideIcon>
-        <Typography variant="h6" sx={{ pb: 2 }}>
+        <Typography data-testid="modalTitle" variant="h6" sx={{ pb: 2 }}>
           {t("iframeCardPage.modalTitle")}
         </Typography>
 

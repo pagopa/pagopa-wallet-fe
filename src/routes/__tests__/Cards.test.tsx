@@ -1,14 +1,15 @@
 import React from "react";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
 import IFrameCardPage from "../Cards";
 
 // Mock translation
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
-    t: (key: string) => key
-  })
+    t: (key: string) => key,
+    i18n: { language: "it" }
+  }),
+  Trans: ({ children }: any) => children
 }));
 
 // Mock IframeCardForm
