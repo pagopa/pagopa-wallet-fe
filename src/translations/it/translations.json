@@ -4,6 +4,12 @@
     "description":
       "Il metodo verrà memorizzato nel Portafoglio di IO e potrà essere utilizzato per effettuare pagamenti o aderire a iniziative compatibili."
   },
+   "iframeCardPage": {
+    "helpLink": "Dove trovo il CVV?",
+    "modalTitle": "Dove trovo il CVV?",
+    "modalBodyText": "Il codice CVV(o CVC) ha 3 cifre e lo trovi sul retro della tua carta. <br> Sulle carte American Express, il codice (CID) ha 4 cifre ed è posizionato sul fronte.",
+    "buttonClose": "Chiudi"
+  },
   "inputCardPage": {
     "title": "Inserisci i dati della carta",
     "formFields": {

@@ -4,6 +4,12 @@
     "description":
       "Die Methode wird im IO-Portemonnaie gespeichert und kann für Zahlungen oder zur Teilnahme an kompatiblen Initiativen verwendet werden."
   },
+  "iframeCardPage": {
+    "helpLink": "Wo finde ich den CVV?",
+    "modalTitle": "Wo finde ich den CVV?",
+    "modalBodyText": "Der CVV Code (oder CVC) besteht aus 3 Ziffern und befindet sich auf der Rückseite deiner Karte. Bei American Express-Karten hat der Code (CID) 4 Ziffern und befindet sich auf der Vorderseite.",
+    "buttonClose": "Schließen"
+  },
   "inputCardPage": {
     "title": "Kartendaten eingeben",
     "formFields": {
