@@ -60,12 +60,19 @@ jobs:
           yarn type-check
           yarn test:coverage
 
+      - name: Install Sonar Scanner
+        run: |
+          wget -O sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
+          unzip sonar-scanner.zip
+          export PATH=$PWD/sonar-scanner-4.8.0.2856-linux/bin:$PATH
+
       - name: Sonar Analysis for Main Branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          npx sonar-scanner \
+          export PATH=$PWD/sonar-scanner-4.8.0.2856-linux/bin:$PATH
+          sonar-scanner \
           -Dsonar.organization="pagopa" \
           -Dsonar.host.url="https://sonarcloud.io" \
           -Dsonar.projectKey=${{ env.PROJECT_KEY }} \

@@ -67,7 +67,6 @@
     "puppeteer": "^22.0.0",
     "querystring-es3": "^0.2.1",
     "shx": "^0.3.4",
-    "sonarqube-scanner": "^3.3.0",
     "stream-browserify": "^3.0.0",
     "ts-jest": "^29.1.1",
     "tslint": "^5.1.0",
