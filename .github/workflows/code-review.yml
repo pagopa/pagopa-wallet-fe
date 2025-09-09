@@ -35,24 +35,11 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
 
-      - name: Setup JDK 17
-        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # v3
-        with:
-          distribution: temurin
-          java-version: 17
-
       - name: Setup Node.js
         uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
-
-      - name: Cache SonarQube packages
-        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -65,28 +52,8 @@ jobs:
           yarn lint
           yarn type-check
 
-      - name: Install Sonar Scanner
-        run: |
-          wget -O sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
-          unzip sonar-scanner.zip
-          export PATH=$PWD/sonar-scanner-4.8.0.2856-linux/bin:$PATH
-
-      - name: Sonar Analysis for Main Branch
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@e44258b109568baa0df60ed515909fc6c72cba92 # v2.3.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          export PATH=$PWD/sonar-scanner-4.8.0.2856-linux/bin:$PATH
-          sonar-scanner \
-          -Dsonar.organization="pagopa" \
-          -Dsonar.host.url="https://sonarcloud.io" \
-          -Dsonar.projectKey=${{ env.PROJECT_KEY }} \
-          -Dsonar.projectName=${{ env.PROJECT_NAME }} \
-          -Dsonar.sources=src/ \
-          -Dsonar.tests=src/ \
-          -Dsonar.test.inclusions="src/**/__tests__/**/*,src/**/__test__/**" \
-          -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info \
-          -Dsonar.testExecutionReportPaths=./test_reports/sonar-report.xml \
-          -Dsonar.coverage.exclusions="src/**/__tests__/**/*,src/**/__test__/**,**/*.js,**/*.tsx,src/**/index.ts,src/**/__mocks__/**/*,generated/**" \
-          -Dsonar.sourceEncoding=UTF-8 \
-          -Dsonar.branch.name=${{ github.ref_name }}
