@@ -1,5 +1,6 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import IFrameCardPage from "../Cards";
 
@@ -54,6 +55,31 @@ describe("IFrameCardPage", () => {
 
     expect(screen.getByTestId("iframe-card-form")).toHaveTextContent(
       "isPayment: true"
+    );
+  });
+  it("help link should be visible", async () => {
+    render(<IFrameCardPage />);
+    const helpLink = screen.getByTestId("helpLink");
+    expect(helpLink).toBeInTheDocument();
+  });
+
+  it("when help link is clicked modal is visible", async () => {
+    render(<IFrameCardPage />);
+    const helpLink = screen.getByTestId("helpLink");
+    fireEvent.click(helpLink);
+
+    expect(screen.getByTestId("modalTitle")).toBeInTheDocument();
+  });
+
+  it("when close button is clicked modal closes", async () => {
+    render(<IFrameCardPage />);
+    const helpLink = screen.getByTestId("helpLink");
+    fireEvent.click(helpLink);
+
+    fireEvent.click(screen.getByTestId("closeButton"));
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("modalTitle")).not.toBeInTheDocument()
     );
   });
 });
