@@ -7,7 +7,7 @@
   "iframeCardPage": {
     "helpLink": "Wo finde ich den CVV?",
     "modalTitle": "Wo finde ich den CVV?",
-    "modalBodyText": "Der CVV Code (oder CVC) besteht aus 3 Ziffern und befindet sich auf der Rückseite deiner Karte. Bei American Express-Karten hat der Code (CID) 4 Ziffern und befindet sich auf der Vorderseite.",
+    "modalBodyText": "Der CVV Code (oder CVC) besteht aus 3 Ziffern und befindet sich auf der Rückseite deiner Karte.<br>Bei American Express-Karten hat der Code (CID) 4 Ziffern und befindet sich auf der Vorderseite.",
     "buttonClose": "Schließen"
   },
   "inputCardPage": {
