@@ -1,4 +1,3 @@
-
 # GitHub Copilot Code Review — PagoPA DX Guidelines Enforcer
 
 ## Primary Source of Truth
@@ -35,23 +34,8 @@ When you **cite or apply** a best practice from `pagopa/dx`, **mention the speci
 
 **Recommended citation format in review comments:**
 
-- **Reference:** *pagopa/dx › {section or file name}* — {short description or heading}  
-- **Link:** {URL to the exact section/file in the repo}  
-- **Status:** *Required* / *Recommended* / *Example*
-
-## Output Style and Tone
-
-Be **clear, actionable, and concise**. When you request changes, provide:
-
-1. the **reason** grounded in `pagopa/dx`,
-2. the **minimal concrete change** (code snippet or configuration), and
-3. the **reference** (section + link).
-
-Avoid speculative or personal preferences that are not supported by `pagopa/dx`.
-
-## Comment Format (Template per Finding)
-
-```markdown
+<!-- Note: To avoid Markdown rendering issues, use different numbers of backticks for nested code blocks. -->
+````markdown
 ### Finding: {short title}
 **Severity:** {Required change | Recommendation}  
 **Context:** {file}:{line-range} – {brief context}
@@ -71,23 +55,24 @@ Avoid speculative or personal preferences that are not supported by `pagopa/dx`.
 - pagopa/dx › {Conventions Section / Guide Name} — {specific rule/heading}  
 - Link: {direct URL to section/file}  
 - Status: {Required | Recommended}
-```
+````
+<!-- End of citation format example -->
 
 ## Checklist to Apply per PR
 
-- [ ] Naming, folder structure, and modularity follow `pagopa/dx` conventions.  
-- [ ] Linting/formatting settings and rules align with the recommended configuration in `pagopa/dx`.  
-- [ ] Public APIs, interfaces, and schemas follow documented patterns (types, errors, pagination, versioning).  
-- [ ] Security practices (input validation, secrets, auth, error handling, logging) adhere to `pagopa/dx`.  
-- [ ] Tests respect the prescribed structure, coverage expectations, and examples in `pagopa/dx`.  
-- [ ] CI/CD workflows and IaC patterns follow the recommended setups/templates.  
-- [ ] Documentation and commit/branching strategy conform to the conventions (e.g., Conventional Commits if mandated).  
+- [ ] Naming, folder structure, and modularity follow `pagopa/dx` conventions.
+- [ ] Linting/formatting settings and rules align with the recommended configuration in `pagopa/dx`.
+- [ ] Public APIs, interfaces, and schemas follow documented patterns (types, errors, pagination, versioning).
+- [ ] Security practices (input validation, secrets, auth, error handling, logging) adhere to `pagopa/dx`.
+- [ ] Tests respect the prescribed structure, coverage expectations, and examples in `pagopa/dx`.
+- [ ] CI/CD workflows and IaC patterns follow the recommended setups/templates.
+- [ ] Documentation and commit/branching strategy conform to the conventions (e.g., Conventional Commits if mandated).
 - [ ] Any deviations are explicitly justified and (preferably) backed by an ADR, with links.
 
 ## What Not to Do
 
-- Do **not** invent or enforce rules that contradict `pagopa/dx`.  
-- Do **not** propose alternative libraries/tools/configurations **when `pagopa/dx` already recommends one**, unless the PR’s context strictly requires it—then include a deviation rationale and ask for an ADR.  
+- Do **not** invent or enforce rules that contradict `pagopa/dx`.
+- Do **not** propose alternative libraries/tools/configurations **when `pagopa/dx` already recommends one**, unless the PR’s context strictly requires it—then include a deviation rationale and ask for an ADR.
 - Do **not** omit references. Every rule‑based suggestion must cite the specific `pagopa/dx` section.
 
 ## Short Version (One‑liner, for quick paste)
