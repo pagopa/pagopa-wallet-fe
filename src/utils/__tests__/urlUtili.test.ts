@@ -4,8 +4,12 @@ import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "../../routes/models/routeModel";
 import urlUtils from "../../utils/urlUtilities";
 import "jest-location-mock";
 
-const { getFragments, redirectWithOutcome, redirectToIoAppForPayment } =
-  urlUtils;
+const {
+  getFragments,
+  redirectWithOutcome,
+  redirectToIoAppForPayment,
+  redirectToIoAppForOutcome
+} = urlUtils;
 const {
   WALLET_CONFIG_API_HOST: API_HOST,
   WALLET_OUTCOME_API_BASEPATH: WALLET_OUTCOME_BASEPATH
@@ -62,6 +66,19 @@ describe("redirectToIoAppForPayment function utility", () => {
       `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/12345/outcomes?outcome=1&saveMethod=false`
     );
     redirectToIoAppForPayment("12345", OUTCOME_ROUTE.SUCCESS);
+    expect(global.location.href).toBe(
+      `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/12345/outcomes?outcome=0`
+    );
+  });
+});
+
+describe("redirectToIoAppForOutcome function utility", () => {
+  it("Should redirect to the correct url", () => {
+    redirectToIoAppForOutcome("12345", OUTCOME_ROUTE.GENERIC_ERROR);
+    expect(global.location.href).toBe(
+      `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/12345/outcomes?outcome=1`
+    );
+    redirectToIoAppForOutcome("12345", OUTCOME_ROUTE.SUCCESS);
     expect(global.location.href).toBe(
       `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/12345/outcomes?outcome=0`
     );

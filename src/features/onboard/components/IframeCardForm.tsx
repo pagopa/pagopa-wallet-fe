@@ -9,6 +9,7 @@ import { SessionWalletCreateResponse } from "../../../../generated/definitions/w
 import { WalletVerifyRequestAPMDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestAPMDetails";
 import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
 import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
+import { WalletVerifyRequestContextualCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestContextualCardDetails";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import ErrorModal from "../../../components/commons/ErrorModal";
 import {
@@ -91,7 +92,10 @@ export default function IframeCardForm(props: IframeCardForm) {
   const onValidation = ({
     details
   }: WalletVerifyRequestsResponse & {
-    details: WalletVerifyRequestCardDetails | WalletVerifyRequestAPMDetails;
+    details:
+      | WalletVerifyRequestCardDetails
+      | WalletVerifyRequestAPMDetails
+      | WalletVerifyRequestContextualCardDetails;
   }) => {
     pipe(
       WalletVerifyRequestCardDetails.decode(details),
@@ -99,18 +103,37 @@ export default function IframeCardForm(props: IframeCardForm) {
         () =>
           pipe(
             WalletVerifyRequestAPMDetails.decode(details),
-            E.fold(onError, (detail) => {
-              pipe(
-                O.fromNullable(detail.redirectUrl),
-                O.match(onError, (redirect) =>
-                  window.location.replace(redirect)
-                )
-              );
-            })
+            E.fold(
+              () =>
+                pipe(
+                  WalletVerifyRequestContextualCardDetails.decode(details),
+                  E.fold(
+                    () =>
+                      utils.url.redirectToIoAppForOutcome(
+                        walletId,
+                        OUTCOME_ROUTE.GENERIC_ERROR
+                      ),
+                    () =>
+                      utils.url.redirectToIoAppForOutcome(
+                        walletId,
+                        OUTCOME_ROUTE.SUCCESS
+                      )
+                  )
+                ),
+              // eslint-disable-next-line sonarjs/no-identical-functions
+              (d) => {
+                pipe(
+                  O.fromNullable(d.redirectUrl),
+                  O.match(onError, (redirect) =>
+                    window.location.replace(redirect)
+                  )
+                );
+              }
+            )
           ),
-        (detail) =>
+        (d) =>
           navigate(`/${WalletRoutes.GDI_CHECK}`, {
-            state: { gdiIframeUrl: detail.iframeUrl }
+            state: { gdiIframeUrl: d.iframeUrl }
           })
       )
     );
@@ -160,15 +183,15 @@ export default function IframeCardForm(props: IframeCardForm) {
 
         // payment/onboarding success event
         const onReadyForPayment = () => {
-          if (isPayment) {
-            return utils.url.redirectToIoAppForPayment(
-              walletId,
-              OUTCOME_ROUTE.SUCCESS,
-              WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
-                ? saveMethod.current
-                : undefined
-            );
-          }
+          // if (isPayment) {
+            // return utils.url.redirectToIoAppForPayment(
+            //   walletId,
+            //   OUTCOME_ROUTE.SUCCESS,
+            //   WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
+            //     ? saveMethod.current
+            //     : undefined
+            // );
+          // }
           void validation(body);
         };
 

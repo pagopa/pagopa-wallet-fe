@@ -89,8 +89,17 @@ const redirectToIoAppForPayment = (
   window.location.replace(url);
 };
 
+const redirectToIoAppForOutcome = (
+  walletId: string,
+  outcome: OUTCOME_ROUTE
+) => {
+  const url = `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/${walletId}/outcomes?outcome=${outcome}`;
+  window.location.replace(url);
+};
+
 export default {
   redirectWithOutcome,
   getFragments,
-  redirectToIoAppForPayment
+  redirectToIoAppForPayment,
+  redirectToIoAppForOutcome
 };
