@@ -183,15 +183,6 @@ export default function IframeCardForm(props: IframeCardForm) {
 
         // payment/onboarding success event
         const onReadyForPayment = () => {
-          // if (isPayment) {
-            // return utils.url.redirectToIoAppForPayment(
-            //   walletId,
-            //   OUTCOME_ROUTE.SUCCESS,
-            //   WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
-            //     ? saveMethod.current
-            //     : undefined
-            // );
-          // }
           void validation(body);
         };
 
