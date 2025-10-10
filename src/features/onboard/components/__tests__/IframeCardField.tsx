@@ -11,7 +11,7 @@ jest.mock("@mui/icons-material/ErrorOutline", () => ({
   default: () => <div data-testid="error-icon" />
 }));
 
-// Mock di react-i18next
+// react-i18next mock
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string, options?: any) => {
