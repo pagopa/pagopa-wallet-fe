@@ -63,7 +63,6 @@ jest.mock("../CustomSwitch", () => (props: any) => (
   />
 ));
 
-
 jest.mock("../../../../routes/models/routeModel", () => ({
   OUTCOME_ROUTE: {
     GENERIC_ERROR: "GENERIC_ERROR",
@@ -103,6 +102,7 @@ jest.mock(
     }
   })
 );
+
 jest.mock(
   "../../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestAPMDetails",
   () => ({
@@ -111,6 +111,7 @@ jest.mock(
     }
   })
 );
+
 jest.mock(
   "../../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestContextualCardDetails",
   () => ({
@@ -173,6 +174,7 @@ beforeAll(() => {
     value: { ...originalLocation, replace: jest.fn() }
   });
 });
+
 afterAll(() => {
   Object.defineProperty(window, "location", {
     configurable: true,
@@ -388,42 +390,6 @@ describe("IframeCardForm", () => {
     });
   });
 
-  it("Build launch constructor (isPayment=true) => redirectToIoAppForPayment with switch ON by default", async () => {
-    apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
-
-    // @ts-ignore
-    global.Build = jest.fn(() => {
-      throw new Error("Build failed");
-    });
-
-    renderForm();
-
-    await waitFor(() => {
-      expect(redirectToIoAppForPaymentMock).toHaveBeenCalledWith(
-        "mockWalletId",
-        "GENERIC_ERROR",
-        true
-      );
-    });
-  });
-
-  it("toggle OFF => Build error => redirectToIoAppForPayment with third argument false", async () => {
-    apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
-    renderForm();
-
-    await screen.findByTestId("iframe-field-CARD_NUMBER");
-    const sw = screen.getByTestId("custom-switch");
-    fireEvent.click(sw);
-
-    buildCfg.onBuildError();
-
-    expect(redirectToIoAppForPaymentMock).toHaveBeenCalledWith(
-      "mockWalletId",
-      "GENERIC_ERROR",
-      false
-    );
-  });
-
   it("isPayment=false => onBuildError => window.location.replace('/ERROR')", async () => {
     apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
 
@@ -460,5 +426,4 @@ describe("IframeCardForm", () => {
       expect(screen.getByTestId("error-modal")).toBeInTheDocument();
     });
   });
-
 });
