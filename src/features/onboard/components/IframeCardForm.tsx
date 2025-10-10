@@ -1,4 +1,4 @@
-import { Box, FormControlLabel } from "@mui/material";
+import { Box } from "@mui/material";
 import * as E from "fp-ts/Either";
 import * as O from "fp-ts/Option";
 import { pipe } from "fp-ts/function";
@@ -9,6 +9,7 @@ import { SessionWalletCreateResponse } from "../../../../generated/definitions/w
 import { WalletVerifyRequestAPMDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestAPMDetails";
 import { WalletVerifyRequestCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestCardDetails";
 import { WalletVerifyRequestsResponse } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestsResponse";
+import { WalletVerifyRequestContextualCardDetails } from "../../../../generated/definitions/webview-payment-wallet/WalletVerifyRequestContextualCardDetails";
 import { FormButtons } from "../../../components/FormButtons/FormButtons";
 import ErrorModal from "../../../components/commons/ErrorModal";
 import {
@@ -22,11 +23,9 @@ import { ErrorsType } from "../../../utils/errors/errorsModel";
 import { clearNavigationEvents } from "../../../utils/eventListener";
 import { SessionWalletCreateResponseData1 } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
 import { SessionInputDataTypeCardsEnum } from "../../../../generated/definitions/webview-payment-wallet/SessionInputDataTypeCards";
-import { getConfigOrThrow } from "../../../config";
 import { IframeCardField } from "./IframeCardField";
 import type { FieldId, FieldStatus, FormStatus } from "./types";
 import { IdFields } from "./types";
-import CustomSwitch from "./CustomSwitch";
 
 const initialFieldStatus: FieldStatus = {
   isValid: undefined,
@@ -50,7 +49,6 @@ export default function IframeCardForm(props: IframeCardForm) {
   // Here I'm using a react reft insted of a state because inserting the state as a
   // dependecy of the effect where the Build instance is create will cause a new initialitation
   // every time the toggle's state change and a new creation of the payment form
-  const saveMethod = React.useRef(true);
   const [errorModalOpen, setErrorModalOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [formLoading, setFormLoading] = React.useState(true);
@@ -67,7 +65,6 @@ export default function IframeCardForm(props: IframeCardForm) {
   const navigate = useNavigate();
 
   const { isPayment } = props;
-  const { WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE } = getConfigOrThrow();
 
   const formIsValid = (fieldFormStatus: FormStatus) =>
     Object.values(fieldFormStatus).every((el) => el.isValid);
@@ -91,29 +88,40 @@ export default function IframeCardForm(props: IframeCardForm) {
   const onValidation = ({
     details
   }: WalletVerifyRequestsResponse & {
-    details: WalletVerifyRequestCardDetails | WalletVerifyRequestAPMDetails;
+    details:
+      | WalletVerifyRequestCardDetails
+      | WalletVerifyRequestAPMDetails
+      | WalletVerifyRequestContextualCardDetails;
   }) => {
-    pipe(
-      WalletVerifyRequestCardDetails.decode(details),
-      E.fold(
-        () =>
-          pipe(
-            WalletVerifyRequestAPMDetails.decode(details),
-            E.fold(onError, (detail) => {
-              pipe(
-                O.fromNullable(detail.redirectUrl),
-                O.match(onError, (redirect) =>
-                  window.location.replace(redirect)
-                )
-              );
-            })
-          ),
-        (detail) =>
-          navigate(`/${WalletRoutes.GDI_CHECK}`, {
-            state: { gdiIframeUrl: detail.iframeUrl }
-          })
-      )
-    );
+    const cardResult = WalletVerifyRequestCardDetails.decode(details);
+    if (E.isRight(cardResult)) {
+      const { iframeUrl } = cardResult.right;
+      navigate(`/${WalletRoutes.GDI_CHECK}`, {
+        state: { gdiIframeUrl: iframeUrl }
+      });
+      return;
+    }
+
+    const apmResult = WalletVerifyRequestAPMDetails.decode(details);
+    if (E.isRight(apmResult)) {
+      const { redirectUrl } = apmResult.right;
+      pipe(
+        O.fromNullable(redirectUrl),
+        O.match(onError, (redirect) => window.location.replace(redirect))
+      );
+      return;
+    }
+
+    const contextualResult =
+      WalletVerifyRequestContextualCardDetails.decode(details);
+    if (E.isRight(contextualResult)) {
+      utils.url.redirectToIoAppForOutcome(walletId, OUTCOME_ROUTE.SUCCESS);
+    } else {
+      utils.url.redirectToIoAppForOutcome(
+        walletId,
+        OUTCOME_ROUTE.GENERIC_ERROR
+      );
+    }
   };
 
   const validation = async ({ orderId }: SessionWalletCreateResponse) => {
@@ -160,15 +168,6 @@ export default function IframeCardForm(props: IframeCardForm) {
 
         // payment/onboarding success event
         const onReadyForPayment = () => {
-          if (isPayment) {
-            return utils.url.redirectToIoAppForPayment(
-              walletId,
-              OUTCOME_ROUTE.SUCCESS,
-              WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
-                ? saveMethod.current
-                : undefined
-            );
-          }
           void validation(body);
         };
 
@@ -187,12 +186,9 @@ export default function IframeCardForm(props: IframeCardForm) {
         const onBuildError = () => {
           setLoading(false);
           if (isPayment) {
-            return utils.url.redirectToIoAppForPayment(
+            return utils.url.redirectToIoAppForOutcome(
               walletId,
-              OUTCOME_ROUTE.GENERIC_ERROR,
-              WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
-                ? saveMethod.current
-                : undefined
+              OUTCOME_ROUTE.GENERIC_ERROR
             );
           }
           window.location.replace(`/${WalletRoutes.ERRORE}`);
@@ -238,9 +234,6 @@ export default function IframeCardForm(props: IframeCardForm) {
   };
 
   const { t } = useTranslation();
-
-  const showSaveMethodToggle =
-    isPayment && WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE;
 
   return (
     <>
@@ -299,30 +292,6 @@ export default function IframeCardForm(props: IframeCardForm) {
               activeField={activeField}
               loaded={!formLoading}
             />
-          </Box>
-          <Box>
-            {showSaveMethodToggle ? (
-              <FormControlLabel
-                control={
-                  <CustomSwitch
-                    defaultChecked
-                    disabled={!cardFormFields}
-                    onChange={(_e, checked) => {
-                      // eslint-disable-next-line functional/immutable-data
-                      saveMethod.current = checked;
-                    }}
-                    inputProps={{ "aria-label": "controlled" }}
-                  />
-                }
-                label={t("inputCardPage.saveMethod")}
-                labelPlacement="start"
-                sx={{
-                  justifyContent: "space-between",
-                  marginLeft: 0,
-                  width: "100%"
-                }}
-              />
-            ) : null}
           </Box>
         </Box>
         <FormButtons
