@@ -59,7 +59,7 @@ export function IframeCardField(props: Props) {
       `frame_${id}`
     ) as HTMLIFrameElement;
     iframeEl?.contentWindow?.location.replace(src);
-    iframeEl.setAttribute("src", src);
+    iframeEl?.setAttribute("src", src);
   };
 
   const InnerComponent = (
@@ -77,6 +77,7 @@ export function IframeCardField(props: Props) {
         <iframe
           aria-labelledby={label}
           id={`frame_${id}`}
+          role="textbox"
           seamless
           style={styles.iframe}
         />

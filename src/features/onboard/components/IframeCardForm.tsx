@@ -97,46 +97,35 @@ export default function IframeCardForm(props: IframeCardForm) {
       | WalletVerifyRequestAPMDetails
       | WalletVerifyRequestContextualCardDetails;
   }) => {
-    pipe(
-      WalletVerifyRequestCardDetails.decode(details),
-      E.fold(
-        () =>
-          pipe(
-            WalletVerifyRequestAPMDetails.decode(details),
-            E.fold(
-              () =>
-                pipe(
-                  WalletVerifyRequestContextualCardDetails.decode(details),
-                  E.fold(
-                    () =>
-                      utils.url.redirectToIoAppForOutcome(
-                        walletId,
-                        OUTCOME_ROUTE.GENERIC_ERROR
-                      ),
-                    () =>
-                      utils.url.redirectToIoAppForOutcome(
-                        walletId,
-                        OUTCOME_ROUTE.SUCCESS
-                      )
-                  )
-                ),
-              // eslint-disable-next-line sonarjs/no-identical-functions
-              (d) => {
-                pipe(
-                  O.fromNullable(d.redirectUrl),
-                  O.match(onError, (redirect) =>
-                    window.location.replace(redirect)
-                  )
-                );
-              }
-            )
-          ),
-        (d) =>
-          navigate(`/${WalletRoutes.GDI_CHECK}`, {
-            state: { gdiIframeUrl: d.iframeUrl }
-          })
-      )
-    );
+    const cardResult = WalletVerifyRequestCardDetails.decode(details);
+    if (E.isRight(cardResult)) {
+      const { iframeUrl } = cardResult.right;
+      navigate(`/${WalletRoutes.GDI_CHECK}`, {
+        state: { gdiIframeUrl: iframeUrl }
+      });
+      return;
+    }
+
+    const apmResult = WalletVerifyRequestAPMDetails.decode(details);
+    if (E.isRight(apmResult)) {
+      const { redirectUrl } = apmResult.right;
+      pipe(
+        O.fromNullable(redirectUrl),
+        O.match(onError, (redirect) => window.location.replace(redirect))
+      );
+      return;
+    }
+
+    const contextualResult =
+      WalletVerifyRequestContextualCardDetails.decode(details);
+    if (E.isRight(contextualResult)) {
+      utils.url.redirectToIoAppForOutcome(walletId, OUTCOME_ROUTE.SUCCESS);
+    } else {
+      utils.url.redirectToIoAppForOutcome(
+        walletId,
+        OUTCOME_ROUTE.GENERIC_ERROR
+      );
+    }
   };
 
   const validation = async ({ orderId }: SessionWalletCreateResponse) => {
