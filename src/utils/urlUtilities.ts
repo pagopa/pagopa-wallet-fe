@@ -78,17 +78,6 @@ const convertToUUIDHex = (walletId: number) => {
  * to a specif url so that the flow can continue in app. If the save method toggle is avaiable
  * the toggle's value is send as query paramas
  */
-const redirectToIoAppForPayment = (
-  walletId: string,
-  outcome: OUTCOME_ROUTE,
-  saveMethod?: boolean
-) => {
-  const saveMethodParameter =
-    saveMethod === undefined ? "" : `&saveMethod=${saveMethod}`;
-  const url = `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/${walletId}/outcomes?outcome=${outcome}${saveMethodParameter}`;
-  window.location.replace(url);
-};
-
 const redirectToIoAppForOutcome = (
   walletId: string,
   outcome: OUTCOME_ROUTE
@@ -100,6 +89,5 @@ const redirectToIoAppForOutcome = (
 export default {
   redirectWithOutcome,
   getFragments,
-  redirectToIoAppForPayment,
   redirectToIoAppForOutcome
 };

@@ -21,7 +21,7 @@ These are all the environment variables needed to configure the frontend:
 | WALLET_OUTCOME_API_BASEPATH           | API wallet outcome basepath                 | string |         |
 | WALLET_CONFIG_API_ENV                 | Deployment environment (DEV, UAT or PROD)   | string |         |
 | WALLET_PAGOPA_LOGOS_CDN               | CDN host to retrieve image resources        | string |         |
-| WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE | show/hidden the save method's toggle        | number |         |
+|  | show/hidden the save method's toggle        | number |         |
 
 ## Getting Started
 

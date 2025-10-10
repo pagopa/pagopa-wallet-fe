@@ -63,13 +63,6 @@ jest.mock("../CustomSwitch", () => (props: any) => (
   />
 ));
 
-// eslint-disable-next-line functional/no-let
-let WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE = true;
-jest.mock("../../../../config", () => ({
-  getConfigOrThrow: () => ({
-    WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE
-  })
-}));
 
 jest.mock("../../../../routes/models/routeModel", () => ({
   OUTCOME_ROUTE: {
@@ -468,15 +461,4 @@ describe("IframeCardForm", () => {
     });
   });
 
-  it("if WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE=false => the toggle does not appear", async () => {
-    WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE = false;
-    apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
-
-    renderForm();
-    await screen.findByTestId("iframe-field-CARD_NUMBER");
-
-    expect(screen.queryByTestId("custom-switch")).not.toBeInTheDocument();
-
-    WALLET_ONBOARD_SWITCH_ON_PAYMENT_PAGE = true;
-  });
 });
