@@ -5,7 +5,7 @@ import { IdFields, FieldId } from "../types";
 import "@testing-library/jest-dom";
 import { IframeCardField } from "../IframeCardField";
 
-// Mock dell’icona errore
+// error icon mock
 jest.mock("@mui/icons-material/ErrorOutline", () => ({
   __esModule: true,
   default: () => <div data-testid="error-icon" />
