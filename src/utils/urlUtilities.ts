@@ -17,10 +17,6 @@ function getFragmentParameter(uri: string, name: ROUTE_FRAGMENT): string {
   try {
     const fragment = new URL(uri).hash.substring(1);
     const urlParams = new URLSearchParams(fragment);
-    const gdiFragmentUrl = urlParams.get(name);
-    if (gdiFragmentUrl === null) {
-      return "";
-    }
     return urlParams.get(name) || "";
   } catch (e) {
     return "";
@@ -73,21 +69,21 @@ const convertToUUIDHex = (walletId: number) => {
   )}-${walletIdHex.substring(4)}`;
 };
 /**
- * This function is used for not-registerd payment flow started from IO app
- * When called, after the user enters the card data, executes a redirect
- * to a specif url so that the flow can continue in app. If the save method toggle is avaiable
- * the toggle's value is send as query paramas
+ * This function is used for payment with contextual onboarding flow started from IO app.
+ * An outcome url is build and a navigation is performed to that URL in order to return 
+ * control to IO app (using magic url iowallet:// schema navigation)
  */
-const redirectToIoAppForOutcome = (
+const redirectForPaymentWithContextualOnboarding = (
   walletId: string,
-  outcome: OUTCOME_ROUTE
+  outcome: OUTCOME_ROUTE,
+  transactionId: string | undefined = undefined
 ) => {
-  const url = `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/${walletId}/outcomes?outcome=${outcome}`;
+  const url = `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/${transactionId}/wallets/${walletId}/outcomes?outcome=${outcome}`;
   window.location.replace(url);
 };
 
 export default {
   redirectWithOutcome,
   getFragments,
-  redirectToIoAppForOutcome
+  redirectForPaymentWithContextualOnboarding
 };

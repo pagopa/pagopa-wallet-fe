@@ -74,9 +74,10 @@ export default function IframeCardForm(props: IframeCardForm) {
     setErrorModalOpen(true);
   };
 
-  const { sessionToken, walletId } = utils.url.getFragments(
+  const { sessionToken, walletId, transactionId } = utils.url.getFragments(
     ROUTE_FRAGMENT.SESSION_TOKEN,
-    ROUTE_FRAGMENT.WALLET_ID
+    ROUTE_FRAGMENT.WALLET_ID,
+    ROUTE_FRAGMENT.TRANSACTION_ID
   );
 
   utils.storage.setSessionItem(
@@ -115,11 +116,11 @@ export default function IframeCardForm(props: IframeCardForm) {
     const contextualResult =
       WalletVerifyRequestContextualCardDetails.decode(details);
     if (E.isRight(contextualResult)) {
-      utils.url.redirectToIoAppForOutcome(walletId, OUTCOME_ROUTE.SUCCESS);
+      utils.url.redirectForPaymentWithContextualOnboarding(walletId, OUTCOME_ROUTE.SUCCESS, transactionId);
     } else {
-      utils.url.redirectToIoAppForOutcome(
+      utils.url.redirectForPaymentWithContextualOnboarding(
         walletId,
-        OUTCOME_ROUTE.GENERIC_ERROR
+        OUTCOME_ROUTE.GENERIC_ERROR, transactionId
       );
     }
   };
@@ -186,9 +187,10 @@ export default function IframeCardForm(props: IframeCardForm) {
         const onBuildError = () => {
           setLoading(false);
           if (isPayment) {
-            return utils.url.redirectToIoAppForOutcome(
+            return utils.url.redirectForPaymentWithContextualOnboarding(
               walletId,
-              OUTCOME_ROUTE.GENERIC_ERROR
+              OUTCOME_ROUTE.GENERIC_ERROR,
+              transactionId
             );
           }
           window.location.replace(`/${WalletRoutes.ERRORE}`);
