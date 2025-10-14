@@ -4,8 +4,11 @@ import { OUTCOME_ROUTE, ROUTE_FRAGMENT } from "../../routes/models/routeModel";
 import urlUtils from "../../utils/urlUtilities";
 import "jest-location-mock";
 
-const { getFragments, redirectWithOutcome, redirectForPaymentWithContextualOnboarding } =
-  urlUtils;
+const {
+  getFragments,
+  redirectWithOutcome,
+  redirectForPaymentWithContextualOnboarding
+} = urlUtils;
 const {
   WALLET_CONFIG_API_HOST: API_HOST,
   WALLET_OUTCOME_API_BASEPATH: WALLET_OUTCOME_BASEPATH
@@ -54,13 +57,21 @@ describe("redirectWithOutcome function utility", () => {
 describe("redirectToIoAppForPayment function utility", () => {
   describe("redirectForPaymentWithContextualOnboarding function utility", () => {
     it("Should redirect to the correct url", () => {
-      redirectForPaymentWithContextualOnboarding("12345", OUTCOME_ROUTE.GENERIC_ERROR);
-      expect(global.location.href).toBe(
-        `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/12345/outcomes?outcome=1`
+      redirectForPaymentWithContextualOnboarding(
+        "walletId",
+        OUTCOME_ROUTE.GENERIC_ERROR,
+        "transactionId"
       );
-      redirectForPaymentWithContextualOnboarding("12345", OUTCOME_ROUTE.SUCCESS);
       expect(global.location.href).toBe(
-        `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/wallets/12345/outcomes?outcome=0`
+        `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/transactionId/wallets/walletId/outcomes?outcome=1`
+      );
+      redirectForPaymentWithContextualOnboarding(
+        "walletId",
+        OUTCOME_ROUTE.SUCCESS,
+        "transactionId"
+      );
+      expect(global.location.href).toBe(
+        `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/transactionId/wallets/walletId/outcomes?outcome=0`
       );
     });
   });

@@ -116,11 +116,16 @@ export default function IframeCardForm(props: IframeCardForm) {
     const contextualResult =
       WalletVerifyRequestContextualCardDetails.decode(details);
     if (E.isRight(contextualResult)) {
-      utils.url.redirectForPaymentWithContextualOnboarding(walletId, OUTCOME_ROUTE.SUCCESS, transactionId);
+      utils.url.redirectForPaymentWithContextualOnboarding(
+        walletId,
+        OUTCOME_ROUTE.SUCCESS,
+        transactionId
+      );
     } else {
       utils.url.redirectForPaymentWithContextualOnboarding(
         walletId,
-        OUTCOME_ROUTE.GENERIC_ERROR, transactionId
+        OUTCOME_ROUTE.GENERIC_ERROR,
+        transactionId
       );
     }
   };

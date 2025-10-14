@@ -124,7 +124,8 @@ jest.mock(
 const setSessionItemMock = jest.fn() as jest.Mock;
 const getFragmentsMock = jest.fn().mockReturnValue({
   sessionToken: "mockSessionToken",
-  walletId: "mockWalletId"
+  walletId: "mockWalletId",
+  transactionId: "mockTransactionId"
 }) as unknown as jest.Mock;
 
 const redirectForPaymentWithContextualOnboardingMock = jest.fn() as jest.Mock;
@@ -138,7 +139,8 @@ jest.mock("../../../../utils", () => ({
   default: {
     url: {
       getFragments: getFragmentsMock,
-      redirectForPaymentWithContextualOnboarding: redirectForPaymentWithContextualOnboardingMock,
+      redirectForPaymentWithContextualOnboarding:
+        redirectForPaymentWithContextualOnboardingMock,
       redirectToIoAppForPayment: redirectToIoAppForPaymentMock
     },
     storage: {
@@ -309,10 +311,9 @@ describe("IframeCardForm", () => {
     buildCfg.onReadyForPayment();
 
     await waitFor(() => {
-      expect(redirectForPaymentWithContextualOnboardingMock).toHaveBeenCalledWith(
-        "mockWalletId",
-        "SUCCESS"
-      );
+      expect(
+        redirectForPaymentWithContextualOnboardingMock
+      ).toHaveBeenCalledWith("mockWalletId", "SUCCESS", "mockTransactionId");
     });
   });
 
@@ -330,9 +331,12 @@ describe("IframeCardForm", () => {
     buildCfg.onReadyForPayment();
 
     await waitFor(() => {
-      expect(redirectForPaymentWithContextualOnboardingMock).toHaveBeenCalledWith(
+      expect(
+        redirectForPaymentWithContextualOnboardingMock
+      ).toHaveBeenCalledWith(
         "mockWalletId",
-        "GENERIC_ERROR"
+        "GENERIC_ERROR",
+        "mockTransactionId"
       );
     });
   });

@@ -70,13 +70,13 @@ const convertToUUIDHex = (walletId: number) => {
 };
 /**
  * This function is used for payment with contextual onboarding flow started from IO app.
- * An outcome url is build and a navigation is performed to that URL in order to return 
+ * An outcome url is build and a navigation is performed to that URL in order to return
  * control to IO app (using magic url iowallet:// schema navigation)
  */
 const redirectForPaymentWithContextualOnboarding = (
   walletId: string,
   outcome: OUTCOME_ROUTE,
-  transactionId: string | undefined = undefined
+  transactionId: string
 ) => {
   const url = `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/${transactionId}/wallets/${walletId}/outcomes?outcome=${outcome}`;
   window.location.replace(url);
