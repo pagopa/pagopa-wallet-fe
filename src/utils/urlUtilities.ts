@@ -78,7 +78,7 @@ const redirectForPaymentWithContextualOnboarding = (
   outcome: OUTCOME_ROUTE,
   transactionId: string
 ) => {
-  const url = `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/${transactionId}/wallets/${walletId}/outcomes?outcome=${outcome}`;
+  const url = `${API_HOST}${WALLET_OUTCOME_BASEPATH}/wallets/contextual-onboard/outcomes?outcome=${outcome}&walletId=${walletId}&transactionId=${transactionId}`;
   window.location.replace(url);
 };
 

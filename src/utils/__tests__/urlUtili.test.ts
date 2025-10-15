@@ -63,7 +63,7 @@ describe("redirectToIoAppForPayment function utility", () => {
         "transactionId"
       );
       expect(global.location.href).toBe(
-        `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/transactionId/wallets/walletId/outcomes?outcome=1`
+        `${API_HOST}${WALLET_OUTCOME_BASEPATH}/wallets/contextual-onboard/outcomes?outcome=1&walletId=walletId&transactionId=transactionId`
       );
       redirectForPaymentWithContextualOnboarding(
         "walletId",
@@ -71,7 +71,7 @@ describe("redirectToIoAppForPayment function utility", () => {
         "transactionId"
       );
       expect(global.location.href).toBe(
-        `${API_HOST}${WALLET_OUTCOME_BASEPATH}/transactions/transactionId/wallets/walletId/outcomes?outcome=0`
+        `${API_HOST}${WALLET_OUTCOME_BASEPATH}/wallets/contextual-onboard/outcomes?outcome=0&walletId=walletId&transactionId=transactionId`
       );
     });
   });
