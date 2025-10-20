@@ -124,10 +124,11 @@ jest.mock(
 const setSessionItemMock = jest.fn() as jest.Mock;
 const getFragmentsMock = jest.fn().mockReturnValue({
   sessionToken: "mockSessionToken",
-  walletId: "mockWalletId"
+  walletId: "mockWalletId",
+  transactionId: "mockTransactionId"
 }) as unknown as jest.Mock;
 
-const redirectToIoAppForOutcomeMock = jest.fn() as jest.Mock;
+const redirectForPaymentWithContextualOnboardingMock = jest.fn() as jest.Mock;
 const redirectToIoAppForPaymentMock = jest.fn() as jest.Mock;
 
 const apiCreateSessionWalletMock = jest.fn() as jest.Mock;
@@ -138,7 +139,8 @@ jest.mock("../../../../utils", () => ({
   default: {
     url: {
       getFragments: getFragmentsMock,
-      redirectToIoAppForOutcome: redirectToIoAppForOutcomeMock,
+      redirectForPaymentWithContextualOnboarding:
+        redirectForPaymentWithContextualOnboardingMock,
       redirectToIoAppForPayment: redirectToIoAppForPaymentMock
     },
     storage: {
@@ -293,7 +295,7 @@ describe("IframeCardForm", () => {
     });
   });
 
-  it("Contextual details => redirectToIoAppForOutcome SUCCESS", async () => {
+  it("Contextual details => redirectForPaymentWithContextualOnboarding SUCCESS", async () => {
     apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
     apiValidationsMock.mockResolvedValue(
       Right({ details: { some: "payload" } })
@@ -309,14 +311,13 @@ describe("IframeCardForm", () => {
     buildCfg.onReadyForPayment();
 
     await waitFor(() => {
-      expect(redirectToIoAppForOutcomeMock).toHaveBeenCalledWith(
-        "mockWalletId",
-        "SUCCESS"
-      );
+      expect(
+        redirectForPaymentWithContextualOnboardingMock
+      ).toHaveBeenCalledWith("mockWalletId", "SUCCESS", "mockTransactionId");
     });
   });
 
-  it("all decode Left => redirectToIoAppForOutcome GENERIC_ERROR", async () => {
+  it("all decode Left => redirectForPaymentWithContextualOnboarding GENERIC_ERROR", async () => {
     apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
     apiValidationsMock.mockResolvedValue(Right({ details: {} }));
     cardDecode.mockReturnValue({ _tag: "Left", left: {} });
@@ -330,9 +331,12 @@ describe("IframeCardForm", () => {
     buildCfg.onReadyForPayment();
 
     await waitFor(() => {
-      expect(redirectToIoAppForOutcomeMock).toHaveBeenCalledWith(
+      expect(
+        redirectForPaymentWithContextualOnboardingMock
+      ).toHaveBeenCalledWith(
         "mockWalletId",
-        "GENERIC_ERROR"
+        "GENERIC_ERROR",
+        "mockTransactionId"
       );
     });
   });
