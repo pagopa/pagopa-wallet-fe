@@ -31,11 +31,11 @@ const ContextualOnboardingGdiCheck = () => {
   );
 
   // Outcome Paths
-  const outcomePath = `${getConfigOrThrow().ECOMMERCE_FE_OUTCOME_URL}#${
-    ROUTE_FRAGMENT.CLIENT_ID
-  }=${clientId}&${ROUTE_FRAGMENT.TRANSACTION_ID}=${transactionId}&${
-    ROUTE_FRAGMENT.SESSION_TOKEN
-  }=${sessionToken}`;
+  const outcomePath = `${
+    getConfigOrThrow().WALLET_CONTEXTUAL_ONBOARDING_ECOMMERCE_FE_OUTCOME_URL
+  }#${ROUTE_FRAGMENT.CLIENT_ID}=${clientId}&${
+    ROUTE_FRAGMENT.TRANSACTION_ID
+  }=${transactionId}&${ROUTE_FRAGMENT.SESSION_TOKEN}=${sessionToken}`;
   const navigateToOutcome = () => navigate(outcomePath, { replace: true });
 
   // Sdk Callbacks

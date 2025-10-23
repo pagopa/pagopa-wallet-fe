@@ -44,7 +44,7 @@ parameters:
     type: number
     default: 1000
 
-  - name: 'ecommerce_fe_outcome_url'
+  - name: 'wallet_contextual_onboarding_ecommerce_fe_outcome_url'
     type: string
 
     
@@ -64,7 +64,7 @@ steps:
       WALLET_GDI_CHECK_TIMEOUT=${{ parameters.wallet_gdi_check_timeout }} \
       WALLET_PAGOPA_LOGOS_CDN=${{ parameters.wallet_pagopa_logos_cdn }} \
       WALLET_SHOW_CONTINUE_IO_BTN_DELAY_MILLIS=${{ parameters.wallet_show_continue_io_btn_delay_millis }} \
-      ECOMMERCE_FE_OUTCOME_URL=${{ parameters.ecommerce_fe_outcome_url }} \
+      WALLET_CONTEXTUAL_ONBOARDING_ECOMMERCE_FE_OUTCOME_URL=${{ parameters.wallet_contextual_onboarding_ecommerce_fe_outcome_url }} \
       bash env.sh
 
   displayName: 'Populate environment file'
