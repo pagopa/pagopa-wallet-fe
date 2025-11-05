@@ -55,6 +55,7 @@ stages:
             npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
             wallet_show_continue_io_btn_delay_millis: 2000
             wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://dev.checkout.pagopa.it/ecommerce-fe/esito'
+
     
         - script: |
             yarn build
@@ -100,6 +101,8 @@ stages:
             api_wallet_outcome_basepath: '/payment-wallet-outcomes/v1'
             api_webview_pm_hostname: 'https://api.dev.platform.pagopa.it'
             wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
+            wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://dev.checkout.pagopa.it/ecommerce-fe/esito'
+
 
         - script: yarn generate
           displayName: 'Generate definitions'
