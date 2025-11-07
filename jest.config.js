@@ -36,6 +36,7 @@ module.exports = {
     "<rootDir>/src/routes/pm",
     "<rootDir>/src/components/Verify.tsx",
     "<rootDir>/src/components/commons/BpayAccountItem.tsx",
+    "<rootDir>/src/hooks/",
     "index.ts",
     "image.d.ts",
 ],
