@@ -7,6 +7,7 @@ export enum WalletRoutes {
   PAYMENT_CARTE = "payment/creditcard",
   ONBOARD_APM = "onboarding/apm",
   GDI_CHECK = "gdi-check",
+  GDI_CHECK_CTX_ONBOARDING = "gdi-check-ctx-onboarding",
   ESITO = "esito",
   ERRORE = "errore"
 }
@@ -24,5 +25,7 @@ export enum ROUTE_FRAGMENT {
   SESSION_TOKEN = "sessionToken",
   WALLET_ID = "walletId",
   PAYMENT_METHOD_ID = "paymentMethodId",
-  TRANSACTION_ID = "transactionId"
+  TRANSACTION_ID = "transactionId",
+  CLIENT_ID = "clientId",
+  GDI_IFRAME_URL = "gdiIframeUrl"
 }

@@ -17,6 +17,7 @@ import GdiCheckPage from "./routes/GdiCheck";
 import OutcomePage from "./routes/Outcome";
 
 import "./translations/i18n";
+import ContextualOnboardingGdiCheck from "./routes/ContextualOnboardingGdiCheck";
 
 const transactionsTheme = createTheme({
   ...theme,
@@ -69,6 +70,10 @@ export function App() {
             <Route path={WalletRoutes.ONBOARD_APM} element={<ApmCardPage />} />
 
             <Route path={WalletRoutes.GDI_CHECK} element={<GdiCheckPage />} />
+            <Route
+              path={WalletRoutes.GDI_CHECK_CTX_ONBOARDING}
+              element={<ContextualOnboardingGdiCheck />}
+            />
             <Route path={WalletRoutes.ESITO} element={<OutcomePage />} />
           </Routes>
         </Router>
