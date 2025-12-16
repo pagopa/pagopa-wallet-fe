@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import PageContainer from "../components/commons/PageContainer";
 import WalletLoader from "../components/commons/WalletLoader";
@@ -15,8 +14,6 @@ const gdiCheckTimeout = getConfigOrThrow()
   .WALLET_GDI_CHECK_TIMEOUT as Millisecond;
 
 const ContextualOnboardingGdiCheck = () => {
-  const navigate = useNavigate();
-
   // Fragment Parameters
   const { sessionToken, clientId, transactionId, gdiIframeUrl } =
     utils.url.getFragments(
@@ -36,7 +33,7 @@ const ContextualOnboardingGdiCheck = () => {
   }#${ROUTE_FRAGMENT.CLIENT_ID}=${clientId}&${
     ROUTE_FRAGMENT.TRANSACTION_ID
   }=${transactionId}&${ROUTE_FRAGMENT.SESSION_TOKEN}=${sessionToken}`;
-  const navigateToOutcome = () => navigate(outcomePath, { replace: true });
+  const navigateToOutcome = () => window.location.replace(outcomePath);
 
   // Sdk Callbacks
   const onBuildError = () =>

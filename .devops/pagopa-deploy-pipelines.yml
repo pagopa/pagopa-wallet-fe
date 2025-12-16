@@ -87,7 +87,7 @@ stages:
               wallet_gdi_check_timeout: 20000
               wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
               wallet_show_continue_io_btn_delay_millis: 2000
-              wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://dev.checkout.pagopa.it/ecommerce-fe/esito'
+              wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://dev.ecommerce.pagopa.it/esito'
 
           - script: |
               yarn build
@@ -212,7 +212,7 @@ stages:
               wallet_gdi_check_timeout: 20000
               wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
               wallet_show_continue_io_btn_delay_millis: 2000
-              wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://uat.checkout.pagopa.it/ecommerce-fe/esito'
+              wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://uat.ecommerce.pagopa.it/esito'
 
           - script: |
               yarn build
@@ -308,7 +308,7 @@ stages:
               wallet_gdi_check_timeout: 20000
               wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
               wallet_show_continue_io_btn_delay_millis: 2000
-              wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://checkout.pagopa.it/ecommerce-fe/esito'
+              wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://ecommerce.pagopa.it/esito'
 
           - script: |
               yarn build
