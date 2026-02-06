@@ -27,7 +27,7 @@ export default function IFrameCardPage(props: IFrameCardPageProps) {
         {t("iframeCardPage.helpLink")}
       </Button>
 
-      <Box sx={{ mt: 6 }}>
+      <Box sx={{ mt: 5 }}>
         <IframeCardForm isPayment={isPayment} />
       </Box>
 
