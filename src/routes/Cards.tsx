@@ -22,7 +22,7 @@ export default function IFrameCardPage(props: IFrameCardPageProps) {
         data-testid="helpLink"
         variant="text"
         onClick={() => cvvModalRef.current?.openDialog()}
-        sx={{ p: 0 , height: "auto", minHeight: "auto"}}
+        sx={{ p: 0, height: "auto", minHeight: "auto"}}
       >
         {t("iframeCardPage.helpLink")}
       </Button>
