@@ -23,11 +23,50 @@ parameters:
       - minor
       - patch
     default: minor
+  - name: 'WALLET_USE_FRONTDOOR_CDN'
+    displayName: 'Deploy to Front Door CDN'
+    type: boolean
+    default: false
+    values:
+      - false
+      - true
 
 
 variables:
   NODE_VERSION: '18.18.1'
   YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+  ${{ if eq(parameters['WALLET_USE_FRONTDOOR_CDN'], true) }}:
+    # Front Door CDN
+    CDN_TYPE: afd
+    ENDPOINT_FLAG: --endpoint-name
+    DEV_STORAGE_ACCOUNT: pagopaditnpaywalletcdnsa
+    DEV_CDN_RG: pagopa-d-itn-pay-wallet-fe-rg
+    DEV_CDN_PROFILE: pagopa-d-itn-pay-wallet-cdn-profile
+    DEV_CDN_ENDPOINT: pagopa-d-itn-pay-wallet-cdn-endpoint
+    UAT_STORAGE_ACCOUNT: pagopauitnpaywalletcdnsa
+    UAT_CDN_RG: pagopa-u-itn-pay-wallet-fe-rg
+    UAT_CDN_PROFILE: pagopa-u-itn-pay-wallet-cdn-profile
+    UAT_CDN_ENDPOINT: pagopa-u-itn-pay-wallet-cdn-endpoint
+    PROD_STORAGE_ACCOUNT: pagopapitnpaywalletcdnsa
+    PROD_CDN_RG: pagopa-p-itn-pay-wallet-fe-rg
+    PROD_CDN_PROFILE: pagopa-p-itn-pay-wallet-cdn-profile
+    PROD_CDN_ENDPOINT: pagopa-p-itn-pay-wallet-cdn-endpoint
+  ${{ else }}:
+    # Classic CDN
+    CDN_TYPE: cdn
+    ENDPOINT_FLAG: '-n'
+    DEV_STORAGE_ACCOUNT: pagopaditnpaywalletfesa
+    DEV_CDN_RG: pagopa-d-itn-pay-wallet-fe-rg
+    DEV_CDN_PROFILE: pagopa-d-itn-pay-wallet-fe-cdn-profile
+    DEV_CDN_ENDPOINT: pagopa-d-itn-pay-wallet-fe-cdn-endpoint
+    UAT_STORAGE_ACCOUNT: pagopauitnpaywalletfesa
+    UAT_CDN_RG: pagopa-u-itn-pay-wallet-fe-rg
+    UAT_CDN_PROFILE: pagopa-u-itn-pay-wallet-fe-cdn-profile
+    UAT_CDN_ENDPOINT: pagopa-u-itn-pay-wallet-fe-cdn-endpoint
+    PROD_STORAGE_ACCOUNT: pagopapitnpaywalletfesa
+    PROD_CDN_RG: pagopa-p-itn-pay-wallet-fe-rg
+    PROD_CDN_PROFILE: pagopa-p-itn-pay-wallet-fe-cdn-profile
+    PROD_CDN_ENDPOINT: pagopa-p-itn-pay-wallet-fe-cdn-endpoint
 
 
 # Only manual activations are intended
@@ -117,7 +156,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az storage blob sync --container '$web' --account-name pagopaditnpaywalletfesa -s '$(Pipeline.Workspace)/Bundle_DEV'
+                az storage blob sync --container '$web' --account-name ${{ variables.DEV_STORAGE_ACCOUNT }} -s '$(Pipeline.Workspace)/Bundle_DEV'
 
           - task: AzureCLI@2
             displayName: 'Purge CDN endpoint on DEV'
@@ -126,7 +165,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az cdn endpoint purge -g pagopa-d-itn-pay-wallet-fe-rg -n pagopa-d-itn-pay-wallet-fe-cdn-endpoint --profile-name pagopa-d-itn-pay-wallet-fe-cdn-profile --content-paths "/*"
+                az ${{ variables.CDN_TYPE }} endpoint purge -g ${{ variables.DEV_CDN_RG }} ${{ variables.ENDPOINT_FLAG }} ${{ variables.DEV_CDN_ENDPOINT }} --profile-name ${{ variables.DEV_CDN_PROFILE }} --content-paths "/*"
 
   - stage: End_to_End_Tests_DEV
     dependsOn:
@@ -253,7 +292,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az storage blob sync --container '$web' --account-name pagopauitnpaywalletfesa -s '$(Pipeline.Workspace)/Bundle_UAT'
+                az storage blob sync --container '$web' --account-name ${{ variables.UAT_STORAGE_ACCOUNT }} -s '$(Pipeline.Workspace)/Bundle_UAT'
 
           - task: AzureCLI@2
             displayName: 'Purge CDN endpoint on UAT'
@@ -262,7 +301,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az cdn endpoint purge -g pagopa-u-itn-pay-wallet-fe-rg -n pagopa-u-itn-pay-wallet-fe-cdn-endpoint --profile-name pagopa-u-itn-pay-wallet-fe-cdn-profile --content-paths "/*"
+                az ${{ variables.CDN_TYPE }} endpoint purge -g ${{ variables.UAT_CDN_RG }} ${{ variables.ENDPOINT_FLAG }} ${{ variables.UAT_CDN_ENDPOINT }} --profile-name ${{ variables.UAT_CDN_PROFILE }} --content-paths "/*"
  
   - stage: End_to_End_Tests_UAT
     dependsOn:
@@ -349,7 +388,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az storage blob sync --container '$web' --account-name pagopapitnpaywalletfesa -s '$(Pipeline.Workspace)/Bundle_PROD'
+                az storage blob sync --container '$web' --account-name ${{ variables.PROD_STORAGE_ACCOUNT }} -s '$(Pipeline.Workspace)/Bundle_PROD'
 
           - task: AzureCLI@2
             displayName: 'Purge CDN endpoint on PROD'
@@ -358,4 +397,4 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az cdn endpoint purge -g pagopa-p-itn-pay-wallet-fe-rg -n pagopa-p-itn-pay-wallet-fe-cdn-endpoint --profile-name pagopa-p-itn-pay-wallet-fe-cdn-profile --content-paths "/*"
+                az ${{ variables.CDN_TYPE }} endpoint purge -g ${{ variables.PROD_CDN_RG }} ${{ variables.ENDPOINT_FLAG }} ${{ variables.PROD_CDN_ENDPOINT }} --profile-name ${{ variables.PROD_CDN_PROFILE }} --content-paths "/*"
