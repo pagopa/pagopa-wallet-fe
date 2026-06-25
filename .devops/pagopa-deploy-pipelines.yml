@@ -190,7 +190,14 @@ stages:
     condition:
       and(
         succeeded(),
-        eq(${{parameters.UAT_PROD_DEPLOY}}, true)
+        eq(${{parameters.UAT_PROD_DEPLOY}}, true),
+        or(
+          eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+          and(
+            startsWith(variables['Build.SourceBranch'], 'refs/tags'),
+            endsWith(variables['Build.SourceBranch'], '-RELEASE')
+          )
+        )
       )
     pool:
       vmImage: 'ubuntu-22.04'
