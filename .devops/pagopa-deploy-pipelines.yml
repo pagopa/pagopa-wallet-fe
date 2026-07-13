@@ -23,6 +23,13 @@ parameters:
       - minor
       - patch
     default: minor
+  - name: 'WALLET_USE_FRONTDOOR_CDN'
+    displayName: 'Deploy to Front Door CDN'
+    type: boolean
+    default: false
+    values:
+      - false
+      - true
 
 variables:
   NODE_VERSION: '18.18.1'
