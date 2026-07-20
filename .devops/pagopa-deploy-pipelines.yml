@@ -23,50 +23,25 @@ parameters:
       - minor
       - patch
     default: minor
-  - name: 'WALLET_USE_FRONTDOOR_CDN'
-    displayName: 'Deploy to Front Door CDN'
-    type: boolean
-    default: false
-    values:
-      - false
-      - true
-
 
 variables:
   NODE_VERSION: '18.18.1'
   YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
-  ${{ if eq(parameters['WALLET_USE_FRONTDOOR_CDN'], true) }}:
-    # Front Door CDN
-    CDN_TYPE: afd
-    ENDPOINT_FLAG: --endpoint-name
-    DEV_STORAGE_ACCOUNT: pagopaditnpaywalletcdnsa
-    DEV_CDN_RG: pagopa-d-itn-pay-wallet-fe-rg
-    DEV_CDN_PROFILE: pagopa-d-itn-pay-wallet-cdn-profile
-    DEV_CDN_ENDPOINT: pagopa-d-itn-pay-wallet-cdn-endpoint
-    UAT_STORAGE_ACCOUNT: pagopauitnpaywalletcdnsa
-    UAT_CDN_RG: pagopa-u-itn-pay-wallet-fe-rg
-    UAT_CDN_PROFILE: pagopa-u-itn-pay-wallet-cdn-profile
-    UAT_CDN_ENDPOINT: pagopa-u-itn-pay-wallet-cdn-endpoint
-    PROD_STORAGE_ACCOUNT: pagopapitnpaywalletcdnsa
-    PROD_CDN_RG: pagopa-p-itn-pay-wallet-fe-rg
-    PROD_CDN_PROFILE: pagopa-p-itn-pay-wallet-cdn-profile
-    PROD_CDN_ENDPOINT: pagopa-p-itn-pay-wallet-cdn-endpoint
-  ${{ else }}:
-    # Classic CDN
-    CDN_TYPE: cdn
-    ENDPOINT_FLAG: '-n'
-    DEV_STORAGE_ACCOUNT: pagopaditnpaywalletfesa
-    DEV_CDN_RG: pagopa-d-itn-pay-wallet-fe-rg
-    DEV_CDN_PROFILE: pagopa-d-itn-pay-wallet-fe-cdn-profile
-    DEV_CDN_ENDPOINT: pagopa-d-itn-pay-wallet-fe-cdn-endpoint
-    UAT_STORAGE_ACCOUNT: pagopauitnpaywalletfesa
-    UAT_CDN_RG: pagopa-u-itn-pay-wallet-fe-rg
-    UAT_CDN_PROFILE: pagopa-u-itn-pay-wallet-fe-cdn-profile
-    UAT_CDN_ENDPOINT: pagopa-u-itn-pay-wallet-fe-cdn-endpoint
-    PROD_STORAGE_ACCOUNT: pagopapitnpaywalletfesa
-    PROD_CDN_RG: pagopa-p-itn-pay-wallet-fe-rg
-    PROD_CDN_PROFILE: pagopa-p-itn-pay-wallet-fe-cdn-profile
-    PROD_CDN_ENDPOINT: pagopa-p-itn-pay-wallet-fe-cdn-endpoint
+  # Front Door CDN params
+  CDN_TYPE: afd
+  ENDPOINT_FLAG: --endpoint-name
+  DEV_STORAGE_ACCOUNT: pagopaditnpaywalletcdnsa
+  DEV_CDN_RG: pagopa-d-itn-pay-wallet-fe-rg
+  DEV_CDN_PROFILE: pagopa-d-itn-pay-wallet-cdn-profile
+  DEV_CDN_ENDPOINT: pagopa-d-itn-pay-wallet-cdn-endpoint
+  UAT_STORAGE_ACCOUNT: pagopauitnpaywalletcdnsa
+  UAT_CDN_RG: pagopa-u-itn-pay-wallet-fe-rg
+  UAT_CDN_PROFILE: pagopa-u-itn-pay-wallet-cdn-profile
+  UAT_CDN_ENDPOINT: pagopa-u-itn-pay-wallet-cdn-endpoint
+  PROD_STORAGE_ACCOUNT: pagopapitnpaywalletcdnsa
+  PROD_CDN_RG: pagopa-p-itn-pay-wallet-fe-rg
+  PROD_CDN_PROFILE: pagopa-p-itn-pay-wallet-cdn-profile
+  PROD_CDN_ENDPOINT: pagopa-p-itn-pay-wallet-cdn-endpoint
 
 
 # Only manual activations are intended
