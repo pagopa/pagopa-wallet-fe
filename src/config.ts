@@ -20,6 +20,7 @@ export const IConfig = t.interface({
   WALLET_CONFIG_API_TIMEOUT: t.number,
   WALLET_CONFIG_WEBVIEW_PM_HOST: NonEmptyString,
   WALLET_GDI_CHECK_TIMEOUT: t.number,
+  WALLET_NPG_SDK_INTEGRITY_URL: NonEmptyString,
   WALLET_NPG_SDK_URL: NonEmptyString,
   WALLET_OUTCOME_API_BASEPATH: NonEmptyString,
   WALLET_PAGOPA_LOGOS_CDN: NonEmptyString,
