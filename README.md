@@ -21,6 +21,8 @@ These are all the environment variables needed to configure the frontend:
 | WALLET_OUTCOME_API_BASEPATH           | API wallet outcome basepath                 | string |         |
 | WALLET_CONFIG_API_ENV                 | Deployment environment (DEV, UAT or PROD)   | string |         |
 | WALLET_PAGOPA_LOGOS_CDN               | CDN host to retrieve image resources        | string |         |
+| WALLET_NPG_SDK_URL                    | URL of the NPG SDK                          | string |         |
+| WALLET_NPG_SDK_INTEGRITY_URL          | URL of the NPG SDK integrity hash JSON      | string |         |
 
 ## Getting Started
 
