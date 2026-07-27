@@ -1,80 +1,133 @@
 /* eslint-disable functional/immutable-data */
 /**
- * Tests for the readiness contract of useNpgSdk.
+ * Tests for the NPG SDK SRI loader in useNpgSdk.
  *
- * The hook must NOT load the NPG SDK: the SDK is injected exactly once, with
- * its SRI check, by the standalone loader in src/npgsdk.js. The hook only
- * observes readiness, via the `npg-sdk-ready` event when the SDK is still
- * loading and via `window.npgSdkReady` when it already finished loading.
+ * The hook is the single place where the NPG SDK is injected: it fetches the
+ * published integrity hash and loads the SDK with `integrity` +
+ * `crossorigin="anonymous"`. Fail-closed: if the hash cannot be fetched or is
+ * missing, the script is never appended, `sdkReady` stays false and `buildSdk`
+ * stays a noop, so no payment can use an unvalidated SDK.
  */
-import { act, renderHook } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { useNpgSdk } from "../useNpgSdk";
 
-const NPG_SDK_READY_EVENT = "npg-sdk-ready";
+const SDK_URL = "http://localhost/sdk";
+const INTEGRITY_URL = "http://localhost/sdk.integrity.json";
+
+jest.mock("../../utils/buildConfig", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+const getNpgScript = () =>
+  Array.from(document.head.querySelectorAll("script")).find(
+    (s) => s.getAttribute("src") === SDK_URL
+  ) ?? null;
 
 const renderUseNpgSdk = () =>
   renderHook(() => useNpgSdk({ onBuildError: jest.fn() }));
 
-describe("useNpgSdk readiness", () => {
+describe("useNpgSdk loader (SRI)", () => {
+  // eslint-disable-next-line functional/no-let
+  let errorSpy: jest.SpyInstance;
+
   beforeEach(() => {
     document.head.innerHTML = "";
-    delete (window as any).npgSdkReady;
+    errorSpy = jest.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   afterEach(() => {
+    jest.restoreAllMocks();
     delete (global as any).fetch;
   });
 
-  it("never injects the SDK and never fetches the integrity hash", () => {
-    (global as any).fetch = jest.fn();
+  it("loads the SDK with integrity + crossorigin when the hash is fetched", async () => {
+    (global as any).fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ integrityHash: "sha384-abc123" })
+    });
 
     renderUseNpgSdk();
 
-    expect(document.head.querySelector("script")).toBeNull();
-    expect((global as any).fetch).not.toHaveBeenCalled();
+    await waitFor(() => expect(getNpgScript()).not.toBeNull());
+    const script = getNpgScript();
+    expect((global as any).fetch).toHaveBeenCalledWith(INTEGRITY_URL);
+    expect(script?.getAttribute("src")).toBe(SDK_URL);
+    expect(script?.getAttribute("integrity")).toBe("sha384-abc123");
+    expect(script?.getAttribute("crossorigin")).toBe("anonymous");
   });
 
-  it("is not ready until the loader signals readiness", () => {
+  it("is not ready until the SDK script fires its load event", async () => {
+    (global as any).fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ integrityHash: "sha384-abc123" })
+    });
+
     const { result } = renderUseNpgSdk();
+
+    await waitFor(() => expect(getNpgScript()).not.toBeNull());
+    expect(result.current.sdkReady).toBe(false);
+    expect(result.current.buildSdk()).toBeUndefined();
+
+    act(() => {
+      getNpgScript()?.dispatchEvent(new Event("load"));
+    });
+
+    expect(result.current.sdkReady).toBe(true);
+  });
+
+  it("does not load the SDK when the integrity endpoint returns a non-OK response", async () => {
+    (global as any).fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 503,
+      json: async () => ({})
+    });
+
+    const { result } = renderUseNpgSdk();
+
+    await waitFor(() => expect(errorSpy).toHaveBeenCalled());
+    expect(getNpgScript()).toBeNull();
+    expect(result.current.sdkReady).toBe(false);
+  });
+
+  it("does not load the SDK when the integrity fetch rejects", async () => {
+    (global as any).fetch = jest.fn().mockRejectedValue(new Error("network"));
+
+    const { result } = renderUseNpgSdk();
+
+    await waitFor(() => expect(errorSpy).toHaveBeenCalled());
+    expect(getNpgScript()).toBeNull();
+    expect(result.current.sdkReady).toBe(false);
+  });
+
+  it("does not load the SDK when the integrity hash is missing from the response", async () => {
+    (global as any).fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({})
+    });
+
+    const { result } = renderUseNpgSdk();
+
+    await waitFor(() => expect(errorSpy).toHaveBeenCalled());
+    expect(getNpgScript()).toBeNull();
+    expect(result.current.sdkReady).toBe(false);
+  });
+
+  it("stays not ready when the SDK script fails to load or fails SRI validation", async () => {
+    (global as any).fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ integrityHash: "sha384-abc123" })
+    });
+
+    const { result } = renderUseNpgSdk();
+
+    await waitFor(() => expect(getNpgScript()).not.toBeNull());
+    act(() => {
+      getNpgScript()?.dispatchEvent(new Event("error"));
+    });
 
     expect(result.current.sdkReady).toBe(false);
     expect(result.current.buildSdk()).toBeUndefined();
-  });
-
-  it("becomes ready when the loader dispatches the ready event after mount", () => {
-    const { result } = renderUseNpgSdk();
-    expect(result.current.sdkReady).toBe(false);
-
-    act(() => {
-      window.dispatchEvent(new Event(NPG_SDK_READY_EVENT));
-    });
-
-    expect(result.current.sdkReady).toBe(true);
-  });
-
-  /**
-   * Regression test for the double load fixed in PIDM-2228: the SDK is loaded
-   * by the standalone loader early in the page life cycle, so on a route that
-   * mounts later it is usually ALREADY loaded. A readiness check based only on
-   * the load event of an existing script would never fire here, leaving the GDI
-   * check stuck until its timeout.
-   */
-  it("is ready immediately when the SDK was already loaded before mount", () => {
-    (window as any).npgSdkReady = true;
-
-    const { result } = renderUseNpgSdk();
-
-    expect(result.current.sdkReady).toBe(true);
-  });
-
-  it("stops listening for readiness once unmounted", () => {
-    const { result, unmount } = renderUseNpgSdk();
-
-    unmount();
-    act(() => {
-      window.dispatchEvent(new Event(NPG_SDK_READY_EVENT));
-    });
-
-    expect(result.current.sdkReady).toBe(false);
+    expect(errorSpy).toHaveBeenCalled();
   });
 });
