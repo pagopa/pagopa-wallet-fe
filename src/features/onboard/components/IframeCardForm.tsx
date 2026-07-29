@@ -66,6 +66,8 @@ export default function IframeCardForm(props: IframeCardForm) {
   const [sessionData, setSessionData] =
     React.useState<SessionWalletCreateResponse>();
 
+  // The Build instance is an imperative SDK handle, not render state: a ref keeps
+  // it out of the render cycle and lets `handleSubmit` read it synchronously.
   const buildRef = React.useRef<any>(undefined);
 
   const navigate = useNavigate();
@@ -143,6 +145,10 @@ export default function IframeCardForm(props: IframeCardForm) {
     );
   };
 
+  // These handlers used to be declared inside the session `onSuccess` callback.
+  // They are now passed to `useNpgSdk` and feed the build effect's dependency
+  // array, so each is memoised: a fresh identity on every render would re-run
+  // that effect and rebuild the SDK.
   const onChange = React.useCallback((id: FieldId, status: FieldStatus) => {
     if (Object.keys(IdFields).includes(id)) {
       setActiveField(id);
@@ -223,6 +229,8 @@ export default function IframeCardForm(props: IframeCardForm) {
           utils.storage.SessionItems.orderId,
           body.orderId
         );
+        // Handing the response to state, rather than building the SDK here as
+        // before, is what lets the build wait for `sdkReady` too.
         setSessionData(body);
       };
       void getSessionFields(sessionToken, walletId, onSuccess, onError);
@@ -254,6 +262,8 @@ export default function IframeCardForm(props: IframeCardForm) {
   const handleSubmit = (e: React.FormEvent) => {
     try {
       e.preventDefault();
+      // Throws if the Build was never created (SDK unloaded or SRI failed), which
+      // the catch below turns into the usual error path.
       buildRef.current.confirmData(() => setLoading(true));
     } catch (e) {
       onError(); // possible redirect to app with outcome != 0

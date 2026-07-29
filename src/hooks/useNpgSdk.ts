@@ -66,6 +66,9 @@ export const useNpgSdk = ({
       const integrityUrl = config.WALLET_NPG_SDK_INTEGRITY_URL;
 
       try {
+        // This is why the loader became async: `integrity` has to be on the tag
+        // before it is appended, so the hash must be fetched first. It cannot be
+        // added once the browser has started fetching the script.
         const response = await fetch(integrityUrl);
         if (!response.ok) {
           throw new Error(
@@ -101,6 +104,8 @@ export const useNpgSdk = ({
       }
     };
 
+    // A useEffect callback cannot itself be async, so the loader is defined above
+    // and fired here; `void` marks the floating promise as deliberate.
     void loadNpgSdk();
   }, []);
 
