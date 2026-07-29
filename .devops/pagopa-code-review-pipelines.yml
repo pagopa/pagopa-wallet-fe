@@ -42,6 +42,11 @@ stages:
     dependsOn: []
     jobs:
       - job: make_build
+        variables:
+          # Only the integration tests use puppeteer. Skipping its postinstall
+          # avoids downloading ~250MB of Chrome + headless-shell here, which is
+          # the phase that intermittently hangs until the job timeout.
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
         steps:
         - template: templates/node-job-setup/template.yaml@pagopaCommons
 
@@ -66,6 +71,9 @@ stages:
     dependsOn: []
     jobs:
       - job: lint     
+        variables:
+          # see make_build: puppeteer is unused by lint
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
         steps:
         - template: templates/node-job-setup/template.yaml@pagopaCommons
         - script: yarn lint
@@ -77,6 +85,10 @@ stages:
     jobs:
       
       - job: run_unit_tests
+        variables:
+          # jest.config.js runs on jsdom + ts-jest; only the integration configs
+          # use the jest-puppeteer preset, so no browser is needed here
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
         steps:
         
         - template: templates/node-job-setup/template.yaml@pagopaCommons
@@ -139,6 +151,10 @@ stages:
     jobs:
       - job: run_integration_tests
         timeoutInMinutes: 30
+        variables:
+          # This is the only job that actually launches a browser. Pin the download
+          # location so it can be cached between runs instead of re-fetched.
+          PUPPETEER_CACHE_DIR: $(Pipeline.Workspace)/.puppeteer
         steps:
 
         - checkout: wallet-be-mock
@@ -151,13 +167,13 @@ stages:
           displayName: 'Setup env for mock'
 
         - task: Cache@2
+          displayName: 'Cache Mock Yarn packages'
           inputs:
             key: 'yarn | "$(Agent.OS)" | pagopa-wallet-be-mock/yarn.lock'
             restoreKeys: |
               yarn | "$(Agent.OS)"
               yarn
             path: $(YARN_CACHE_FOLDER)
-            displayName: Cache Mock Yarn packages
 
         - script: yarn global add node-gyp && yarn install --frozen-lockfile && yarn generate && yarn build
           workingDirectory: pagopa-wallet-be-mock
@@ -169,6 +185,15 @@ stages:
           workingDirectory: pagopa-wallet-be-mock
 
         - checkout: self
+
+        # Must sit between the checkout (so yarn.lock exists for the key) and the
+        # install (so a hit means puppeteer's postinstall finds the browser present).
+        - task: Cache@2
+          displayName: 'Cache Puppeteer browsers'
+          inputs:
+            key: 'puppeteer | "$(Agent.OS)" | pagopa-wallet-fe/yarn.lock'
+            restoreKeys: 'puppeteer | "$(Agent.OS)"'
+            path: $(Pipeline.Workspace)/.puppeteer
 
         - template: templates/node-job-setup/template.yaml@pagopaCommons
           parameters:
