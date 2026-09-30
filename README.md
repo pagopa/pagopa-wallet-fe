@@ -11,18 +11,18 @@ For an example configuration, see `env.example`.
 
 These are all the environment variables needed to configure the frontend:
 
-| Variable                              | Description                                 | Type   | Default |
-|---------------------------------------|---------------------------------------------|--------|---------|
-| WALLET_CONFIG_API_TIMEOUT             | Timeout in millis for HTTP requests to APIs | number |         |
-| WALLET_CONFIG_API_BASEPATH            | APIs basepath                               | string |         |
-| WALLET_CONFIG_API_HOST                | APIs host                                   | string |         |
-| WALLET_CONFIG_WEBVIEW_PM_HOST         | Webivew host of PM                          | string |         |
-| WALLET_CONFIG_API_PM_BASEPATH         | API pm basepath                             | string |         |
-| WALLET_OUTCOME_API_BASEPATH           | API wallet outcome basepath                 | string |         |
-| WALLET_CONFIG_API_ENV                 | Deployment environment (DEV, UAT or PROD)   | string |         |
-| WALLET_PAGOPA_LOGOS_CDN               | CDN host to retrieve image resources        | string |         |
-| WALLET_NPG_SDK_URL                    | URL of the NPG SDK                          | string |         |
-| WALLET_NPG_SDK_INTEGRITY_URL          | URL of the NPG SDK integrity hash JSON      | string |         |
+| Variable                      | Description                                                | Type   | Default |
+|-------------------------------|------------------------------------------------------------|--------|---------|
+| WALLET_CONFIG_API_TIMEOUT     | Timeout in millis for HTTP requests to APIs                | number |         |
+| WALLET_CONFIG_API_BASEPATH    | APIs basepath                                              | string |         |
+| WALLET_CONFIG_API_HOST        | APIs host                                                  | string |         |
+| WALLET_CONFIG_WEBVIEW_PM_HOST | Webivew host of PM                                         | string |         |
+| WALLET_CONFIG_API_PM_BASEPATH | API pm basepath                                            | string |         |
+| WALLET_OUTCOME_API_BASEPATH   | API wallet outcome basepath                                | string |         |
+| WALLET_CONFIG_API_ENV         | Deployment environment (DEV, UAT or PROD)                  | string |         |
+| WALLET_PAGOPA_LOGOS_CDN       | CDN host to retrieve image resources                       | string |         |
+| WALLET_NPG_SDK_URL            | URL of the NPG SDK (platform CDN, or Nexi when SRI is off) | string |         |
+| WALLET_NPG_SDK_INTEGRITY_URL  | URL of the NPG SDK integrity hash JSON; empty disables SRI | string |         |
 
 ## Getting Started
 
