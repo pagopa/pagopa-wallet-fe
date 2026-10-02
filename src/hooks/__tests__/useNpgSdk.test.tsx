@@ -4,8 +4,8 @@
  *
  * SRI mode (integrity URL set): fetch the hash, load with `integrity` +
  * `crossorigin="anonymous"`, fail closed on any error (no script, `sdkReady`
- * false, `buildSdk` a noop). Legacy mode (integrity URL empty or absent): load
- * the SDK without integrity and never fetch.
+ * false, `sdkError` true, `buildSdk` a noop). Legacy mode (integrity URL empty
+ * or absent): load the SDK without integrity and never fetch.
  */
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { useNpgSdk } from "../useNpgSdk";
@@ -85,6 +85,7 @@ describe("useNpgSdk loader (SRI)", () => {
     });
 
     expect(result.current.sdkReady).toBe(true);
+    expect(result.current.sdkError).toBe(false);
   });
 
   it("does not load the SDK when the integrity endpoint returns a non-OK response", async () => {
@@ -99,6 +100,7 @@ describe("useNpgSdk loader (SRI)", () => {
     await waitFor(() => expect(errorSpy).toHaveBeenCalled());
     expect(getNpgScript()).toBeNull();
     expect(result.current.sdkReady).toBe(false);
+    expect(result.current.sdkError).toBe(true);
   });
 
   it("does not load the SDK when the integrity fetch rejects", async () => {
@@ -109,6 +111,7 @@ describe("useNpgSdk loader (SRI)", () => {
     await waitFor(() => expect(errorSpy).toHaveBeenCalled());
     expect(getNpgScript()).toBeNull();
     expect(result.current.sdkReady).toBe(false);
+    expect(result.current.sdkError).toBe(true);
   });
 
   it("does not load the SDK when the integrity hash is missing from the response", async () => {
@@ -122,6 +125,7 @@ describe("useNpgSdk loader (SRI)", () => {
     await waitFor(() => expect(errorSpy).toHaveBeenCalled());
     expect(getNpgScript()).toBeNull();
     expect(result.current.sdkReady).toBe(false);
+    expect(result.current.sdkError).toBe(true);
   });
 
   it("stays not ready when the SDK script fails to load or fails SRI validation", async () => {
@@ -138,6 +142,7 @@ describe("useNpgSdk loader (SRI)", () => {
     });
 
     expect(result.current.sdkReady).toBe(false);
+    expect(result.current.sdkError).toBe(true);
     expect(result.current.buildSdk()).toBeUndefined();
     expect(errorSpy).toHaveBeenCalled();
   });
@@ -166,4 +171,18 @@ describe("useNpgSdk loader (SRI)", () => {
       expect(result.current.sdkReady).toBe(true);
     }
   );
+
+  it("flags sdkError when the legacy SDK script fails to load", async () => {
+    mockIntegrityUrl = "";
+
+    const { result } = renderUseNpgSdk();
+
+    await waitFor(() => expect(getNpgScript()).not.toBeNull());
+    act(() => {
+      getNpgScript()?.dispatchEvent(new Event("error"));
+    });
+
+    expect(result.current.sdkReady).toBe(false);
+    expect(result.current.sdkError).toBe(true);
+  });
 });

@@ -220,9 +220,10 @@ afterEach(() => {
 /**
  * The Build instance is created only once the NPG SDK script has loaded and
  * passed its SRI check. jsdom does not actually load external scripts, so the
- * `load` event has to be dispatched by hand to move the hook to sdkReady.
+ * `load` event has to be dispatched by hand to move the hook to sdkReady
+ * (`error` simulates a failed load or SRI check).
  */
-const flushNpgSdkLoad = async () => {
+const flushNpgSdkLoad = async (event: "load" | "error" = "load") => {
   const script = await waitFor(() => {
     const el = Array.from(document.head.querySelectorAll("script")).find(
       (s) => s.getAttribute("src") === SDK_URL
@@ -233,9 +234,18 @@ const flushNpgSdkLoad = async () => {
     return el;
   });
   await act(async () => {
-    script.dispatchEvent(new Event("load"));
+    script.dispatchEvent(new Event(event));
   });
 };
+
+const expectGenericErrorRedirect = () =>
+  waitFor(() => {
+    expect(redirectForPaymentWithContextualOnboardingMock).toHaveBeenCalledWith(
+      "mockWalletId",
+      "GENERIC_ERROR",
+      "mockTransactionId"
+    );
+  });
 
 import IframeCardForm from "../IframeCardForm";
 
@@ -375,15 +385,7 @@ describe("IframeCardForm", () => {
     // @ts-ignore
     buildCfg.onReadyForPayment();
 
-    await waitFor(() => {
-      expect(
-        redirectForPaymentWithContextualOnboardingMock
-      ).toHaveBeenCalledWith(
-        "mockWalletId",
-        "GENERIC_ERROR",
-        "mockTransactionId"
-      );
-    });
+    await expectGenericErrorRedirect();
   });
 
   it("onPaymentComplete => navigate a /ESITO and clearNavigationEvents", async () => {
@@ -450,6 +452,43 @@ describe("IframeCardForm", () => {
     });
 
     expect(window.location.replace).toHaveBeenCalledWith("/ERRORE");
+  });
+
+  it("integrity hash not fetched => onBuildError => redirectForPaymentWithContextualOnboarding GENERIC_ERROR", async () => {
+    const errorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    (global as any).fetch = jest.fn().mockRejectedValue(new Error("network"));
+    apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
+
+    render(
+      <MemoryRouter>
+        <IframeCardForm isPayment />
+      </MemoryRouter>
+    );
+
+    await expectGenericErrorRedirect();
+    expect((global as any).Build).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+
+  it("SDK script error (load or SRI) => onBuildError => window.location.replace('/ERRORE')", async () => {
+    const errorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
+
+    render(
+      <MemoryRouter>
+        <IframeCardForm isPayment={false} />
+      </MemoryRouter>
+    );
+
+    await flushNpgSdkLoad("error");
+
+    expect(window.location.replace).toHaveBeenCalledWith("/ERRORE");
+    expect((global as any).Build).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
   });
 
   it("confirmData triggers => onError => ErrorModal", async () => {

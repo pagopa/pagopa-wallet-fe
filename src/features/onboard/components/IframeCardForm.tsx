@@ -196,7 +196,7 @@ export default function IframeCardForm(props: IframeCardForm) {
   }, []);
 
   // The NPG SDK is loaded here, once, with its Subresource Integrity check.
-  const { sdkReady, buildSdk } = useNpgSdk({
+  const { sdkReady, sdkError, buildSdk } = useNpgSdk({
     onChange,
     onReadyForPayment,
     onPaymentComplete,
@@ -258,6 +258,14 @@ export default function IframeCardForm(props: IframeCardForm) {
       onBuildError();
     }
   }, [sdkReady, sessionData, buildSdk, onBuildError]);
+
+  // error path -> `new Build` throws without the SDK: otherwise the form 
+  // would wait for `sdkReady` forever.
+  React.useEffect(() => {
+    if (sdkError) {
+      onBuildError();
+    }
+  }, [sdkError, onBuildError]);
 
   const handleSubmit = (e: React.FormEvent) => {
     try {

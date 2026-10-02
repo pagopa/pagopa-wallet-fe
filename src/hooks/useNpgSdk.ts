@@ -25,6 +25,9 @@ export const useNpgSdk = ({
   onAllFieldsLoaded = () => null
 }: SdkBuild) => {
   const [sdkReady, setSdkReady] = useState(false);
+  // SDK cannot be used (hash not fetched, load or SRI error). No Build exists
+  // to report it through onBuildError, so the caller decides how to exit
+  const [sdkError, setSdkError] = useState(false);
 
   const createBuild = (): typeof Build => {
     try {
@@ -51,7 +54,8 @@ export const useNpgSdk = ({
      * - set: fetch the published hash and load the SDK with `integrity` +
      *   `crossorigin="anonymous"` (the SDK is self-hosted on the platform CDN,
      *   cross-origin, so SRI needs CORS). Fail closed: no hash, no SDK, so
-     *   `sdkReady` stays false and no payment can use an unvalidated SDK.
+     *   `sdkReady` stays false, `sdkError` is set and no payment can use an
+     *   unvalidated SDK.
      * - empty: load the SDK from Nexi with no integrity (Nexi publishes no hash
      *   and sends no CORS). To disable SRI: blank the integrity URL, restore the
      *   Nexi SDK URL and redeploy.
@@ -62,6 +66,7 @@ export const useNpgSdk = ({
       npgScriptEl.setAttribute("type", "text/javascript");
       npgScriptEl.setAttribute("charset", "UTF-8");
       npgScriptEl.addEventListener("load", () => setSdkReady(true));
+      npgScriptEl.addEventListener("error", () => setSdkError(true));
       return npgScriptEl;
     };
 
@@ -108,6 +113,7 @@ export const useNpgSdk = ({
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error("Failed to load NPG SDK with integrity:", error);
+        setSdkError(true);
       }
     };
 
@@ -116,5 +122,5 @@ export const useNpgSdk = ({
     void loadNpgSdk();
   }, []);
 
-  return { sdkReady, buildSdk: sdkReady ? createBuild : noop };
+  return { sdkReady, sdkError, buildSdk: sdkReady ? createBuild : noop };
 };
