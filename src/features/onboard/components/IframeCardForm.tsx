@@ -18,9 +18,9 @@ import {
   WalletRoutes
 } from "../../../routes/models/routeModel";
 import utils from "../../../utils";
-import createBuildConfig from "../../../utils/buildConfig";
 import { ErrorsType } from "../../../utils/errors/errorsModel";
 import { clearNavigationEvents } from "../../../utils/eventListener";
+import { useNpgSdk } from "../../../hooks/useNpgSdk";
 import { SessionWalletCreateResponseData1 } from "../../../../generated/definitions/webview-payment-wallet/SessionWalletCreateResponseData";
 import { SessionInputDataTypeCardsEnum } from "../../../../generated/definitions/webview-payment-wallet/SessionInputDataTypeCards";
 import { IframeCardField } from "./IframeCardField";
@@ -60,7 +60,15 @@ export default function IframeCardForm(props: IframeCardForm) {
   const [formStatus, setFormStatus] =
     React.useState<FormStatus>(initialFieldsState);
 
-  const [buildInstance, setBuildInstance] = React.useState();
+  // The session response is kept in state because the Build instance can only be
+  // created once BOTH the NPG SDK is loaded and the session fields are available,
+  // and the order between the two is not guaranteed.
+  const [sessionData, setSessionData] =
+    React.useState<SessionWalletCreateResponse>();
+
+  // The Build instance is an imperative SDK handle, not render state: a ref keeps
+  // it out of the render cycle and lets `handleSubmit` read it synchronously.
+  const buildRef = React.useRef<any>(undefined);
 
   const navigate = useNavigate();
 
@@ -137,7 +145,11 @@ export default function IframeCardForm(props: IframeCardForm) {
     );
   };
 
-  const onChange = (id: FieldId, status: FieldStatus) => {
+  // These handlers used to be declared inside the session `onSuccess` callback.
+  // They are now passed to `useNpgSdk` and feed the build effect's dependency
+  // array, so each is memoised: a fresh identity on every render would re-run
+  // that effect and rebuild the SDK.
+  const onChange = React.useCallback((id: FieldId, status: FieldStatus) => {
     if (Object.keys(IdFields).includes(id)) {
       setActiveField(id);
       setFormStatus((fields) => ({
@@ -145,7 +157,53 @@ export default function IframeCardForm(props: IframeCardForm) {
         [id]: status
       }));
     }
-  };
+  }, []);
+
+  // payment/onboarding success event
+  const onReadyForPayment = React.useCallback(() => {
+    if (sessionData) {
+      void validation(sessionData);
+    }
+  }, [sessionData]);
+
+  // payment/onboarding without 3ds challenge phase
+  const onPaymentComplete = React.useCallback(() => {
+    clearNavigationEvents();
+    navigate(`/${WalletRoutes.ESITO}`);
+  }, [navigate]);
+
+  // payment/onboarding with 3ds challenge phase
+  const onPaymentRedirect = React.useCallback((redirect: string) => {
+    clearNavigationEvents();
+    window.location.replace(redirect);
+  }, []);
+
+  const onBuildError = React.useCallback(() => {
+    setLoading(false);
+    if (isPayment) {
+      return utils.url.redirectForPaymentWithContextualOnboarding(
+        walletId,
+        OUTCOME_ROUTE.GENERIC_ERROR,
+        transactionId
+      );
+    }
+    window.location.replace(`/${WalletRoutes.ERRORE}`);
+  }, [isPayment, walletId, transactionId]);
+
+  const onAllFieldsLoaded = React.useCallback(() => {
+    setFormLoading(false);
+    setLoading(false);
+  }, []);
+
+  // The NPG SDK is loaded here, once, with its Subresource Integrity check.
+  const { sdkReady, sdkError, buildSdk } = useNpgSdk({
+    onChange,
+    onReadyForPayment,
+    onPaymentComplete,
+    onPaymentRedirect,
+    onBuildError,
+    onAllFieldsLoaded
+  });
 
   const getSessionFields = async (
     sessionToken: string,
@@ -164,77 +222,57 @@ export default function IframeCardForm(props: IframeCardForm) {
   React.useEffect(() => {
     if (!cardFormFields) {
       const onSuccess = (body: SessionWalletCreateResponse) => {
-        const sessionData =
+        const responseData =
           body.sessionData as SessionWalletCreateResponseData1;
-        setCardFormFields(sessionData.cardFormFields);
+        setCardFormFields(responseData.cardFormFields);
         utils.storage.setSessionItem(
           utils.storage.SessionItems.orderId,
           body.orderId
         );
-
-        // payment/onboarding success event
-        const onReadyForPayment = () => {
-          void validation(body);
-        };
-
-        // payment/onboarding without 3ds challenge phase
-        const onPaymentComplete = () => {
-          clearNavigationEvents();
-          navigate(`/${WalletRoutes.ESITO}`);
-        };
-
-        // payment/onboarding with 3ds challenge phase
-        const onPaymentRedirect = (redirect: string) => {
-          clearNavigationEvents();
-          window.location.replace(redirect);
-        };
-
-        const onBuildError = () => {
-          setLoading(false);
-          if (isPayment) {
-            return utils.url.redirectForPaymentWithContextualOnboarding(
-              walletId,
-              OUTCOME_ROUTE.GENERIC_ERROR,
-              transactionId
-            );
-          }
-          window.location.replace(`/${WalletRoutes.ERRORE}`);
-        };
-
-        const onAllFieldsLoaded = () => {
-          setFormLoading(false);
-          setLoading(false);
-        };
-
-        try {
-          // THIS is mandatory cause the Build class is defined in the external library called NPG SDK
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          const newBuild = new Build(
-            createBuildConfig({
-              onChange,
-              onReadyForPayment,
-              onPaymentComplete,
-              onPaymentRedirect,
-              onBuildError,
-              onAllFieldsLoaded
-            })
-          );
-          setBuildInstance(newBuild);
-        } catch {
-          onBuildError();
-        }
+        // Handing the response to state, rather than building the SDK here as
+        // before, is what lets the build wait for `sdkReady` too.
+        setSessionData(body);
       };
       void getSessionFields(sessionToken, walletId, onSuccess, onError);
     }
   }, []);
 
+  /**
+   * The Build instance can only be created once the NPG SDK has been loaded and
+   * passed its SRI check (`sdkReady`) AND the session fields have been received
+   * (`sessionData`). The two happen concurrently, in no guaranteed order, so this
+   * effect waits for both. `buildRef` guards against creating a second instance.
+   *
+   * If the integrity hash cannot be fetched or SRI validation fails, `sdkReady`
+   * stays false and no Build is ever created, so no payment can use an
+   * unvalidated SDK.
+   */
+  React.useEffect(() => {
+    if (!sdkReady || !sessionData || buildRef.current) {
+      return;
+    }
+    try {
+      // eslint-disable-next-line functional/immutable-data
+      buildRef.current = buildSdk();
+    } catch {
+      onBuildError();
+    }
+  }, [sdkReady, sessionData, buildSdk, onBuildError]);
+
+  // error path -> `new Build` throws without the SDK: otherwise the form
+  // would wait for `sdkReady` forever.
+  React.useEffect(() => {
+    if (sdkError) {
+      onBuildError();
+    }
+  }, [sdkError, onBuildError]);
+
   const handleSubmit = (e: React.FormEvent) => {
     try {
       e.preventDefault();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      buildInstance.confirmData(() => setLoading(true));
+      // Throws if the Build was never created (SDK unloaded or SRI failed), which
+      // the catch below turns into the usual error path.
+      buildRef.current.confirmData(() => setLoading(true));
     } catch (e) {
       onError(); // possible redirect to app with outcome != 0
     }

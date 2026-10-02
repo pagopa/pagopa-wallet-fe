@@ -1,12 +1,21 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable functional/immutable-data */
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  act,
+  render,
+  screen,
+  fireEvent,
+  waitFor
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MemoryRouter } from "react-router-dom";
 
 // eslint-disable-next-line functional/no-let
 let buildCfg: any;
+
+/** Must match WALLET_NPG_SDK_URL in jest.setup.js. */
+const SDK_URL = "http://localhost/sdk";
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (k: string) => k })
@@ -195,7 +204,48 @@ beforeEach(() => {
     buildCfg = cfg;
     return { confirmData: confirmDataMock };
   });
+  // The NPG SDK is now loaded by useNpgSdk, which first fetches the published
+  // integrity hash: without this the SDK never loads and no Build is created.
+  (global as any).fetch = jest.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ integrityHash: "sha384-test" })
+  });
 });
+
+afterEach(() => {
+  document.head.querySelectorAll("script").forEach((s) => s.remove());
+  delete (global as any).fetch;
+});
+
+/**
+ * The Build instance is created only once the NPG SDK script has loaded and
+ * passed its SRI check. jsdom does not actually load external scripts, so the
+ * `load` event has to be dispatched by hand to move the hook to sdkReady
+ * (`error` simulates a failed load or SRI check).
+ */
+const flushNpgSdkLoad = async (event: "load" | "error" = "load") => {
+  const script = await waitFor(() => {
+    const el = Array.from(document.head.querySelectorAll("script")).find(
+      (s) => s.getAttribute("src") === SDK_URL
+    );
+    if (!el) {
+      throw new Error("NPG SDK script has not been appended yet");
+    }
+    return el;
+  });
+  await act(async () => {
+    script.dispatchEvent(new Event(event));
+  });
+};
+
+const expectGenericErrorRedirect = () =>
+  waitFor(() => {
+    expect(redirectForPaymentWithContextualOnboardingMock).toHaveBeenCalledWith(
+      "mockWalletId",
+      "GENERIC_ERROR",
+      "mockTransactionId"
+    );
+  });
 
 import IframeCardForm from "../IframeCardForm";
 
@@ -211,14 +261,17 @@ const sessionResponse = {
   }
 };
 
-const renderForm = (
+const renderForm = async (
   props: Partial<React.ComponentProps<typeof IframeCardForm>> = {}
-) =>
-  render(
+) => {
+  const result = render(
     <MemoryRouter>
       <IframeCardForm isPayment {...props} />
     </MemoryRouter>
   );
+  await flushNpgSdkLoad();
+  return result;
+};
 
 describe("IframeCardForm", () => {
   beforeEach(() => {
@@ -232,11 +285,13 @@ describe("IframeCardForm", () => {
     apmDecode.mockReturnValue({ _tag: "Left", left: {} });
     ctxDecode.mockReturnValue({ _tag: "Left", left: {} });
 
-    renderForm();
+    await renderForm();
 
     await screen.findByTestId("iframe-field-CARD_NUMBER");
 
-    buildCfg.onAllFieldsLoaded();
+    act(() => {
+      buildCfg.onAllFieldsLoaded();
+    });
     await waitFor(() => {
       expect(screen.getByTestId("iframe-field-CARD_NUMBER")).toHaveAttribute(
         "data-loaded",
@@ -255,7 +310,7 @@ describe("IframeCardForm", () => {
       right: { iframeUrl: "https://example.test/iframe" }
     });
 
-    renderForm();
+    await renderForm();
 
     await screen.findByTestId("iframe-field-CARD_NUMBER");
     buildCfg.onReadyForPayment();
@@ -282,7 +337,7 @@ describe("IframeCardForm", () => {
       right: { redirectUrl: "https://pay.example/redirect" }
     });
 
-    renderForm();
+    await renderForm();
 
     await screen.findByTestId("iframe-field-CARD_NUMBER");
     // @ts-ignore
@@ -304,7 +359,7 @@ describe("IframeCardForm", () => {
     apmDecode.mockReturnValue({ _tag: "Left", left: {} });
     ctxDecode.mockReturnValue({ _tag: "Right", right: { ok: true } });
 
-    renderForm();
+    await renderForm();
 
     await screen.findByTestId("iframe-field-CARD_NUMBER");
     // @ts-ignore
@@ -324,21 +379,13 @@ describe("IframeCardForm", () => {
     apmDecode.mockReturnValue({ _tag: "Left", left: {} });
     ctxDecode.mockReturnValue({ _tag: "Left", left: {} });
 
-    renderForm();
+    await renderForm();
 
     await screen.findByTestId("iframe-field-CARD_NUMBER");
     // @ts-ignore
     buildCfg.onReadyForPayment();
 
-    await waitFor(() => {
-      expect(
-        redirectForPaymentWithContextualOnboardingMock
-      ).toHaveBeenCalledWith(
-        "mockWalletId",
-        "GENERIC_ERROR",
-        "mockTransactionId"
-      );
-    });
+    await expectGenericErrorRedirect();
   });
 
   it("onPaymentComplete => navigate a /ESITO and clearNavigationEvents", async () => {
@@ -348,7 +395,7 @@ describe("IframeCardForm", () => {
     apmDecode.mockReturnValue({ _tag: "Left", left: {} });
     ctxDecode.mockReturnValue({ _tag: "Left", left: {} });
 
-    renderForm();
+    await renderForm();
     await screen.findByTestId("iframe-field-CARD_NUMBER");
     buildCfg.onPaymentComplete();
 
@@ -359,7 +406,7 @@ describe("IframeCardForm", () => {
   it("onPaymentRedirect => clearNavigationEvents + window.location.replace", async () => {
     apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
 
-    renderForm();
+    await renderForm();
     await screen.findByTestId("iframe-field-CARD_NUMBER");
 
     buildCfg.onPaymentRedirect("https://acs.example/challenge");
@@ -373,7 +420,7 @@ describe("IframeCardForm", () => {
   it("createSessionWallet Left => onError => show ErrorModal", async () => {
     apiCreateSessionWalletMock.mockResolvedValue(Left(new Error("boom")));
 
-    renderForm();
+    await renderForm();
 
     await waitFor(() => {
       expect(screen.getByTestId("error-modal")).toBeInTheDocument();
@@ -384,7 +431,7 @@ describe("IframeCardForm", () => {
     apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
     apiValidationsMock.mockResolvedValue(Left(new Error("val KO")));
 
-    renderForm();
+    await renderForm();
     await screen.findByTestId("iframe-field-CARD_NUMBER");
 
     buildCfg.onReadyForPayment();
@@ -397,16 +444,51 @@ describe("IframeCardForm", () => {
   it("isPayment=false => onBuildError => window.location.replace('/ERROR')", async () => {
     apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
 
+    await renderForm({ isPayment: false });
+
+    await screen.findByTestId("iframe-field-CARD_NUMBER");
+    act(() => {
+      buildCfg.onBuildError();
+    });
+
+    expect(window.location.replace).toHaveBeenCalledWith("/ERRORE");
+  });
+
+  it("integrity hash not fetched => onBuildError => redirectForPaymentWithContextualOnboarding GENERIC_ERROR", async () => {
+    const errorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    (global as any).fetch = jest.fn().mockRejectedValue(new Error("network"));
+    apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
+
+    render(
+      <MemoryRouter>
+        <IframeCardForm isPayment />
+      </MemoryRouter>
+    );
+
+    await expectGenericErrorRedirect();
+    expect((global as any).Build).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+
+  it("SDK script error (load or SRI) => onBuildError => window.location.replace('/ERRORE')", async () => {
+    const errorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    apiCreateSessionWalletMock.mockResolvedValue(Right(sessionResponse));
+
     render(
       <MemoryRouter>
         <IframeCardForm isPayment={false} />
       </MemoryRouter>
     );
 
-    await screen.findByTestId("iframe-field-CARD_NUMBER");
-    buildCfg.onBuildError();
+    await flushNpgSdkLoad("error");
 
     expect(window.location.replace).toHaveBeenCalledWith("/ERRORE");
+    expect((global as any).Build).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
   });
 
   it("confirmData triggers => onError => ErrorModal", async () => {
@@ -419,7 +501,7 @@ describe("IframeCardForm", () => {
       }
     }));
 
-    renderForm();
+    await renderForm();
     await screen.findByTestId("iframe-field-CARD_NUMBER");
 
     const submit = screen.getByTestId("submit-button");
