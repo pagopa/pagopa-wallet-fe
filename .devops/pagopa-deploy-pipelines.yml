@@ -99,7 +99,7 @@ stages:
               api_timeout:  10000
               npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
               wallet_gdi_check_timeout: 20000
-              wallet_pagopa_logos_cdn: 'https://assets.platform.pagopa.it/logos/abi'
+              wallet_pagopa_logos_cdn: 'https://assets.cdn.platform.pagopa.it/logos/abi'
               wallet_show_continue_io_btn_delay_millis: 2000
               wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://dev.ecommerce.pagopa.it/esito'
 
@@ -224,7 +224,7 @@ stages:
               api_timeout:  10000
               npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
               wallet_gdi_check_timeout: 20000
-              wallet_pagopa_logos_cdn: 'https://assets.platform.pagopa.it/logos/abi'
+              wallet_pagopa_logos_cdn: 'https://assets.cdn.platform.pagopa.it/logos/abi'
               wallet_show_continue_io_btn_delay_millis: 2000
               wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://uat.ecommerce.pagopa.it/esito'
 
@@ -320,7 +320,7 @@ stages:
               api_timeout:  10000
               npg_sdk_url: 'https://xpay.nexigroup.com/monetaweb/resources/hfsdk.js'
               wallet_gdi_check_timeout: 20000
-              wallet_pagopa_logos_cdn: 'https://assets.platform.pagopa.it/logos/abi'
+              wallet_pagopa_logos_cdn: 'https://assets.cdn.platform.pagopa.it/logos/abi'
               wallet_show_continue_io_btn_delay_millis: 2000
               wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://ecommerce.pagopa.it/esito'
 
