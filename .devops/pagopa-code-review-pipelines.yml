@@ -34,7 +34,8 @@ resources:
     - repository: wallet-be-mock
       type: github
       name: pagopa/pagopa-wallet-be-mock
-      ref: main
+      # TEMP: NPG SDK proxy + SRI hash mock (CHK-5044), back to main once pagopa-wallet-be-mock#19 is merged
+      ref: CHK-5044-sri-hash-integration
       endpoint: 'io-azure-devops-github-ro'
 
 stages:
