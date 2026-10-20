@@ -144,7 +144,7 @@ stages:
         # Currently npg api key is not required for current integration test
         - script: |
             cp env.example .env
-            sed -i "s/^NPG_API_KEY=.*$/NPG_API_KEY=key/" .env
+            sed -i "s/^NPG_API_KEY=.*$/NPG_API_KEY=$(TEST-NPG-API-KEY)/" .env 
           workingDirectory: pagopa-wallet-be-mock
           displayName: 'Setup env for mock'
 

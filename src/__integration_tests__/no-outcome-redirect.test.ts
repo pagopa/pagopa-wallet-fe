@@ -1,4 +1,3 @@
-import translationIT from "../translations/it/translations.json";
 import translationEN from "../translations/en/translations.json";
 
 describe("Test showing final button for continue to IO", () => {
