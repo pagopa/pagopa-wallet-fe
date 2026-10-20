@@ -47,6 +47,9 @@ export const useNpgSdk = ({
   };
 
   useEffect(() => {
+    // StrictMode replays the effect: only the last setup may inject the script,
+    // otherwise the SDK is evaluated twice and redeclares its globals.
+    let cancelled = false;
     /**
      * NPG SDK loader, the single place where the SDK is injected. Two modes
      * selected by WALLET_NPG_SDK_INTEGRITY_URL (same semantics as checkout-fe):
@@ -77,6 +80,11 @@ export const useNpgSdk = ({
 
       // Legacy mode -> no SRI enabled, load the SDK without integrity
       if (!integrityUrl) {
+        // yield so a StrictMode cleanup can cancel this run before injecting
+        await Promise.resolve();
+        if (cancelled) {
+          return;
+        }
         document.head.appendChild(buildScript(sdkUrl));
         return;
       }
@@ -98,6 +106,9 @@ export const useNpgSdk = ({
           throw new Error("Integrity hash missing from response");
         }
 
+        if (cancelled) {
+          return;
+        }
         const npgScriptEl = buildScript(sdkUrl);
         npgScriptEl.setAttribute("integrity", integrityHash);
         // Cross-origin load from the platform CDN: SRI can only be validated with CORS.
@@ -120,6 +131,9 @@ export const useNpgSdk = ({
     // A useEffect callback cannot itself be async, so the loader is defined above
     // and fired here; `void` marks the floating promise as deliberate.
     void loadNpgSdk();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { sdkReady, sdkError, buildSdk: sdkReady ? createBuild : noop };
