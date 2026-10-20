@@ -197,6 +197,10 @@ stages:
           displayName: 'IO no-outcome-redirect button Integration tests exec'
           workingDirectory: pagopa-wallet-fe
 
+        - script: yarn test:sri-hash-npg-check
+          displayName: 'SRI hash NPG check Integration tests exec'
+          workingDirectory: pagopa-wallet-fe
+
         - task: PublishTestResults@2
           displayName: 'Publish integration tests results from Jest tests'
           inputs:
