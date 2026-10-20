@@ -31,7 +31,11 @@ parameters:
   - name: 'npg_sdk_url'
     type: string
     default: ''
-  
+
+  - name: 'npg_sdk_integrity_url'
+    type: string
+    default: ''
+
   - name: 'wallet_gdi_check_timeout'
     type: number
     default: 10000
@@ -61,6 +65,7 @@ steps:
       WALLET_CONFIG_API_TIMEOUT=${{ parameters.api_timeout }} \
       WALLET_CONFIG_API_ENV==${{ parameters.env }} \
       WALLET_NPG_SDK_URL=${{ parameters.npg_sdk_url }} \
+      WALLET_NPG_SDK_INTEGRITY_URL=${{ parameters.npg_sdk_integrity_url }} \
       WALLET_GDI_CHECK_TIMEOUT=${{ parameters.wallet_gdi_check_timeout }} \
       WALLET_PAGOPA_LOGOS_CDN=${{ parameters.wallet_pagopa_logos_cdn }} \
       WALLET_SHOW_CONTINUE_IO_BTN_DELAY_MILLIS=${{ parameters.wallet_show_continue_io_btn_delay_millis }} \
