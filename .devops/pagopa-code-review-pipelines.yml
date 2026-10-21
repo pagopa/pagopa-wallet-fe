@@ -138,7 +138,7 @@ stages:
     jobs:
       - job: run_integration_tests
         variables:
-          PUPPETEER_CACHE_DIR: $(Pipeline.Workspace)/.puppeteer
+          PUPPETEER_SKIP_DOWNLOAD: false
         steps:
 
         - checkout: wallet-be-mock
@@ -164,7 +164,7 @@ stages:
           displayName: 'Setup deps for mock'
 
         - script: |
-            nohup yarn start &
+            nohup yarn start > $(Agent.TempDirectory)/mock.log 2>&1 &
           displayName: 'Start backend mock'
           workingDirectory: pagopa-wallet-be-mock
 
@@ -174,26 +174,13 @@ stages:
           parameters:
            projectDir: pagopa-wallet-fe
 
-        - task: Cache@2
-          displayName: Cache Puppeteer Chrome
-          inputs:
-            key: 'puppeteer | "$(Agent.OS)" | pagopa-wallet-fe/yarn.lock'
-            restoreKeys: |
-              puppeteer | "$(Agent.OS)"
-            path: $(PUPPETEER_CACHE_DIR)
-
-        - script: npx puppeteer browsers install chrome
-          displayName: 'Install Chrome for Puppeteer'
-          workingDirectory: pagopa-wallet-fe
-          timeoutInMinutes: 5
-
         - script: |
             cp env.example .env.development
           displayName: 'copy env.example to .env.development'
           workingDirectory: pagopa-wallet-fe
 
         - script: |
-            yarn dev &
+            yarn dev > $(Agent.TempDirectory)/fe.log 2>&1 &
           displayName: 'Start wallet fe'
           workingDirectory: pagopa-wallet-fe
 
@@ -214,6 +201,12 @@ stages:
         - script: yarn test:sri-hash-npg-check
           displayName: 'SRI hash NPG check Integration tests exec'
           workingDirectory: pagopa-wallet-fe
+
+        - script: |
+            echo "=== mock log ==="; cat $(Agent.TempDirectory)/mock.log || true
+            echo "=== fe log ==="; cat $(Agent.TempDirectory)/fe.log || true
+          displayName: 'Dump mock and fe logs'
+          condition: failed()
 
         - task: PublishTestResults@2
           displayName: 'Publish integration tests results from Jest tests'

@@ -12,6 +12,21 @@ describe("Test showing final button for continue to IO", () => {
 
   beforeAll(async () => {
     await page.setViewport({ width: 1200, height: 907 });
+    page.on("console", (msg) => console.log(`[browser console] ${msg.type()}: ${msg.text()}`));
+    page.on("pageerror", (err) => console.log(`[page error] ${err.message}`));
+    page.on("requestfailed", (req) =>
+      console.log(`[request failed] ${req.method()} ${req.url()} ${req.failure()?.errorText}`)
+    );
+    page.on("response", (res) => {
+      if (res.status() >= 400) {
+        console.log(`[response ${res.status()}] ${res.url()}`);
+      }
+    });
+    page.on("framenavigated", (frame) => {
+      if (frame === page.mainFrame()) {
+        console.log(`[navigated] ${frame.url()}`);
+      }
+    });
   })
 
 
