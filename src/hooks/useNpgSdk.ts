@@ -16,6 +16,21 @@ const noop = () => {
   // noop
 };
 
+// Kept outside the hook to stay under the sonarjs cognitive-complexity limit.
+const fetchIntegrityHash = async (integrityUrl: string): Promise<string> => {
+  const response = await fetch(integrityUrl);
+  if (!response.ok) {
+    throw new Error(`Integrity endpoint returned HTTP ${response.status}`);
+  }
+  const { integrityHash } = (await response.json()) as {
+    integrityHash?: string;
+  };
+  if (!integrityHash) {
+    throw new Error("Integrity hash missing from response");
+  }
+  return integrityHash;
+};
+
 export const useNpgSdk = ({
   onChange = () => null,
   onReadyForPayment = () => null,
@@ -47,6 +62,10 @@ export const useNpgSdk = ({
   };
 
   useEffect(() => {
+    // StrictMode replays the effect: only the last setup may inject the script,
+    // otherwise the SDK is evaluated twice and redeclares its globals.
+    // eslint-disable-next-line functional/no-let
+    let cancelled = false;
     /**
      * NPG SDK loader, the single place where the SDK is injected. Two modes
      * selected by WALLET_NPG_SDK_INTEGRITY_URL (same semantics as checkout-fe):
@@ -70,6 +89,12 @@ export const useNpgSdk = ({
       return npgScriptEl;
     };
 
+    const appendScript = (npgScriptEl: HTMLScriptElement) => {
+      if (!cancelled) {
+        document.head.appendChild(npgScriptEl);
+      }
+    };
+
     const loadNpgSdk = async () => {
       const config = getConfigOrThrow();
       const sdkUrl = config.WALLET_NPG_SDK_URL;
@@ -77,7 +102,9 @@ export const useNpgSdk = ({
 
       // Legacy mode -> no SRI enabled, load the SDK without integrity
       if (!integrityUrl) {
-        document.head.appendChild(buildScript(sdkUrl));
+        // yield so a StrictMode cleanup can cancel this run before injecting
+        await Promise.resolve();
+        appendScript(buildScript(sdkUrl));
         return;
       }
 
@@ -85,19 +112,7 @@ export const useNpgSdk = ({
         // This is why the loader became async: `integrity` has to be on the tag
         // before it is appended, so the hash must be fetched first. It cannot be
         // added once the browser has started fetching the script.
-        const response = await fetch(integrityUrl);
-        if (!response.ok) {
-          throw new Error(
-            `Integrity endpoint returned HTTP ${response.status}`
-          );
-        }
-        const { integrityHash } = (await response.json()) as {
-          integrityHash?: string;
-        };
-        if (!integrityHash) {
-          throw new Error("Integrity hash missing from response");
-        }
-
+        const integrityHash = await fetchIntegrityHash(integrityUrl);
         const npgScriptEl = buildScript(sdkUrl);
         npgScriptEl.setAttribute("integrity", integrityHash);
         // Cross-origin load from the platform CDN: SRI can only be validated with CORS.
@@ -109,7 +124,7 @@ export const useNpgSdk = ({
             "NPG SDK failed to load or failed SRI validation; SDK not loaded"
           );
         });
-        document.head.appendChild(npgScriptEl);
+        appendScript(npgScriptEl);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error("Failed to load NPG SDK with integrity:", error);
@@ -120,6 +135,9 @@ export const useNpgSdk = ({
     // A useEffect callback cannot itself be async, so the loader is defined above
     // and fired here; `void` marks the floating promise as deliberate.
     void loadNpgSdk();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { sdkReady, sdkError, buildSdk: sdkReady ? createBuild : noop };
