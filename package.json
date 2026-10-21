@@ -21,7 +21,7 @@
     "dev:server": "parcel src/index.html &",
     "dev": "rimraf .cache && rimraf dist && npm-run-all generate type-check dev:env dev:server",
     "test": "jest --config=jest.config.js",
-    "test:integration": "jest --config=jest.integration.config.js",
+    "test:sri-hash-npg-check": "jest --config=jest.sri-hash-npg-check.config.js",
     "test:no-outcome-redirect": "jest --config=jest.no-outcome-redirect.config.js",
     "test:coverage": "jest --coverage --passWithNoTests --config=jest.config.js --testResultsProcessor ./node_modules/jest-sonar-reporter/index.js",
     "prepare": "husky install"
