@@ -138,7 +138,7 @@ stages:
     jobs:
       - job: run_integration_tests
         variables:
-          PUPPETEER_SKIP_DOWNLOAD: 'false'
+          PUPPETEER_CACHE_DIR: $(Pipeline.Workspace)/.puppeteer
         steps:
 
         - checkout: wallet-be-mock
@@ -173,6 +173,19 @@ stages:
         - template: templates/node-job-setup/template.yaml@pagopaCommons
           parameters:
            projectDir: pagopa-wallet-fe
+
+        - task: Cache@2
+          displayName: Cache Puppeteer Chrome
+          inputs:
+            key: 'puppeteer | "$(Agent.OS)" | pagopa-wallet-fe/yarn.lock'
+            restoreKeys: |
+              puppeteer | "$(Agent.OS)"
+            path: $(PUPPETEER_CACHE_DIR)
+
+        - script: npx puppeteer browsers install chrome
+          displayName: 'Install Chrome for Puppeteer'
+          workingDirectory: pagopa-wallet-fe
+          timeoutInMinutes: 5
 
         - script: |
             cp env.example .env.development
