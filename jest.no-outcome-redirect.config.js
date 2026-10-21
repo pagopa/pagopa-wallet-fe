@@ -1,6 +1,7 @@
 module.exports = {
   preset: "jest-puppeteer",
-  testRegex: "./no-outcome-redirect.test\\.ts$",
+  transform: { "^.+\\.(ts|tsx)$": ["ts-jest", { diagnostics: false }] },
+  testRegex: String.raw`./no-outcome-redirect.test\.ts$`,
   reporters: [
       'default',
       [ 'jest-junit', {

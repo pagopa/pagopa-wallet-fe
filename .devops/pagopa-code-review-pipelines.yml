@@ -9,6 +9,7 @@
 variables:
   NODE_VERSION: '18.18.1'
   YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+  PUPPETEER_SKIP_DOWNLOAD: 'true'
 
 # Automatically triggered on PR
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#pr-trigger
@@ -64,7 +65,7 @@ stages:
   - stage: Static_Analysis
     dependsOn: []
     jobs:
-      - job: lint     
+      - job: lint
         steps:
         - template: templates/node-job-setup/template.yaml@pagopaCommons
         - script: yarn lint
@@ -136,7 +137,9 @@ stages:
     dependsOn: []
     jobs:
       - job: run_integration_tests
-        timeoutInMinutes: 30
+        timeoutInMinutes: 15
+        variables:
+          PUPPETEER_SKIP_DOWNLOAD: false
         steps:
 
         - checkout: wallet-be-mock
@@ -144,7 +147,7 @@ stages:
         # Currently npg api key is not required for current integration test
         - script: |
             cp env.example .env
-            sed -i "s/^NPG_API_KEY=.*$/NPG_API_KEY=key/" .env
+            sed -i "s/^NPG_API_KEY=.*$/NPG_API_KEY=$(TEST-NPG-API-KEY)/" .env 
           workingDirectory: pagopa-wallet-be-mock
           displayName: 'Setup env for mock'
 
@@ -162,7 +165,7 @@ stages:
           displayName: 'Setup deps for mock'
 
         - script: |
-            nohup yarn start &
+            nohup yarn start > $(Agent.TempDirectory)/mock.log 2>&1 &
           displayName: 'Start backend mock'
           workingDirectory: pagopa-wallet-be-mock
 
@@ -178,13 +181,13 @@ stages:
           workingDirectory: pagopa-wallet-fe
 
         - script: |
-            yarn dev &
+            yarn dev > $(Agent.TempDirectory)/fe.log 2>&1 &
           displayName: 'Start wallet fe'
           workingDirectory: pagopa-wallet-fe
 
         - script: |
             timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:1234)" != "200" ]]; do sleep 5; done' || exit 1
-          displayName: 'Wait for backend to be up and running'
+          displayName: 'Wait for front-end to be up and running'
           workingDirectory: pagopa-wallet-fe
           
         - script: |
@@ -195,6 +198,16 @@ stages:
         - script: yarn test:no-outcome-redirect
           displayName: 'IO no-outcome-redirect button Integration tests exec'
           workingDirectory: pagopa-wallet-fe
+
+        - script: yarn test:sri-hash-npg-check
+          displayName: 'SRI hash NPG check Integration tests exec'
+          workingDirectory: pagopa-wallet-fe
+
+        - script: |
+            echo "=== mock log ==="; cat $(Agent.TempDirectory)/mock.log || true
+            echo "=== fe log ==="; cat $(Agent.TempDirectory)/fe.log || true
+          displayName: 'Dump mock and fe logs'
+          condition: always()
 
         - task: PublishTestResults@2
           displayName: 'Publish integration tests results from Jest tests'
