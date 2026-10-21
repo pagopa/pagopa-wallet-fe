@@ -12,6 +12,11 @@ describe("Test showing final button for continue to IO", () => {
 
   beforeAll(async () => {
     await page.setViewport({ width: 1200, height: 907 });
+    // the app detects the language from navigator: force it so the test does not depend on the browser locale
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, "language", { get: () => "it-IT" });
+      Object.defineProperty(navigator, "languages", { get: () => ["it-IT", "it"] });
+    });
     page.on("console", (msg) => console.log(`[browser console] ${msg.type()}: ${msg.text()}`));
     page.on("pageerror", (err) => console.log(`[page error] ${err.message}`));
     page.on("requestfailed", (req) =>
@@ -41,7 +46,8 @@ describe("Test showing final button for continue to IO", () => {
       await page.goto(WALLET_FE_APM_ONBOARDING, { waitUntil: "networkidle0" });
 
       console.log("redirect directly into result page")
-      await page.goto(WALLET_FE_ESITO_PAGE, { waitUntil: "networkidle0" });
+      //redirect to the result page waiting for document to be full loaded (networkidle0 can cause errors due to iowallet:// redirect and be misinterpreted)
+      await page.goto(WALLET_FE_ESITO_PAGE, { waitUntil: "domcontentloaded" });
       console.log("[step] esito page loaded, waiting for #continueToIOBtn")
 
       await page.waitForSelector('#continueToIOBtn');

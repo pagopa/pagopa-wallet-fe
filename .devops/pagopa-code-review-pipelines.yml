@@ -206,7 +206,7 @@ stages:
             echo "=== mock log ==="; cat $(Agent.TempDirectory)/mock.log || true
             echo "=== fe log ==="; cat $(Agent.TempDirectory)/fe.log || true
           displayName: 'Dump mock and fe logs'
-          condition: failed()
+          condition: always()
 
         - task: PublishTestResults@2
           displayName: 'Publish integration tests results from Jest tests'
