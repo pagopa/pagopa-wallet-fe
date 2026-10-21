@@ -7,6 +7,7 @@
  * false, `sdkError` true, `buildSdk` a noop). Legacy mode (integrity URL empty
  * or absent): load the SDK without integrity and never fetch.
  */
+import React from "react";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { useNpgSdk } from "../useNpgSdk";
 
@@ -33,6 +34,15 @@ const getNpgScript = () =>
   Array.from(document.head.querySelectorAll("script")).find(
     (s) => s.getAttribute("src") === SDK_URL
   ) ?? null;
+
+const getNpgScripts = () =>
+  Array.from(document.head.querySelectorAll("script")).filter(
+    (s) => s.getAttribute("src") === SDK_URL
+  );
+
+const StrictModeWrapper = ({ children }: { children: React.ReactNode }) => (
+  <React.StrictMode>{children}</React.StrictMode>
+);
 
 const renderUseNpgSdk = () =>
   renderHook(() => useNpgSdk({ onBuildError: jest.fn() }));
@@ -169,6 +179,31 @@ describe("useNpgSdk loader (SRI)", () => {
       });
 
       expect(result.current.sdkReady).toBe(true);
+    }
+  );
+
+  it.each([
+    ["SRI", INTEGRITY_URL],
+    ["legacy", ""]
+  ])(
+    "injects the SDK once under StrictMode in %s mode",
+    async (_label, integrityUrl) => {
+      mockIntegrityUrl = integrityUrl;
+      (global as any).fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ integrityHash: "sha384-abc123" })
+      });
+
+      renderHook(() => useNpgSdk({ onBuildError: jest.fn() }), {
+        wrapper: StrictModeWrapper
+      });
+
+      await waitFor(() => expect(getNpgScripts()).toHaveLength(1));
+      // let the cancelled run settle: it must not append a second script
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      expect(getNpgScripts()).toHaveLength(1);
     }
   );
 
