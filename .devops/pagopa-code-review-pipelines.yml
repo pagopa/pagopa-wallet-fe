@@ -9,7 +9,9 @@
 variables:
   NODE_VERSION: '18.18.1'
   YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+  # Chrome is preinstalled on the hosted agent: avoid the puppeteer postinstall download (it hangs yarn install)
   PUPPETEER_SKIP_DOWNLOAD: 'true'
+  PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
 
 # Automatically triggered on PR
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#pr-trigger
