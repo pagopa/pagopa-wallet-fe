@@ -9,6 +9,7 @@
 variables:
   NODE_VERSION: '18.18.1'
   YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+  PUPPETEER_SKIP_DOWNLOAD: 'true'
 
 # Automatically triggered on PR
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#pr-trigger
@@ -34,8 +35,7 @@ resources:
     - repository: wallet-be-mock
       type: github
       name: pagopa/pagopa-wallet-be-mock
-      # TEMP: NPG SDK proxy + SRI hash mock (CHK-5044), back to main once pagopa-wallet-be-mock#19 is merged
-      ref: CHK-5044-sri-hash-integration
+      ref: main
       endpoint: 'io-azure-devops-github-ro'
 
 stages:
@@ -65,7 +65,7 @@ stages:
   - stage: Static_Analysis
     dependsOn: []
     jobs:
-      - job: lint     
+      - job: lint
         steps:
         - template: templates/node-job-setup/template.yaml@pagopaCommons
         - script: yarn lint
@@ -138,6 +138,8 @@ stages:
     jobs:
       - job: run_integration_tests
         timeoutInMinutes: 30
+        variables:
+          PUPPETEER_SKIP_DOWNLOAD: 'false'
         steps:
 
         - checkout: wallet-be-mock
