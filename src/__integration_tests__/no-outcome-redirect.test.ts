@@ -17,21 +17,6 @@ describe("Test showing final button for continue to IO", () => {
       Object.defineProperty(navigator, "language", { get: () => "it-IT" });
       Object.defineProperty(navigator, "languages", { get: () => ["it-IT", "it"] });
     });
-    page.on("console", (msg) => console.log(`[browser console] ${msg.type()}: ${msg.text()}`));
-    page.on("pageerror", (err) => console.log(`[page error] ${err.message}`));
-    page.on("requestfailed", (req) =>
-      console.log(`[request failed] ${req.method()} ${req.url()} ${req.failure()?.errorText}`)
-    );
-    page.on("response", (res) => {
-      if (res.status() >= 400) {
-        console.log(`[response ${res.status()}] ${res.url()}`);
-      }
-    });
-    page.on("framenavigated", (frame) => {
-      if (frame === page.mainFrame()) {
-        console.log(`[navigated] ${frame.url()}`);
-      }
-    });
   })
 
 
@@ -48,8 +33,8 @@ describe("Test showing final button for continue to IO", () => {
       console.log("redirect directly into result page")
       //redirect to the result page waiting for document to be full loaded (networkidle0 can cause errors due to iowallet:// redirect and be misinterpreted)
       await page.goto(WALLET_FE_ESITO_PAGE, { waitUntil: "domcontentloaded" });
+      
       console.log("[step] esito page loaded, waiting for #continueToIOBtn")
-
       await page.waitForSelector('#continueToIOBtn');
     } catch (e) {
       console.log(`[diagnostic] failed: ${(e as Error).message}`);
