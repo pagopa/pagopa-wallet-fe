@@ -9,6 +9,7 @@
 variables:
   NODE_VERSION: '18.18.1'
   YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+  PUPPETEER_SKIP_DOWNLOAD: 'true'
 
 # Automatically triggered on PR
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#pr-trigger
@@ -65,7 +66,7 @@ stages:
   - stage: Static_Analysis
     dependsOn: []
     jobs:
-      - job: lint     
+      - job: lint
         steps:
         - template: templates/node-job-setup/template.yaml@pagopaCommons
         - script: yarn lint
@@ -138,6 +139,8 @@ stages:
     jobs:
       - job: run_integration_tests
         timeoutInMinutes: 30
+        variables:
+          PUPPETEER_SKIP_DOWNLOAD: 'false'
         steps:
 
         - checkout: wallet-be-mock
