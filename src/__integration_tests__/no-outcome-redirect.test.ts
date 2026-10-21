@@ -7,8 +7,8 @@ describe("Test showing final button for continue to IO", () => {
     */
   jest.setTimeout(30000);
   jest.retryTimes(3);
-  page.setDefaultNavigationTimeout(30000);
-  page.setDefaultTimeout(30000);
+  page.setDefaultNavigationTimeout(10000);
+  page.setDefaultTimeout(10000);
 
   beforeAll(async () => {
     await page.setViewport({ width: 1200, height: 907 });
@@ -36,13 +36,21 @@ describe("Test showing final button for continue to IO", () => {
     const WALLET_FE_APM_ONBOARDING = "http://localhost:1234/onboarding/apm#walletId=111&paymentMethodId=222&sessionToken=token";
     const WALLET_FE_ESITO_PAGE = "http://localhost:1234/esito";
 
-    console.log("start onboarding for session storage initialization")
-    await page.goto(WALLET_FE_APM_ONBOARDING, { waitUntil: "networkidle0" });
+    try {
+      console.log("start onboarding for session storage initialization")
+      await page.goto(WALLET_FE_APM_ONBOARDING, { waitUntil: "networkidle0" });
 
-    console.log("redirect directly into result page")
-    await page.goto(WALLET_FE_ESITO_PAGE, { waitUntil: "networkidle0" });
+      console.log("redirect directly into result page")
+      await page.goto(WALLET_FE_ESITO_PAGE, { waitUntil: "networkidle0" });
+      console.log("[step] esito page loaded, waiting for #continueToIOBtn")
 
-    await page.waitForSelector('#continueToIOBtn');
+      await page.waitForSelector('#continueToIOBtn');
+    } catch (e) {
+      console.log(`[diagnostic] failed: ${(e as Error).message}`);
+      console.log(`[diagnostic] url: ${page.url()}`);
+      console.log(`[diagnostic] body: ${await page.evaluate(() => document.body?.innerHTML).catch(() => "n/a")}`);
+      throw e;
+    }
     const waitingTitleSelector = await page.waitForSelector('#waitingTitle');
     const waitingTitle = await waitingTitleSelector.evaluate((el) => el.textContent);
     expect(waitingTitle).toBe(translationIT.resultPage.justFewMoments);
