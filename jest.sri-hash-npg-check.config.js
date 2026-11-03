@@ -1,6 +1,7 @@
 module.exports = {
   preset: "jest-puppeteer",
-  testRegex: "./*integration.test\\.ts$",
+  transform: { "^.+\\.(ts|tsx)$": ["ts-jest", { diagnostics: false }] },
+  testRegex: String.raw`./*npg-sri-hash-check.test\.ts$`,
   reporters: [
       'default',
       [ 'jest-junit', {

@@ -5,6 +5,7 @@ jest.mock('./src/config', () => ({
     WALLET_CONFIG_API_HOST: 'http://localhost',
     WALLET_CONFIG_API_PM_BASEPATH: '/pm',
     WALLET_CONFIG_WEBVIEW_PM_HOST: 'http://localhost',
+    WALLET_NPG_SDK_INTEGRITY_URL: 'http://localhost/sdk.integrity.json',
     WALLET_NPG_SDK_URL: 'http://localhost/sdk',
     WALLET_OUTCOME_API_BASEPATH: '/api',
     WALLET_PAGOPA_LOGOS_CDN: 'http://localhost/cdn'
