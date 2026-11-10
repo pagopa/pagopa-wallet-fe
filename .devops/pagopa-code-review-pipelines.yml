@@ -101,7 +101,7 @@ stages:
             npg_sdk_url: 'https://stg-ta.nexigroup.com/monetaweb/resources/hfsdk.js'
             api_wallet_outcome_basepath: '/payment-wallet-outcomes/v1'
             api_webview_pm_hostname: 'https://api.dev.platform.pagopa.it'
-            wallet_pagopa_logos_cdn: 'https://assets.cdn.io.italia.it/logos/abi'
+            wallet_pagopa_logos_cdn: 'https://assets.cdn.platform.pagopa.it/logos/abi'
             wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://dev.checkout.pagopa.it/ecommerce-fe/esito'
 
 
