@@ -104,6 +104,7 @@ stages:
               wallet_pagopa_logos_cdn: 'https://assets.cdn.platform.pagopa.it/logos/abi'
               wallet_show_continue_io_btn_delay_millis: 2000
               wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://dev.ecommerce.pagopa.it/esito'
+              git_ref: "$(Build.SourceBranchName):$(Build.SourceVersion)"
 
           - script: |
               yarn build
@@ -231,6 +232,7 @@ stages:
               wallet_pagopa_logos_cdn: 'https://assets.cdn.platform.pagopa.it/logos/abi'
               wallet_show_continue_io_btn_delay_millis: 2000
               wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://uat.ecommerce.pagopa.it/esito'
+              git_ref: "$(Build.SourceBranchName):$(Build.SourceVersion)"
 
           - script: |
               yarn build
@@ -329,6 +331,7 @@ stages:
               wallet_pagopa_logos_cdn: 'https://assets.cdn.platform.pagopa.it/logos/abi'
               wallet_show_continue_io_btn_delay_millis: 2000
               wallet_contextual_onboarding_ecommerce_fe_outcome_url: 'https://ecommerce.pagopa.it/esito'
+              git_ref: "$(Build.SourceBranchName):$(Build.SourceVersion)"
 
           - script: |
               yarn build
